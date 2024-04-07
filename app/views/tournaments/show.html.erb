@@ -1,0 +1,107 @@
+<section class="page-header <%= @tournament.color_base_css %>">
+  <div></div>
+  <div class="page-header__heading accent-color">
+    <h2>
+      <%= @tournament.name %>
+    </h2>
+  </div>
+  <p class="page-header__text default-color">
+    <%= app_date @tournament.begin_date %>
+    <% if @tournament.end_date > @tournament.begin_date %>
+      -
+      <%= app_date @tournament.end_date %>
+    <% end %>
+  </p>
+</section>
+
+<div class="page__content">
+  <div class="page-controls">
+    <div class="page-controls__breadcrumbs">
+      <%= link_to "Domov", root_path, target: :_top %>
+      /
+      <%= link_to "Turnaje", tournaments_path, target: :_top %>
+    </div>
+
+    <div class="page-controls__buttons">
+      <%= link_to "Zápasy", "#matches", class: "btn btn-success" %>
+      <%= link_to "Pavúk", "#draw", class: "btn btn-success" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <p>
+        <% @tournament.main_info.split("\n").each do |line| %>
+          <%= line %><br>
+        <% end %>
+      </p>
+    </div>
+    <div class="col-md-9">
+      <% if @tournament.side_info.present? %>
+        <p class="ps-2 border-start">
+          <% @tournament.side_info.split("\n").each do |line| %>
+            <%= line %><br>
+          <% end %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+</div>
+
+<div class="<%= @tournament.color_base_css %>">
+  <div class="page__content">
+    <% if @planned_matches.first || @finished_matches.first %>
+      <h3 id="matches" class="base-heading accent-color">Zápasy turnaja</h3>
+
+      <% if @planned_matches.first %>
+        <p class="u-fs-big text-center accent-color">
+          Plánované
+        </p>
+        <% @planned_matches.each do |match| %>
+          <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+        <% end %>
+      <% else %>
+        <p class="py-8 text-center default-color">Žiadne plánované zápasy.</p>
+      <% end %>
+
+      <% if @finished_matches.first %>
+        <hr>
+        <p class="u-fs-big text-center accent-color">
+          Odohraté
+        </p>
+        <div class="matches-grid default-color">
+          <div class="matches-grid__col matches-grid__col1 u-fs-small">Víťaz</div>
+          <div class="matches-grid__col matches-grid__col2"></div>
+          <div class="matches-grid__col matches-grid__col3 u-fs-small">Porazený</div>
+          <div class="matches-grid__col matches-grid__col4"></div>
+        </div>
+        <% @finished_matches.each do |match| %>
+          <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+        <% end %>
+      <% else %>
+        <p class="py-8 text-center default-color">Žiadne odohraté zápasy.</p>
+      <% end %>
+    <% end %>
+
+    <h3 id="draw" class="base-heading accent-color">Pavúk</h3>
+    <% if @tournament.draw_url.present? %>
+      <div class="overflow-content">
+        <%= image_tag @tournament.draw_url, class: "overflow-content__image" %>
+      </div>
+    <% else %>
+      <p class="py-8 text-center default-color">Nie je zverejnený.</p>
+    <% end %>
+  </div>
+</div>
+
+<div class="page__content">
+  <%= render partial: "shared/comments_list",
+             locals: {
+               reactionable: @tournament,
+               current_player: current_player,
+               reactionable_type: "tournament",
+               toggle_reaction_path: toggle_reaction_player_tournament_path(@tournament),
+               object_path: tournament_path(@tournament, anchor: "comments")
+             } %>
+</div>

@@ -1,0 +1,81 @@
+<section class="registered-players base-green">
+  <div class="page__content">
+<!--    <h3 class="base-heading accent-color text-center py-5 u-fs-giant">TOtal • 2022</h3>-->
+    <h1 class="today__heading accent-color">Topoľčianska tenisová<br>amatérska liga.</h1>
+
+    <div class="today__brand mb-5">
+      <a href="#players_list" class="today__brand__link">TOtal.</a>
+    </div>
+
+    <div class="registered-players__description">
+      <p class="default-color u-fs-big">
+        Vitaj na novom webe topoľčianskej "kúpaliskovej" ligy TOtal! Práve prebieha registrácia
+        do sezóny 2022, tak neváhaj a
+        <%= link_to "registruj sa", new_player_registration_path, class: "default-color" %> aj ty!
+        Pri registrácii nezabudni uviesť svoje meno, tel. č. a email, aby sme ťa mohli kontaktovať keď bude
+        súťaž začínať. Nižšie na tejto stránke vidíš kto všetko sa už registroval a s kým teda budeš môcť hrať.
+      </p>
+
+      <p class="text-center my-5">
+        <%= link_to "Chcem sa pridať!", new_player_registration_path, class: "btn btn-large btn-warning" %>
+      </p>
+
+      <p class="default-color">
+        Tento web je prvú sezónu v pilotnej prevádzke a je stále vo vývoji, no keď súťaž začne
+        budeš tu môcť vyzývať nových súperov, vkladať sám/sama výsledky svojich zápasov, zverejniť svoj
+        záujem nájsť ďalšieho súpera na zápas a celkovo sledovať čo sa v tejto lige a topoľčianskom
+        tenise deje.
+      </p>
+
+      <p class="accent-color u-fs-big border-top">
+        Tento rok je tu špeciálna ponuka na "sezónny lístok", ktorý umožňuje paušálne si predplatiť
+        tenisové kurty na Mravenisku v Topoľčanoch a ďalej už za kurty neplatiť.
+        Takto predplatené kurty je možné využívať na obe ligy - MaTOtenis aj TOtal, ako aj na iné zápasy,
+        alebo tréningy.
+      </p>
+
+      <ul class="list-group list-group-numbered default-color">
+        <li>
+          Sezónny lístok stojí 170€, je vystavený na meno a platný do 10. októbra 2022.
+        </li>
+        <li>
+          Majiteľ lístka potom využíva kurty bezplatne - cez víkendy neobmedzene a cez prac. dni do 17:00.
+        </li>
+        <li>
+          Ak s majiteľom lístka hrá osoba, ktorá takýto lístok nevlastní, táto osoba má 50% zľavu z bežnej ceny za kurt.
+        </li>
+      </ul>
+
+      <ul class="list-unstyled default-color mt-2">
+        <li>
+          A bežné ceny sú
+          <ul>
+            <li>
+              Víkend a prac. dni do 17:00
+              <ul>
+                Prvá hodina hry - 7€<br>
+                Po prvej hodine hry, každá ďalšia - 5€<br>
+                <i>(teda napr. 2h vkuse - 12€)</i>
+              </ul>
+            </li>
+          </ul>
+          <ul>
+            <li>
+              Prac. dni po 17:00
+              <ul>
+                Prvá hodina hry - 10€<br>
+                Po prvej hodine hry, každá ďalšia - 8€<br>
+                <i>(teda napr. 2h vkuse - 18€)</i>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <%= turbo_stream_from "registered_players" %>
+    <div id="players_list">
+      <%= render partial: "players/list", locals: { players: @players } %>
+    </div>
+  </div>
+</section>

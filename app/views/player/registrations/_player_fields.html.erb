@@ -1,0 +1,19 @@
+<div class="mt-4">
+  <%= f.label :name, "* Meno a priezvisko", class: "form-label" %>
+  <%= f.text_field :name, autofocus: true, autocomplete: "off",
+                   class: "form-control" %>
+  <small><%= error_for(:name, resource) %></small>
+</div>
+<div class="mt-4">
+  <%= f.label :phone_nr, "Telefónne číslo", class: "form-label" %>
+  <%= f.text_field :phone_nr, autocomplete: "off", placeholder: "0901 123 456",
+                   class: "form-control" %>
+  <%= error_for(:phone_nr, resource) %>
+</div>
+<div class="mt-4">
+  <%= f.label :birth_year, "Rok narodenia", class: "form-label" %>
+  <%= f.select :birth_year,
+               options_for_select(((Date.today.year - 100)..(Date.today.year - 9)).to_a.reverse, resource.birth_year),
+               { include_blank: "Nepoviem" },
+               class: "form-control" %>
+</div>

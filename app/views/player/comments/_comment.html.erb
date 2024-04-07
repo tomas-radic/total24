@@ -1,0 +1,65 @@
+<div class="comment" id="comment_<%= comment.id %>">
+  <div class="comment__header">
+    <div>
+      <span class="badge bg-danger"><%= comment.position %></span>
+      <%= app_time(comment.created_at) %>
+    </div>
+    <div>
+      <% if current_player.present? %>
+        <div class="comment__buttons">
+          <% if current_player == comment.player %>
+            <% if comment.deleted_at.blank? %>
+
+              <%= form_with url: delete_comment_path(comment), class: "d-inline-block" do |f| %>
+                <%= image_submit_tag "delete.png", class: "comment__btn-icon", data: { confirm: "Chceš zmazať komentár?" } %>
+              <% end %>
+
+              <div>
+                <%= turbo_frame_tag "tf_edit_comment_#{comment.id}",
+                                    target: "tf_comment_#{comment.id}_content" do %>
+                  <%= link_to edit_comment_path(comment),
+                              class: "u-no-decoration" do %>
+                    <%= image_tag("edit.png", class: "comment__btn-icon") %>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+          <%= content_tag :span,
+                      class: "u-no-decoration",
+                      data: {
+                        "action" => "click->comments#setReply",
+                        "comment-id" => comment.id,
+                        "comment-position" => comment.position
+                      } do %>
+            <%= image_tag("reply.png", class: "comment__btn-icon") %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div>
+    <% if comment.deleted_at.blank? %>
+      <p>
+        <small>
+          <%= comment.player.name %>
+          <% if comment.motive_id.blank? %>
+            napísal<small>/a</small>:
+          <% else %>
+            <span class="text-danger">odpovedal/a na</span>
+            <a href="#comment_<%= comment.motive_id %>" data-turbo="false">
+              <span class="badge bg-danger"><%= comment.motive.position %></span>
+            </a>
+          <% end %>
+        </small>
+      </p>
+      <%= turbo_frame_tag "tf_comment_#{comment.id}_content" do %>
+        <p class="fst-italic">
+          <%= simple_format comment.content %>
+        </p>
+      <% end %>
+    <% else %>
+      <p class="fst-italic">(zmazaný komentár)</p>
+    <% end %>
+  </div>
+</div>

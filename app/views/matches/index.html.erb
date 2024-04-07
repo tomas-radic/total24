@@ -1,0 +1,48 @@
+<%= turbo_stream_from "matches" %>
+<div id="matches_index_reload_notice"></div>
+
+<% if selected_season.present? && current_player.present? && @pending_matches.any? %>
+  <section class="base-salmon">
+    <div class="page__content">
+      <h3 class="base-heading accent-color">Tvoje ďalšie zápasy.</h3>
+
+      <div class="matches-grid">
+        <div class="matches-grid__col matches-grid__col1">Vyzývateľ</div>
+        <div class="matches-grid__col matches-grid__col2"></div>
+        <div class="matches-grid__col matches-grid__col3">Vyzvaný</div>
+        <div class="matches-grid__col matches-grid__col4"></div>
+      </div>
+      <% @pending_matches.each do |match| %>
+        <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<section class="base-yellow">
+  <div class="page__content">
+    <h3 class="text-end base-heading accent-color">Všetky zápasy sezóny.</h3>
+
+    <% if selected_season.present? %>
+      <% if @matches.any? %>
+        <p class="text-end accent-color me-lg-4">
+          Odohratých <%= @reviewed_count %><br>
+          Plánovaných <%= @planned_count %>
+        </p>
+        <% @matches.each do |match| %>
+          <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+        <% end %>
+        <p><%= paginate @matches %></p>
+      <% else %>
+        <p class="py-8 text-center">Žiadne zápasy.</p>
+        <% if selected_season && !selected_season.ended_at? %>
+          <p class="py-2 text-center">
+            <%= link_to "Zavolaj niekoho hrať!", rankings_path, class: "btn btn-success btn-lg" %>
+          </p>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="py-8 text-center default-color">Žiadne nie sú, pretože nie je sezóna. Čakáme kým začne.</p>
+    <% end %>
+  </div>
+</section>

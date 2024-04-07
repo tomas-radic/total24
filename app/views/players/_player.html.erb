@@ -1,0 +1,113 @@
+<section class="page-header base-red">
+  <div></div>
+  <div class="page-header__heading accent-color">
+    <h2><%= player.name %></h2>
+  </div>
+
+  <div class="page-header__text default-color">
+
+
+
+
+    <!-- TODO: Use Pundit player_policy - view_player_details -->
+
+    <% if current_manager || (current_player && selected_season && selected_season.enrollments.active.find { |e| e.player_id == current_player.id }) %>
+      <div><%= player.phone_nr %></div>
+      <div><%= player.email %></div>
+      <% if player.birth_year.present? %>
+        <div>Nar. <%= player.birth_year %></div>
+      <% end %>
+    <% end %>
+  </div>
+
+</section>
+
+
+<div class="page__content">
+  <div class="page-controls">
+    <div class="page-controls__breadcrumbs">
+      <%= link_to "Domov", root_path, target: :_top %>
+      /
+      <%= link_to "Rebríček", rankings_path, target: :_top %>
+    </div>
+    <% if selected_season.present? && current_player.present? %>
+      <div class="page-controls__buttons">
+        <%= link_to "Vyzvať hráča",
+                    player_matches_path(player_id: player.id),
+                    class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(requested_player: player, season: selected_season)}",
+                    data: { turbo_method: :post, turbo_confirm: "Potvrď, že naozaj chceš vyzvať #{player.name}" } %>
+      </div>
+    <% end %>
+  </div>
+
+  <hr>
+
+  <% if selected_season.present? %>
+    <% unless selected_season.enrollments.active.where(player: player).exists? %>
+      <p class="text-center">
+        Hráč<small>/ka</small> nie je zapísaný<small>/á</small>
+        do sezóny <%= selected_season.name %>.
+      </p>
+    <% end %>
+
+    <% if current_player.present? && current_player.opponents(season: selected_season, pending: true).include?(player) %>
+      <p class="text-center">
+        S týmto hráčom<small>/kou</small> ťa čaká zápas.
+      </p>
+    <% end %>
+  <% end %>
+
+  <% if player.open_to_play_since.present? %>
+    <p class="text-center text-danger">Hráč<small>/ka</small> práve hľadá súpera na zápas.</p>
+  <% elsif player.cant_play_since.present? %>
+    <p class="text-center text-danger">Hráč<small>/ka</small> momentálne nemôže hrať (odcestovanie/zranenie).</p>
+  <% end %>
+
+  <% if selected_season && @all_matches.any? %>
+    <div class="text-center mt-4">
+      <% won_count = @won_matches.size %>
+      <% all_count = @all_matches.size %>
+      <p>
+        Vyhraté zápasy / všetky zápasy<br>
+        <span class="u-fs-big <%= text_success_css(won_count, all_count) %>">
+          <%= won_count %> / <%= all_count %>
+          <br>
+          <%= percentage(won_count, all_count) %>%
+        </span>
+      </p>
+
+      <div>
+        <% @all_matches.each do |match| %>
+          <% side = match.assignments.find { |a| a.player_id == player.id }.side %>
+          <% other_side = (side == 1) ? 2 : 1 %>
+          <% if side == match.winner_side %>
+            <p>
+              <%= app_date(match.finished_at) %>
+              výhra s
+              <%= match_player_link(match, side: other_side) %>
+              <br>
+              <span class="u-nav-green"><%= match.result(side: side) %></span>
+              <% if match.retired? %>
+                (skreč)
+              <% end %>
+            </p>
+          <% else %>
+            <p>
+              <%= app_date(match.finished_at) %>
+              prehra s
+              <%= match_player_link(match, side: other_side) %>
+              <br>
+              <span class="u-red"><%= match.result(side: side) %></span>
+              <% if match.retired? %>
+                (skreč)
+              <% end %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-center">Žiadne odohraté zápasy v sezóne <%= selected_season.name %>.</p>
+  <% end %>
+
+</div>

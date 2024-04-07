@@ -1,0 +1,101 @@
+<div class="navigation">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <%= link_to "TOtal", root_path, class: "navbar-brand navigation__brand" %>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<!--          <li class="nav-item">-->
+            <%#= link_to "Dnes", today_path, class: "nav-link" %>
+<!--          </li>-->
+          <li class="nav-item">
+            <%= link_to "Zápasy", matches_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Rebríček", rankings_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Rezervácie", reservations_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Turnaje", tournaments_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Novinky", articles_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "O súťaži", about_path, class: "nav-link" %>
+          </li>
+        </ul>
+
+        <% if player_signed_in? %>
+          <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <%= current_player.name %>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li>
+                  <%= link_to "Profil", edit_player_registration_path, class: "dropdown-item" %>
+                </li>
+                <li>
+                  <%= link_to "Funkcie", help_path, class: "dropdown-item" %>
+                </li>
+                <%= turbo_frame_tag "player_status" do %>
+                  <li>
+                    <div class="dropdown-item">
+                      <div>
+<!--                      <div id="toggle_open_to_play">-->
+                        <%= form_with url: player_players_toggle_open_to_play_path do %>
+                          <div class="form-check">
+                            <%= check_box_tag :open_to_play_since,
+                                              "1",
+                                              current_player.open_to_play_since.present?,
+                                              class: "form-check-input",
+                                              onclick: 'this.closest("form").requestSubmit()' %>
+
+                            <%= label_tag :open_to_play_since, "Hľadám súpera" %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="dropdown-item">
+                      <div>
+<!--                      <div id="toggle_open_to_play">-->
+                        <%= form_with url: player_players_toggle_cant_play_path do %>
+                          <div class="form-check">
+                            <%= check_box_tag :cant_play_since,
+                                              "1",
+                                              current_player.cant_play_since.present?,
+                                              class: "form-check-input",
+                                              onclick: 'this.closest("form").requestSubmit()' %>
+
+                            <%= label_tag :cant_play_since, "Nemôžem hrať" %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </li>
+                <% end %>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <%= link_to "Odhlásiť sa", destroy_player_session_path, data: { turbo_method: :delete }, class: "dropdown-item" %>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        <% else %>
+          <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <%= link_to "Môj TOtal", new_player_session_path, class: "nav-link" %>
+            </li>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,7 @@
+<%# provide(:turbo_visit_control) do %>
+<!--  <meta name="turbo-visit-control" content="reload">-->
+<%# end %>
+
+<%#= turbo_frame_tag "player_#{@player.id}" do %>
+<%= render partial: "players/player", locals: { player: @player } %>
+<%# end %>
