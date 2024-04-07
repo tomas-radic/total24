@@ -80,6 +80,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_06_222142) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
+    t.datetime "access_denied_since"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_managers_on_email", unique: true
