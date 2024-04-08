@@ -366,7 +366,7 @@ html {
       margin-bottom: 0.5rem;
       font-weight: 500;
       line-height: 1.2;
-      //box-shadow: 7px 5px 10px rgb(0 0 0 / 40%);
+      box-shadow: 7px 5px 10px rgba(0, 0, 0, 0.4);
       padding: 0.4rem 0.6rem;
       //background-color: $color-brand-bg;
       color: $color-white;
@@ -426,7 +426,7 @@ html {
 
   &__content {
     width: 100%;
-    //box-shadow: 7px 5px 10px rgb(0 0 0 / 20%);
+    box-shadow: 7px 5px 10px rgba(0, 0, 0, 0.2);
 
     @media (min-width: $breakpoint-lg) {
       width: initial;
@@ -606,7 +606,7 @@ html {
     margin: -55px auto 1.6rem auto;
     font-weight: 500;
     line-height: 1.2;
-    //box-shadow: 7px 5px 10px rgb(0 0 0 / 40%);
+    box-shadow: 7px 5px 10px rgba(0, 0, 0, 0.4);
     padding: 0.4rem 0.6rem;
     background-color: $color-brand-bg;
     color: $color-white;
