@@ -19,8 +19,11 @@ class Player::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    raise "Registrations are closed."
-    # super
+    if ENV['REGISTRATIONS_ENABLED'] == '1'
+      super
+    else
+      raise "Registrations are closed."
+    end
   end
 
   # GET /resource/edit
