@@ -257,6 +257,18 @@ class Match < ApplicationRecord
     end
   end
 
+  def recently_finished?
+    finished_at.present? && finished_at >= 7.days.ago
+  end
+
+  def recently_rejected?
+    rejected_at.present? && rejected_at > 48.hours.ago
+  end
+
+  def recently_canceled?
+    canceled_at.present? && canceled_at > 30.hours.ago
+  end
+
 
   private
 

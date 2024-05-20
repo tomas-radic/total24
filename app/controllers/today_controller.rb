@@ -2,16 +2,39 @@ class TodayController < ApplicationController
 
   def index
     if selected_season.present?
-      season_matches = selected_season.matches.published
+      season_matches = selected_season.matches.published.ranking_counted
+                                      .order(play_date: :asc, play_time: :asc, updated_at: :desc)
+                                      .includes(:reactions, :comments, :reacted_players, :place,
+                                                :predictions, assignments: :player)
 
-      @requested_matches = season_matches.published.ranking_counted.requested
-                                         .where(finished_at: nil, canceled_at: nil)
-                                         .order(requested_at: :desc)
-                                         .includes(:reactions, :comments, :reacted_players, :predictions, assignments: :player)
+      @requested_matches = season_matches.select do |match|
+        match.requested_at.present? && match.accepted_at.nil? && match.rejected_at.nil? &&
+          match.finished_at.nil? && match.canceled_at.nil?
+      end.sort_by { |match| -match.requested_at.to_i }
 
-      @rejected_matches = season_matches.published.ranking_counted.rejected
-                                        .where("rejected_at >= ?", 48.hours.ago)
-                                        .includes(:reactions, :comments, :reacted_players, assignments: :player)
+      @rejected_matches = season_matches.select do |match|
+        match.recently_rejected?
+      end.sort_by { |match| -match.rejected_at.to_i }
+
+      @recent_matches = season_matches.select do |match|
+        match.reviewed_at.present? && match.recently_finished?
+      end.sort_by { |match| -match.finished_at.to_i }
+
+      @planned_matches = season_matches.select do |match|
+        match.accepted_at.present? && match.finished_at.nil? && match.canceled_at.nil? &&
+          (match.play_date.blank? || match.play_date >= Time.now.in_time_zone.to_date)
+      end
+
+
+
+
+
+
+
+
+      @canceled_matches = season_matches.select do |match|
+        match.recently_canceled?
+      end.sort_by { |match| -match.canceled_at.to_i }
 
       begins_in_days = Date.today + 12.days
       ended_before_days = Date.today - 2.days
@@ -21,20 +44,6 @@ class TodayController < ApplicationController
       @actual_articles = selected_season.articles.published
                                         .where("(promote_until is not null and promote_until >= ?) or (promote_until is null and created_at > ?)",
                                                Date.today, 4.days.ago)
-
-      @recent_matches = season_matches.published.reviewed.ranking_counted
-                                      .where("finished_at >= ?", 7.days.ago)
-                                      .order(finished_at: :desc)
-                                      .includes(:reactions, :comments, :reacted_players, assignments: :player)
-
-      @planned_matches = season_matches.published.accepted.ranking_counted
-                                       .where(finished_at: nil, canceled_at: nil)
-                                       .where("play_date is null or play_date >= ?", Time.now.in_time_zone.to_date)
-                                       .order(play_date: :asc, play_time: :asc, updated_at: :desc)
-                                       .includes(:reactions, :comments, :reacted_players, :predictions, :place, assignments: :player)
-      @canceled_matches = season_matches.published.canceled.ranking_counted
-                                        .where("canceled_at > ?", 30.hours.ago)
-                                        .order(canceled_at: :desc)
 
       @top_rankings = Rankings.calculate(selected_season, single_matches: true)
                               .slice(0, selected_season.play_off_size + 2)

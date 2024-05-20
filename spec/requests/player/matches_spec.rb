@@ -372,8 +372,6 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       context "When player has no existing prediction to the match" do
-
-
         it "Creates new prediction and redirects" do
           subject
 
@@ -390,7 +388,6 @@ RSpec.describe "Player::Matches", type: :request do
 
           expect(player.reload.predictions.find_by(match: match)).to be_nil
         end
-
       end
 
 
@@ -402,12 +399,11 @@ RSpec.describe "Player::Matches", type: :request do
 
           expect(player.reload.predictions.find_by(match: match, side: attributes[:side])).not_to be_nil
         end
-
       end
 
 
       context "With reviewed match" do
-        before { match.update_column(:reviewed_at, 1.minute.ago) }
+        before { match.update_columns(finished_at: 1.minute.ago, reviewed_at: 1.minute.ago) }
 
         it "Does not create prediction and redirects" do
           subject
