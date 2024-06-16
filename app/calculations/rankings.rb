@@ -13,27 +13,25 @@ class Rankings
 
 
   def calculate
+    all_matches = @season.matches.published.reviewed.ranking_counted.includes(:assignments)
+
     result = Player.where(anonymized_at: nil).left_joins(:matches)
                    .where(enrollments: { season_id: @season.id })
                    .merge(Enrollment.active)
                    .includes(:enrollments, matches: :players).map do |player|
 
-      matches = if @single_matches && @double_matches
-                  player.matches.where(competitable_type: 'Season').where(competitable_id: @season.id)
-                elsif @single_matches && !@double_matches
-                  player.matches.singles.where(competitable_type: 'Season').where(competitable_id: @season.id)
-                elsif !@single_matches && @double_matches
-                  player.matches.doubles.where(competitable_type: 'Season').where(competitable_id: @season.id)
-                else
-                  Match.none
-                end
+      player_matches = all_matches.select do |match|
+        match.assignments.pluck(:player_id).include?(player.id)
+      end
 
-      matches = matches.published.reviewed.ranking_counted.includes(:assignments)
+      player_matches.reject! { |match| match.double? } unless @double_matches
+      player_matches.reject! { |match| match.single? } unless @single_matches
+
       points = 0
-      nr_matches = matches.length
+      nr_matches = player_matches.length
       nr_won_matches = 0
 
-      matches.each do |match|
+      player_matches.each do |match|
         player_assignment = match.assignments.find { |a| a.player_id == player.id }
 
         if match.winner_side == player_assignment.side

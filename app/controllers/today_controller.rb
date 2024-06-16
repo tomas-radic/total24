@@ -25,13 +25,6 @@ class TodayController < ApplicationController
           (match.play_date.blank? || match.play_date >= Time.now.in_time_zone.to_date)
       end
 
-
-
-
-
-
-
-
       @canceled_matches = season_matches.select do |match|
         match.recently_canceled?
       end.sort_by { |match| -match.canceled_at.to_i }
