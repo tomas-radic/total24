@@ -54,6 +54,7 @@ gem 'gravatar_image_tag'
 gem 'pry-rails'
 gem 'kaminari'
 gem 'net-smtp'
+gem 'sassc', '~> 2.3.0'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
