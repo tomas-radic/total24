@@ -374,7 +374,7 @@ DEPENDENCIES
   jbuilder
   kaminari
   net-smtp
-  pg
+  pg (~> 1.5.5)
   pry-rails
   puma (>= 5.0)
   pundit
