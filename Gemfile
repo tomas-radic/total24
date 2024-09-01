@@ -44,7 +44,7 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-gem 'pg', '~> 1.5.5'
+gem 'pg', '1.5.5'
 gem 'faker'
 # gem 'hotwire-rails'
 gem 'devise'
