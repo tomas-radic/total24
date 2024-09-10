@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root to: "today#index"
+  root to: redirect("/tournaments/50b89c36-a4f4-4640-8d77-4af7f9f81699")
   # root to: "players#index"
 
   devise_for :player,
