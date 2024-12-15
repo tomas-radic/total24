@@ -44,7 +44,7 @@ Rails.application.routes.draw do
       post :switch_prediction, on: :member
     end
 
-    resources :articles, except: :all do
+    resources :articles, except: [:index, :create, :new, :show, :update, :destroy, :edit] do
       post :toggle_reaction, on: :member
 
       resources :comments, only: [:create, :edit, :update], module: :articles do
@@ -52,7 +52,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :tournaments, except: :all do
+    resources :tournaments, except: [:index, :create, :new, :show, :update, :destroy, :edit] do
       post :toggle_reaction, on: :member
 
       resources :comments, only: [:create, :edit, :update], module: :tournaments do
