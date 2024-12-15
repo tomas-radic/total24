@@ -8,22 +8,13 @@ Bundler.require(*Rails.groups)
 
 module Total24
   class Application < Rails::Application
-    config.generators do |generate|
-      generate.helper false
-      generate.assets false
-      generate.view_specs false
-      generate.helper_specs false
-      generate.routing_specs false
-      generate.controller_specs false
-      generate.system_tests false
-    end
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 7.2
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators.rb`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w(assets tasks))
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -32,6 +23,7 @@ module Total24
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
 
     config.i18n.default_locale = :sk
     config.time_zone = "Bratislava"

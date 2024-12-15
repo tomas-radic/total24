@@ -5,7 +5,7 @@ module ColorBase
   included do
 
     # Enums ---------
-    enum color_base: {
+    enum :color_base, {
       base_green: 0,
       base_yellow: 1,
       base_salmon: 2,
