@@ -82,7 +82,7 @@ group :test do
   gem 'rails-controller-testing'
 end
 
-gem "bootstrap", "~> 5.1.3"
+gem "bootstrap", '~> 5.3.3'
 gem "sass-rails", "~> 6.0.0"
 
 group :development, :test do
