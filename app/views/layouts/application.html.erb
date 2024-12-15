@@ -34,5 +34,9 @@
       <div class="page__footer"><%= render "shared/footer" %></div>
     </div>
     <span data-application-target="loadTime" hidden></span>
+
+    <%= turbo_frame_tag :toasts do %>
+      <%= render 'shared/toasts' %>
+    <% end %>
   </body>
 </html>
