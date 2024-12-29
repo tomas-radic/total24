@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root to: redirect("/tournaments/50b89c36-a4f4-4640-8d77-4af7f9f81699")
+  root to: "today#index"
   # root to: "players#index"
 
   devise_for :player,
@@ -44,7 +44,7 @@ Rails.application.routes.draw do
       post :switch_prediction, on: :member
     end
 
-    resources :articles, except: :all do
+    resources :articles, except: [:index, :create, :new, :show, :update, :destroy, :edit] do
       post :toggle_reaction, on: :member
 
       resources :comments, only: [:create, :edit, :update], module: :articles do
@@ -52,7 +52,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :tournaments, except: :all do
+    resources :tournaments, except: [:index, :create, :new, :show, :update, :destroy, :edit] do
       post :toggle_reaction, on: :member
 
       resources :comments, only: [:create, :edit, :update], module: :tournaments do
