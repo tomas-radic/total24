@@ -1,6 +1,6 @@
-<%# if flash.present? %>
+<% if flash.present? %>
   <div class="toast-container position-fixed p-3 bottom-0 end-0">
-    <%# flash.each do |key, message| %>
+    <% flash.each do |key, message| %>
       <%= content_tag :div,
                       class: "toast",
                       data: { bs_delay: 3000, controller: "toasts" },
@@ -8,11 +8,10 @@
         <div class="toast-header">
           <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           <div class="toast-body">
-            <%#= message %>
-            Hello.
+            <%= message %>
           </div>
         </div>
       <% end %>
-    <%# end %>
+    <% end %>
   </div>
-<%# end %>
+<% end %>

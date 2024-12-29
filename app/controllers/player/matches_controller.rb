@@ -25,6 +25,7 @@ class Player::MatchesController < Player::BaseController
     current_player.update(cant_play_since: nil)
 
     if @match.save
+      flash[:notice] = 'Výzva bola vytvorená.'
       redirect_to match_path(@match)
     else
       redirect_to player_path(@requested_player)
