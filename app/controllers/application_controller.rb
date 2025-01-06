@@ -23,4 +23,20 @@ class ApplicationController < ActionController::Base
   def pundit_user
     current_player
   end
+
+
+  def redirect_with_message(path, message = 'Údaje boli upravené.', message_type = :notice)
+    flash[message_type] = message
+    redirect_to path
+  end
+
+
+  def render_with_message(template_path, message = 'Nepodarilo sa upraviť údaje.', message_type = :alert)
+    flash.now[message_type] = message
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.update('toasts', partial: 'shared/toasts') }
+      format.html         { render template_path, status: :unprocessable_entity }
+    end
+  end
 end

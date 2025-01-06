@@ -25,10 +25,9 @@ class Player::MatchesController < Player::BaseController
     current_player.update(cant_play_since: nil)
 
     if @match.save
-      flash[:notice] = 'Výzva bola vytvorená.'
-      redirect_to match_path(@match)
+      redirect_with_message match_path(@match), 'Výzva bola vytvorená.'
     else
-      redirect_to player_path(@requested_player)
+      redirect_with_message player_path(@requested_player), 'Výzvu sa nepodarilo vytvoriť.', :alert
     end
   end
 
@@ -48,16 +47,16 @@ class Player::MatchesController < Player::BaseController
         )
       end
 
-      redirect_to match_path(@match)
+      redirect_with_message match_path(@match)
     else
-      render :edit, status: :unprocessable_entity
+      render_with_message :edit
     end
   end
 
 
   def destroy
     @match.destroy
-    redirect_to root_path
+    redirect_with_message root_path, 'Výzva/zápas bol odstránený.'
   end
 
 
@@ -129,9 +128,9 @@ class Player::MatchesController < Player::BaseController
         )
       end
 
-      redirect_to match_path(@match)
+      redirect_with_message match_path(@match), 'Zápas bol zapísaný, rebríček sa aktualizuje časom.'
     else
-      render :finish_init, status: :unprocessable_entity
+      render_with_message :finish_init, 'Zápas sa nepodarilo zapísať.'
     end
   end
 
@@ -146,7 +145,7 @@ class Player::MatchesController < Player::BaseController
       )
     end
 
-    redirect_to match_path(@match)
+    redirect_with_message match_path(@match), 'Zápas bol zrušený.'
   end
 
 

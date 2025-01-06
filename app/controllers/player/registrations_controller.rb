@@ -33,7 +33,9 @@ class Player::RegistrationsController < Devise::RegistrationsController
 
   # PUT /resource
   def update
-    super
+    super do |player|
+      flash[:alert] = 'Nepodarilo sa upraviť profil.' if player.changes.any?
+    end
   end
 
   # DELETE /resource

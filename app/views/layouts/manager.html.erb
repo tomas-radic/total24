@@ -21,5 +21,9 @@
       <div class="page__main"><%= yield %></div>
       <div class="page__footer"><%= render "shared/footer" %></div>
     </div>
+
+    <%= turbo_frame_tag :toasts do %>
+      <%= render 'shared/toasts' %>
+    <% end %>
   </body>
 </html>

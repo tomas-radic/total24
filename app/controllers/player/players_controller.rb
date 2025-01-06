@@ -56,9 +56,9 @@ class Player::PlayersController < Player::BaseController
     if params[:confirmation_email] == current_player.email
       current_player.anonymize!
       sign_out current_player
-      redirect_to root_path
+      redirect_with_message root_path, 'Registrácia bola zrušená.'
     else
-      redirect_to edit_player_registration_path
+      redirect_with_message edit_player_registration_path, 'Registráciu sa nepodarilo zrušiť.', :alert
     end
   end
 end

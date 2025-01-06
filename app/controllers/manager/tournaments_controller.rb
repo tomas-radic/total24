@@ -17,10 +17,10 @@ class Manager::TournamentsController < Manager::BaseController
     @tournament = @managed_season.tournaments.new(whitelisted_params)
 
     if @tournament.save
-      redirect_to manager_tournaments_path
+      redirect_with_message manager_tournaments_path
     else
       @heading = @tournament.name.presence || "Nový turnaj"
-      render :new, status: :unprocessable_entity
+      render_with_message :new
     end
   end
 
@@ -35,10 +35,10 @@ class Manager::TournamentsController < Manager::BaseController
     @tournament = @managed_season.tournaments.find(params[:id])
 
     if @tournament.update(whitelisted_params)
-      redirect_to manager_tournaments_path
+      redirect_with_message manager_tournaments_path
     else
       @heading = params[:heading]
-      render :edit, status: :unprocessable_entity
+      render_with_message :edit
     end
   end
 
