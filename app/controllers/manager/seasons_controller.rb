@@ -9,15 +9,9 @@ class Manager::SeasonsController < Manager::BaseController
     @season = Season.new(whitelisted_params)
 
     if @season.save
-      flash[:notice] = 'Údaje boli upravené.'
-      redirect_to manager_pages_dashboard_path
+      redirect_with_message manager_pages_dashboard_path
     else
-      flash.now[:alert] = 'Nepodarilo sa upraviť údaje.'
-
-      respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.update('toasts', partial: 'shared/toasts') }
-        format.html         { render "manager/seasons/new", status: :unprocessable_entity }
-      end
+      render_with_message 'manager/seasons/new'
     end
   end
 

@@ -2,7 +2,7 @@
   <%= render partial: "matches/header", locals: { match: @match } %>
 
   <div class="page__content">
-    <%= form_with model: [:player, @match] do |f| %>
+    <%= form_with model: [:player, @match], data: { turbo: false } do |f| %>
       <div class="row">
         <div class="col-7" data-controller="forms">
           <%= f.label :play_date, "Dátum", class: "form-label" %>

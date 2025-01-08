@@ -4,7 +4,7 @@
   <div class="page__content">
     <%= form_with url: finish_player_match_path(@match),
                   id: "finish-form",
-                  data: { controller: "matches", "matches-target" => "finishForm" } do |f| %>
+                  data: { controller: "matches", "matches-target" => "finishForm", turbo: false } do |f| %>
 
       <h3 class="text-center">
         Výsledok zápasu
