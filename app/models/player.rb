@@ -13,6 +13,8 @@ class Player < ApplicationRecord
   has_many :matches, through: :assignments
   has_many :comments, dependent: :destroy
   has_many :predictions, dependent: :destroy
+  has_many :player_tags, dependent: :destroy
+  has_many :tags, through: :player_tags
 
   # Validations -----
   validates :cant_play_since, absence: true, if: -> { open_to_play_since.present? }

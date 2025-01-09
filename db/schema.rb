@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_15_143932) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_08_155313) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "articles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
@@ -128,6 +128,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_15_143932) do
     t.index ["name"], name: "index_places_on_name", unique: true
   end
 
+  create_table "player_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "player_id", null: false
+    t.uuid "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id", "tag_id"], name: "index_player_tags_on_player_id_and_tag_id", unique: true
+    t.index ["player_id"], name: "index_player_tags_on_player_id"
+    t.index ["tag_id"], name: "index_player_tags_on_tag_id"
+  end
+
   create_table "players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -193,6 +203,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_15_143932) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "label", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tournaments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.date "begin_date"
@@ -222,6 +238,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_15_143932) do
   add_foreign_key "enrollments", "players"
   add_foreign_key "enrollments", "seasons"
   add_foreign_key "matches", "places"
+  add_foreign_key "player_tags", "players"
+  add_foreign_key "player_tags", "tags"
   add_foreign_key "predictions", "matches"
   add_foreign_key "predictions", "players"
   add_foreign_key "reactions", "players"

@@ -23,6 +23,9 @@
                 <% end %>
                 <%= content_tag :td do %>
                   <%= link_to ranking[:name], player_path(ranking[:id]), class: color_class %>
+                  <% ranking[:player].tags.each do |tag| %>
+                    <%= render 'tags/tag', tag: %>
+                  <% end %>
                 <% end %>
                 <%= content_tag :td, class: color_class do %>
                   <%= ranking[:points] %>

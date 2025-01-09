@@ -45,6 +45,7 @@ class Rankings
       {
         id: player.id,
         name: player.name,
+        player: player,
         played: nr_matches,
         won: nr_won_matches,
         points: points,

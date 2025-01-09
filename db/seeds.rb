@@ -26,7 +26,14 @@ ActiveRecord::Base.transaction do
   puts "\nCreating places..."
   raise "Existing data" if Place.any?
   ["Mravenisko", "Kúpalisko"].each do |name|
-    Place.create!(name: name)
+    Place.create!(name:)
+  end
+
+
+  puts "\nCreating tags..."
+  raise "Existing data" if Tag.any?
+  ["reg."].each do |label|
+    Tag.create!(label:)
   end
 
 
