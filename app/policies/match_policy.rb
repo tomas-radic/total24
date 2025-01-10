@@ -1,14 +1,26 @@
 class MatchPolicy < ApplicationPolicy
 
-  def create?(requested_player:, season:)
-    return false if season.ended_at.present?
+  def create?(requested_player:, season:, common_matches:)
+    return false if requested_player.cant_play_since.present?
     return false if user == requested_player
+    return false if season.ended_at.present?
     return false if user.access_denied_since.present? || requested_player.access_denied_since.present?
     return false if user.anonymized_at.present? || requested_player.anonymized_at.present?
-    return false if requested_player.cant_play_since.present?
-    return false if user.opponents(season: season, pending: true, ranking_counted: true).include?(requested_player)
     return false if season.enrollments.active.find { |e| e.player == user }.blank?
     return false if season.enrollments.active.find { |e| e.player == requested_player }.blank?
+    return false if common_matches.ranking_counted.requested.any?
+
+    if ENV['MAX_MATCHES_WITH_OPPONENT']
+      existing_matches = common_matches.ranking_counted.where(rejected_at: nil, canceled_at: nil)
+      return false if existing_matches.size >= ENV['MAX_MATCHES_WITH_OPPONENT'].to_i
+    end
+
+    if ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT']
+      existing_requested_matches = common_matches.ranking_counted.where(rejected_at: nil, canceled_at: nil)
+                                                 .joins(:assignments)
+                                                 .where(assignments: { side: 1, player_id: user.id })
+      return false if existing_requested_matches.size >= ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT'].to_i
+    end
 
     true
   end

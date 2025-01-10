@@ -6,8 +6,10 @@ class Player::MatchesController < Player::BaseController
 
   def create
     @requested_player = Player.where(anonymized_at: nil).find params[:player_id]
+    @common_matches = Match.singles_with_players(current_player, @requested_player, competitable: selected_season)
 
-    unless MatchPolicy.new(current_player, nil).create?(requested_player: @requested_player, season: selected_season)
+    unless MatchPolicy.new(current_player, nil).create?(
+      requested_player: @requested_player, season: selected_season, common_matches: @common_matches)
       raise Pundit::NotAuthorizedError, "nie je možné vyzvať hráča #{@requested_player.name}"
     end
 

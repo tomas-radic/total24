@@ -15,6 +15,10 @@ class PlayersController < ApplicationController
                                     .where(assignments: { player_id: @player.id })
                                     .includes(assignments: :player)
       @won_matches = @player.won_matches(selected_season)
+
+      if current_player
+        @common_matches = Match.singles_with_players(current_player, @player, competitable: selected_season)
+      end
     end
   end
 

@@ -270,6 +270,14 @@ class Match < ApplicationRecord
   end
 
 
+  def self.singles_with_players(player1, player2, competitable: nil)
+    result = singles
+    result = result.where(competitable:) if competitable.present?
+    result.joins("join assignments side1 on side1.match_id = matches.id and side1.side = 1 join assignments side2 on side2.match_id = matches.id and side2.side = 2")
+          .where("(side1.player_id = ? and side2.player_id = ?) or (side1.player_id = ? and side2.player_id = ?)", player1.id, player2.id, player2.id, player1.id)
+  end
+
+
   private
 
   def player_assignments
@@ -277,8 +285,11 @@ class Match < ApplicationRecord
     nr_side1_assignments = assignments.select { |a| a.side == 1 }.length
     nr_side2_assignments = assignments.select { |a| a.side == 2 }.length
 
-    if !nr_assignments.in?([0, 2, 4]) || (nr_side1_assignments != nr_side2_assignments)
-      errors.add(:base, "Nesprávny počet hráčov.")
+    if nr_assignments > 0
+      if (single? && (nr_assignments != 2 || nr_side1_assignments != 1 || nr_side2_assignments != 1)) ||
+        (double? && (nr_assignments != 4 || nr_side1_assignments != 2 || nr_side2_assignments != 2))
+        errors.add(:base, "Nesprávny počet hráčov.")
+      end
     end
 
     assignments.each do |a|
