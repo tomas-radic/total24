@@ -1,0 +1,15 @@
+<% player_assignment = match.assignments.find { |a| a.player_id == player.id } %>
+<% opponent_assignment = match.assignments.find { |a| a.player_id != player.id } %>
+
+<p>
+  <%= app_date(match.finished_at) %>
+  <%= player_assignment.side == match.winner_side ? 'výhra s' : 'prehra s' %>
+  <%= match_player_link(match, side: opponent_assignment.side) %>
+  <br>
+  <%= content_tag(:span, class: player_assignment.side == match.winner_side ? 'u-nav-green' : 'u-red') do %>
+    <%= match.result(side: player_assignment.side) %>
+  <% end %>
+  <% if match.retired? %>
+    (skreč)
+  <% end %>
+</p>

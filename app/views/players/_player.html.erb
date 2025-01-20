@@ -84,36 +84,11 @@
 
       <div>
         <% @all_matches.each do |match| %>
-          <% side = match.assignments.find { |a| a.player_id == player.id }.side %>
-          <% other_side = (side == 1) ? 2 : 1 %>
-          <% if side == match.winner_side %>
-            <p>
-              <%= app_date(match.finished_at) %>
-              výhra s
-              <%= match_player_link(match, side: other_side) %>
-              <br>
-              <span class="u-nav-green"><%= match.result(side: side) %></span>
-              <% if match.retired? %>
-                (skreč)
-              <% end %>
-            </p>
-          <% else %>
-            <p>
-              <%= app_date(match.finished_at) %>
-              prehra s
-              <%= match_player_link(match, side: other_side) %>
-              <br>
-              <span class="u-red"><%= match.result(side: side) %></span>
-              <% if match.retired? %>
-                (skreč)
-              <% end %>
-            </p>
-          <% end %>
+          <%= render 'players/match', match:, player: %>
         <% end %>
       </div>
     </div>
   <% else %>
     <p class="text-center">Žiadne odohraté zápasy v sezóne <%= selected_season.name %>.</p>
   <% end %>
-
 </div>
