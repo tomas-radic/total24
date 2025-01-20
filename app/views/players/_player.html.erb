@@ -62,9 +62,14 @@
         <%= t('.finished_matches_count_html',
               count: @common_matches.count { |cm| cm.finished_at.present? && cm.reviewed_at.present? }) %>
       </p>
-      <% if ENV['MAX_MATCHES_WITH_OPPONENT'].present? %>
+      <% if ENV['MAX_MATCHES_WITH_OPPONENT'].present? || ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT'].present? %>
         <div class="text-center">
-          <small><%= "Max. počet zápasov s jedným súperom v sezóne je #{ENV['MAX_MATCHES_WITH_OPPONENT']}." %></small>
+          <%= content_tag(:small) do %>
+            <%= "Max. počet zápasov s jedným súperom v sezóne je #{ENV['MAX_MATCHES_WITH_OPPONENT']}." %>
+          <% end if ENV['MAX_MATCHES_WITH_OPPONENT'].present? %>
+          <%= content_tag(:small) do %>
+            <%= "Toho istého hráča/ku môžeš v sezóne vyzvať max. #{ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT']}x." %>
+          <% end if ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT'].present? %>
         </div>
       <% end %>
     <% end %>
