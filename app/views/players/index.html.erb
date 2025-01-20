@@ -72,10 +72,5 @@
         </li>
       </ul>
     </div>
-
-    <%= turbo_stream_from "registered_players" %>
-    <div id="players_list">
-      <%= render partial: "players/list", locals: { players: @players } %>
-    </div>
   </div>
 </section>

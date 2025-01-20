@@ -271,7 +271,7 @@ class Match < ApplicationRecord
 
 
   def self.singles_with_players(player1, player2, competitable: nil)
-    result = singles
+    result = singles.published
     result = result.where(competitable:) if competitable.present?
     result.joins("join assignments side1 on side1.match_id = matches.id and side1.side = 1 join assignments side2 on side2.match_id = matches.id and side2.side = 2")
           .where("(side1.player_id = ? and side2.player_id = ?) or (side1.player_id = ? and side2.player_id = ?)", player1.id, player2.id, player2.id, player1.id)

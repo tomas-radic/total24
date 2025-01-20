@@ -1,0 +1,8 @@
+sk:
+  players:
+    player:
+      finished_matches_count_html:
+        few: S týmto hráčom<small>/kou</small> máš v sezóne odohraté %{count} zápasy.
+        one: S týmto hráčom<small>/kou</small> máš v sezóne odohratý %{count} zápas.
+        other: S týmto hráčom<small>/kou</small> máš v sezóne odohratých %{count} zápasov.
+        zero: S týmto hráčom<small>/kou</small> nemáš v sezóne odohratý žiadny zápas.

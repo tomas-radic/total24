@@ -7,16 +7,17 @@ RSpec.describe Player, type: :model do
 
   describe "Instance methods" do
 
-    describe "won_matches" do
+    describe "season_matches" do
 
-      subject { player.won_matches(season) }
+      subject { player.season_matches(season) }
 
       it "TODO"
 
     end
 
 
-    describe "opponents" do
+    # opponents method is not used, to be removed from project
+    xdescribe "opponents" do
       subject { player.opponents(season: season, pending: pending, ranking_counted: ranking_counted) }
 
       before do

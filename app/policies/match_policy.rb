@@ -6,8 +6,8 @@ class MatchPolicy < ApplicationPolicy
     return false if season.ended_at.present?
     return false if user.access_denied_since.present? || requested_player.access_denied_since.present?
     return false if user.anonymized_at.present? || requested_player.anonymized_at.present?
-    return false if season.enrollments.active.find { |e| e.player == user }.blank?
-    return false if season.enrollments.active.find { |e| e.player == requested_player }.blank?
+    return false if season.enrollments.active.find { |e| e.player_id == user.id }.blank?
+    return false if season.enrollments.active.find { |e| e.player_id == requested_player.id }.blank?
     return false if common_matches.ranking_counted.requested.any?
 
     if ENV['MAX_MATCHES_WITH_OPPONENT']

@@ -30,46 +30,10 @@ class Player < ApplicationRecord
   has_stripped :email, :name, :phone_nr
 
 
-  after_create_commit :update_players_list
-
-
-  def won_matches(season = nil)
-    if season.present?
-      season.matches.reviewed.joins(:assignments)
-            .where("assignments.player_id = ?", id)
-            .where("assignments.side = matches.winner_side").distinct
-    else
-      self.matches.reviewed.joins(:assignments)
-          .where("assignments.player_id = ?", id)
-          .where("assignments.side = matches.winner_side").distinct
-    end
-  end
-
-
-  def opponents(season: nil, pending: false, ranking_counted: false)
-    player_matches = matches.published.where(canceled_at: nil)
-    player_matches = player_matches.pending if pending
-    player_matches = player_matches.ranking_counted if ranking_counted
-    player_matches = player_matches.joins(:assignments).where("assignments.player_id = ?", id)
-
-    match_ids = []
-
-    if season.nil?
-      match_ids = player_matches.map(&:id)
-    else
-      player_matches.each do |m|
-        case m.competitable_type
-        when "Season"
-          match_ids << m.id if m.competitable_id == season.id
-        when "Tournament"
-          match_ids << m.id if m.competitable.season_id == season.id
-        end
-      end
-    end
-
-    Player.joins(:assignments)
-          .where("assignments.match_id in (?)", match_ids)
-          .where.not(id: id)
+  def season_matches(season)
+    matches.published.reviewed.sorted
+           .joins('join seasons on matches.competitable_type = \'Season\'')
+           .where(matches: { competitable_id: season.id })
   end
 
 
@@ -87,18 +51,5 @@ class Player < ApplicationRecord
     end
 
     self
-  end
-
-
-  private
-
-  def update_players_list
-    broadcast_replace_to(
-      "registered_players",
-      partial: "players/list",
-      locals: {
-        players: Player.where(anonymized_at: nil, access_denied_since: nil).order(created_at: :desc)
-      },
-      target: "players_list")
   end
 end

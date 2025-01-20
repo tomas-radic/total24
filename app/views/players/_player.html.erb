@@ -34,7 +34,8 @@
       <div class="page-controls__buttons">
         <%= link_to "Vyzvať hráča",
                     player_matches_path(player_id: player.id),
-                    class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(requested_player: player, season: selected_season)}",
+                    class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(
+                      requested_player: player, season: selected_season, common_matches: @common_matches)}",
                     data: { turbo_method: :post, turbo_confirm: "Potvrď, že naozaj chceš vyzvať #{player.name}" } %>
       </div>
     <% end %>
@@ -50,9 +51,16 @@
       </p>
     <% end %>
 
-    <% if current_player.present? && current_player.opponents(season: selected_season, pending: true).include?(player) %>
+    <% if current_player %>
+      <% if @common_matches.find { |cm| cm.finished_at.nil? && cm.rejected_at.nil? && cm.canceled_at.nil? } %>
+        <p class="text-center">
+          S týmto hráčom<small>/kou</small> ťa čaká zápas.
+        </p>
+      <% end %>
+
       <p class="text-center">
-        S týmto hráčom<small>/kou</small> ťa čaká zápas.
+        <%= t('.finished_matches_count_html',
+              count: @common_matches.count { |cm| cm.finished_at.present? && cm.reviewed_at.present? }) %>
       </p>
     <% end %>
   <% end %>
@@ -65,14 +73,12 @@
 
   <% if selected_season && @all_matches.any? %>
     <div class="text-center mt-4">
-      <% won_count = @won_matches.size %>
-      <% all_count = @all_matches.size %>
       <p>
         Vyhraté zápasy / všetky zápasy<br>
-        <span class="u-fs-big <%= text_success_css(won_count, all_count) %>">
-          <%= won_count %> / <%= all_count %>
+        <span class="u-fs-big <%= text_success_css(@won_matches_count, @all_matches.size) %>">
+          <%= @won_matches_count %> / <%= @all_matches.size %>
           <br>
-          <%= percentage(won_count, all_count) %>%
+          <%= percentage(@won_matches_count, @all_matches.size) %>%
         </span>
       </p>
 
