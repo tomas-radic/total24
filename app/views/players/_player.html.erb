@@ -62,6 +62,11 @@
         <%= t('.finished_matches_count_html',
               count: @common_matches.count { |cm| cm.finished_at.present? && cm.reviewed_at.present? }) %>
       </p>
+      <% if ENV['MAX_MATCHES_WITH_OPPONENT'].present? %>
+        <div class="text-center">
+          <small><%= "Max. počet zápasov s jedným súperom v sezóne je #{ENV['MAX_MATCHES_WITH_OPPONENT']}." %></small>
+        </div>
+      <% end %>
     <% end %>
   <% end %>
 
@@ -73,9 +78,9 @@
 
   <% if selected_season && @all_matches.any? %>
     <div class="text-center mt-4">
-      <p>
+      <p class="u-fs-big">
         Vyhraté zápasy / všetky zápasy<br>
-        <span class="u-fs-big <%= text_success_css(@won_matches_count, @all_matches.size) %>">
+        <span class="<%= text_success_css(@won_matches_count, @all_matches.size) %>">
           <%= @won_matches_count %> / <%= @all_matches.size %>
           <br>
           <%= percentage(@won_matches_count, @all_matches.size) %>%
