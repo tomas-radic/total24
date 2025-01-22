@@ -226,7 +226,7 @@ RSpec.describe Player, type: :model do
       subject { player.anonymize! }
 
       before do
-        season.players << player
+        season.players << player << another_player
         player.update!(email: email, name: name, phone_nr: phone_nr, birth_year: birth_year)
       end
 
@@ -234,11 +234,12 @@ RSpec.describe Player, type: :model do
       let(:name) { "Some Player" }
       let(:phone_nr) { "123456" }
       let(:birth_year) { Date.today.year }
+      let!(:another_player) { create(:player, name: 'another player') }
       let!(:finished_match) do
         create(:match, :finished, competitable: season,
                assignments: [
                  build(:assignment, side: 1, player: player),
-                 build(:assignment, side: 2, player: create(:player, seasons: [season]))
+                 build(:assignment, side: 2, player: another_player)
                ])
       end
 
@@ -246,7 +247,7 @@ RSpec.describe Player, type: :model do
         create(:match, :requested, competitable: season,
                assignments: [
                  build(:assignment, side: 2, player: player),
-                 build(:assignment, side: 1, player: create(:player, seasons: [season]))
+                 build(:assignment, side: 1, player: another_player)
                ])
       end
 

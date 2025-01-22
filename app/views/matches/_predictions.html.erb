@@ -1,7 +1,7 @@
 <% player_prediction = current_player&.predictions&.find_by(match: match) %>
 <% predictions_count = match.predictions.count %>
 <% if predictions_count > 0 %>
-  <% prediction_side1 = percentage(match.predictions.select { |p| p.side == 1 }.length, predictions_count) %>
+  <% prediction_side1 = Percentage.calculate(match.predictions.select { |p| p.side == 1 }.length, of: predictions_count) %>
   <% prediction_side2 = 100 - prediction_side1 %>
 <% end %>
 <% show_predictions = current_player && (predictions_count > 0) && (player_prediction.present? || match.players.include?(current_player)) %>

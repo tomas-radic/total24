@@ -3,7 +3,7 @@
     <h3 class="base-heading accent-color">Priebežné poradie.</h3>
 
     <% if selected_season.present? %>
-      <% if @rankings.any? %>
+      <% if selected_season.ranking.present? %>
         <div class="table-container default-color">
           <table class="centered-table default-color">
             <thead>
@@ -15,32 +15,28 @@
             </tr>
             </thead>
             <tbody>
-            <% @rankings.each.with_index(1) do |ranking, position| %>
-              <% color_class = position <= selected_season.play_off_size.to_i ? "default-color" : "u-grey" %>
+            <% selected_season.ranking.each.with_index(1) do |player, position| %>
               <tr>
-                <%= content_tag :td, class: "text-center #{color_class}" do %>
-                  <%= "#{position}." %>
+                <%= content_tag :td, class: "text-center" do %>
+                  <%= "#{position}." if player.played_matches > 0%>
                 <% end %>
                 <%= content_tag :td do %>
-                  <%= link_to ranking[:name], player_path(ranking[:id]), class: color_class %>
-                  <% ranking[:player].tags.each do |tag| %>
+                  <%= link_to player.name, player_path(player) %>
+                  <% player.tags.each do |tag| %>
                     <%= render 'tags/tag', tag: %>
                   <% end %>
                 <% end %>
-                <%= content_tag :td, class: color_class do %>
-                  <%= ranking[:points] %>
+                <%= content_tag :td do %>
+                  <%= player.points if player.played_matches > 0 %>
                 <% end %>
-                <%= content_tag :td, class: "#{color_class} text-end text-nowrap" do %>
-                  <%= "#{(ranking[:percentage]).round(2)}% / #{ranking[:nr_matches]}" if ranking[:nr_matches] > 0 %>
+                <%= content_tag :td, class: "text-end text-nowrap" do %>
+                  <%= "#{player.percentage}% / #{player.played_matches}" if player.played_matches > 0 %>
                 <% end %>
               </tr>
             <% end %>
             </tbody>
           </table>
         </div>
-        <p class="mt-4 text-center default-color">
-          Prvých <%= selected_season.play_off_size %> hráčov je nominovaných na PLAY OFF.
-        </p>
       <% else %>
         <p class="py-8 text-center default-color">V rebríčku nie je nikto.</p>
       <% end %>

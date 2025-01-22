@@ -298,7 +298,7 @@ class Match < ApplicationRecord
       end
 
       if competitable.is_a? Season
-        unless competitable.enrollments.active.find { |e| e.player_id == a.player_id }
+        unless competitable.enrollments.find { |e| e.player_id == a.player_id }
           errors.add(:base, "#{a.player.name} nie je prihlásený/á do sezóny.")
         end
       end

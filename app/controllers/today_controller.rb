@@ -38,9 +38,6 @@ class TodayController < ApplicationController
                                         .where("(promote_until is not null and promote_until >= ?) or (promote_until is null and created_at > ?)",
                                                Date.today, 4.days.ago)
 
-      @top_rankings = Rankings.calculate(selected_season, single_matches: true)
-                              .slice(0, selected_season.play_off_size + 2)
-
       @players_open_to_play = selected_season.players
                                              .where.not(open_to_play_since: nil)
                                              .order(open_to_play_since: :desc)

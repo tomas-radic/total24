@@ -88,7 +88,7 @@
         <span class="<%= text_success_css(@won_matches_count, @all_matches.size) %>">
           <%= @won_matches_count %> / <%= @all_matches.size %>
           <br>
-          <%= percentage(@won_matches_count, @all_matches.size) %>%
+          <%= Percentage.calculate(@won_matches_count, of: @all_matches.size) %>%
         </span>
       </p>
 

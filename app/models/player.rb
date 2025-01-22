@@ -30,6 +30,25 @@ class Player < ApplicationRecord
   has_stripped :email, :name, :phone_nr
 
 
+  attr_writer :points, :percentage, :played_matches, :won_matches
+
+  def points
+    @points || 0
+  end
+
+  def percentage
+    @percentage || 0
+  end
+
+  def played_matches
+    @played_matches || 0
+  end
+
+  def won_matches
+    @won_matches || 0
+  end
+
+
   def season_matches(season)
     matches.published.reviewed.sorted
            .joins('join seasons on matches.competitable_type = \'Season\'')
