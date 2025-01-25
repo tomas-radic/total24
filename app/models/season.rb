@@ -77,4 +77,28 @@ class Season < ApplicationRecord
       ]
     end
   end
+
+
+  def play_offs
+    # debugger
+    all_ranking_players = ranking
+    min_matches = ENV['PLAY_OFF_MIN_MATCHES_COUNT'].to_i
+    perf_play_off_size = (ENV['PERFORMANCE_PLAY_OFF_SIZE'] || 4).to_i
+    reg_a_play_off_size = (ENV['REGULAR_A_PLAY_OFF_SIZE'] || 8).to_i
+    reg_b_play_off_size = (ENV['REGULAR_B_PLAY_OFF_SIZE'] || 16).to_i
+
+    all_ranking_players.delete_if { |p| p.played_matches < min_matches } if min_matches > 0
+
+    performance_players = all_ranking_players.select do |p|
+      p.tags.find { |t| t.label == ENV['PERFORMANCE_PLAYER_TAG_LABEL'] }
+    end
+
+    performance_play_off = performance_players.first(perf_play_off_size)
+    all_ranking_players.delete_if { |p| p.id.in?(performance_players.map(&:id)) }
+
+    regular_play_off_a = all_ranking_players[0...reg_a_play_off_size]
+    regular_play_off_b = all_ranking_players[reg_a_play_off_size...(reg_a_play_off_size + reg_b_play_off_size)]
+
+    [performance_play_off.to_a, regular_play_off_a.to_a, regular_play_off_b.to_a]
+  end
 end

@@ -1,0 +1,10 @@
+<div class="semi-box h-100">
+  <div class="text-center u-fs-dominant mb-4"><%= heading %></div>
+  <% if players.any? %>
+    <% players.each.with_index do |player, idx| %>
+      <div><%= "#{idx + 1}. #{player.name}" %></div>
+    <% end %>
+  <% else %>
+    <div class="text-center">V tejto kategórii nie je nominovaný nikto.</div>
+  <% end %>
+</div>

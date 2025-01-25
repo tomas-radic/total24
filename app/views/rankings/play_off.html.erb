@@ -1,0 +1,22 @@
+<section class="base-red">
+  <div class="page__content">
+    <h3 class="base-heading accent-color">Nominácie na Play Off.</h3>
+    <% if selected_season %>
+      <div clas="container">
+      <div class="row g-0">
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+          <%= render 'play_off_players', heading: 'Registrovaní', players: @play_offs[0] %>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+          <%= render 'play_off_players', heading: 'Neregistrovaní A', players: @play_offs[1] %>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+          <%= render 'play_off_players', heading: 'Neregistrovaní B', players: @play_offs[2] %>
+        </div>
+      </div>
+      </div>
+    <% else %>
+      <p class="py-8 text-center default-color">Nie je tu nikto, pretože nie je sezóna.</p>
+    <% end %>
+  </div>
+</section>
