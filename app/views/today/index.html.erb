@@ -9,7 +9,7 @@
     <div class="today__facade">
       <h1 class="today__heading accent-color">Topoľčianska tenisová<br>amatérska liga.</h1>
       <div class="today__brand">
-        <a href="#recent-matches" class="today__brand__link mb-5">TOtal.</a>
+        <a href="#recent-matches" class="today__brand__link mb-5" data-turbo="false">TOtal.</a>
       </div>
 
       <div class="text-center mt-5">
@@ -23,8 +23,8 @@
       <% if selected_season.present? %>
         <div class="today__main">
           <div class="today-navigation my-4">
-            <div><a href="#recent-matches" class="default-color">Posledné zápasy</a></div>
-            <div><a href="#planned-matches" class="default-color">Zápasy na pláne</a></div>
+            <div><a href="#recent-matches" class="default-color" data-turbo="false">Posledné zápasy</a></div>
+            <div><a href="#planned-matches" class="default-color" data-turbo="false">Zápasy na pláne</a></div>
           </div>
 
           <% if @requested_matches.first || @rejected_matches.first || @canceled_matches.first || @players_open_to_play.first %>
@@ -144,7 +144,7 @@
       </p>
       <div class="today-navigation">
         <div><%= link_to "Hore", today_path, class: "default-color" %></div>
-        <div><a href="#planned-matches" class="default-color">Zápasy na pláne</a></div>
+        <div><a href="#planned-matches" class="default-color" data-turbo="false">Zápasy na pláne</a></div>
       </div>
     </div>
   </section>
@@ -184,7 +184,7 @@
 
       <div class="today-navigation my-2">
         <div><%= link_to "Hore", today_path, class: "default-color" %></div>
-        <div><a href="#recent-matches" class="default-color">Posledné zápasy</a></div>
+        <div><a href="#recent-matches" class="default-color" data-turbo="false">Posledné zápasy</a></div>
       </div>
     </div>
   </section>
