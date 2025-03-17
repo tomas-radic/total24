@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_08_155313) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_17_170516) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -159,6 +159,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_08_155313) do
     t.datetime "open_to_play_since"
     t.datetime "comments_disabled_since"
     t.datetime "cant_play_since"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
+    t.index ["confirmation_token"], name: "index_players_on_confirmation_token", unique: true
     t.index ["email"], name: "index_players_on_email", unique: true
     t.index ["name"], name: "index_players_on_name", unique: true
     t.index ["phone_nr"], name: "index_players_on_phone_nr", unique: true

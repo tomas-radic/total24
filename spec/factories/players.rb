@@ -4,5 +4,6 @@ FactoryBot.define do
     email { "#{SecureRandom.hex}@#{SecureRandom.hex}.com" }
     password { SecureRandom.hex }
     name { SecureRandom.hex }
+    confirmed_at { 1.week.ago }
   end
 end

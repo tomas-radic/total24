@@ -22,7 +22,7 @@ sk:
       not_found_in_database: Nesprávny email alebo heslo.
       timeout: Je potrebné sa znovu prihlásiť.
       unauthenticated: Je potrebné sa zaregistrovať alebo prihlásiť.
-      unconfirmed: Pred pokračovaním musíte potvrdiť svoj účet.
+      unconfirmed: Tvoja registrácie nie je potvrdená, kontaktuj správcu aplikácie - Tomáš Radič.
     mailer:
       confirmation_instructions:
         subject: Potvrdzovacie inštrukcie
