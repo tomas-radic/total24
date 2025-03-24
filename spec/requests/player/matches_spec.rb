@@ -257,7 +257,7 @@ RSpec.describe "Player::Matches", type: :request do
 
       context "With valid score" do
         let(:params) do
-          { score: "6 4" }
+          { score: "64" }
         end
 
         it "Finishes match and redirects to the match" do
