@@ -34,8 +34,7 @@
       <div class="page-controls__buttons">
         <%= link_to "Vyzvať hráča",
                     player_matches_path(player_id: player.id),
-                    class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(
-                      requested_player: player, season: selected_season, common_matches: @common_matches)}",
+                    class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(selected_season, player)}",
                     data: { turbo_method: :post, turbo_confirm: "Potvrď, že naozaj chceš vyzvať #{player.name}" } %>
       </div>
     <% end %>
@@ -52,25 +51,20 @@
     <% end %>
 
     <% if current_player %>
-      <% if @common_matches.find { |cm| cm.finished_at.nil? && cm.rejected_at.nil? && cm.canceled_at.nil? } %>
+      <% if ENV["MAX_MATCHES_WITH_OPPONENT"].present? %>
         <p class="text-center">
-          S týmto hráčom<small>/kou</small> ťa čaká zápas.
+          Max. počet zápasov s jedným súperom v sezóne je
         </p>
       <% end %>
 
-      <p class="text-center">
-        <%= t('.finished_matches_count_html',
-              count: @common_matches.count { |cm| cm.finished_at.present? && cm.reviewed_at.present? }) %>
-      </p>
-      <% if ENV['MAX_MATCHES_WITH_OPPONENT'].present? || ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT'].present? %>
-        <div class="text-center">
-          <%= content_tag(:small) do %>
-            <%= "Max. počet zápasov s jedným súperom v sezóne je #{ENV['MAX_MATCHES_WITH_OPPONENT']}." %>
-          <% end if ENV['MAX_MATCHES_WITH_OPPONENT'].present? %>
-          <%= content_tag(:small) do %>
-            <%= "Toho istého hráča/ku môžeš v sezóne vyzvať max. #{ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT']}x." %>
-          <% end if ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT'].present? %>
-        </div>
+      <% if (@pending_matches.ids | @cp_pending_matches.ids).present? %>
+        <p class="text-center">
+          S týmto hráčom<small>/kou</small> ťa čaká zápas.
+        </p>
+      <% elsif ENV["MAX_PENDING_MATCHES"].present? && (@pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i || @cp_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i) %>
+        <p class="text-center">
+          Je dosiahnutý maximálny počet naplánovaných a neodohratých zápasov (<%= ENV["MAX_PENDING_MATCHES"] %>).
+        </p>
       <% end %>
     <% end %>
   <% end %>
@@ -81,24 +75,24 @@
     <p class="text-center text-danger">Hráč<small>/ka</small> momentálne nemôže hrať (odcestovanie/zranenie).</p>
   <% end %>
 
-  <% if selected_season && @all_matches.any? %>
+  <% if @completed_matches&.any? %>
     <div class="text-center mt-4">
       <p class="u-fs-big">
         Vyhraté zápasy / všetky zápasy<br>
-        <span class="<%= text_success_css(@won_matches_count, @all_matches.size) %>">
-          <%= @won_matches_count %> / <%= @all_matches.size %>
+        <span class="<%= text_success_css(@won_matches_count, @completed_matches.size) %>">
+          <%= @won_matches_count %> / <%= @completed_matches.size %>
           <br>
-          <%= Percentage.calculate(@won_matches_count, of: @all_matches.size) %>%
+          <%= Percentage.calculate(@won_matches_count, of: @completed_matches.size) %>%
         </span>
       </p>
 
       <div>
-        <% @all_matches.each do |match| %>
+        <% @completed_matches.each do |match| %>
           <%= render 'players/match', match:, player: %>
         <% end %>
       </div>
     </div>
-  <% else %>
+  <% elsif selected_season %>
     <p class="text-center">Žiadne odohraté zápasy v sezóne <%= selected_season.name %>.</p>
   <% end %>
 </div>

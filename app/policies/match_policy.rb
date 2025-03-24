@@ -1,25 +1,28 @@
 class MatchPolicy < ApplicationPolicy
 
-  def create?(requested_player:, season:, common_matches:)
+  def create?(season, requested_player)
+    requesting_player = user
     return false if requested_player.cant_play_since.present?
-    return false if user == requested_player
+    return false if requesting_player.id == requested_player.id
     return false if season.ended_at.present?
-    return false if user.access_denied_since.present? || requested_player.access_denied_since.present?
-    return false if user.anonymized_at.present? || requested_player.anonymized_at.present?
-    return false if season.enrollments.active.find { |e| e.player_id == user.id }.blank?
+    return false if requesting_player.access_denied_since.present? || requested_player.access_denied_since.present?
+    return false if requesting_player.anonymized_at.present? || requested_player.anonymized_at.present?
+    return false if season.enrollments.active.find { |e| e.player_id == requesting_player.id }.blank?
     return false if season.enrollments.active.find { |e| e.player_id == requested_player.id }.blank?
-    return false if common_matches.ranking_counted.requested.any?
 
-    if ENV['MAX_MATCHES_WITH_OPPONENT']
-      existing_matches = common_matches.ranking_counted.where(rejected_at: nil, canceled_at: nil)
-      return false if existing_matches.size >= ENV['MAX_MATCHES_WITH_OPPONENT'].to_i
+    if ENV["MAX_PENDING_MATCHES"].present?
+      requested_player_pending_matches = requested_player.matches.in_season(season).published.pending
+      requesting_player_pending_matches = requesting_player.matches.in_season(season).published.pending
+
+      return false if requesting_player_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i
+      return false if requested_player_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i
     end
 
-    if ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT']
-      existing_requested_matches = common_matches.ranking_counted.where(rejected_at: nil, canceled_at: nil)
-                                                 .joins(:assignments)
-                                                 .where(assignments: { side: 1, player_id: user.id })
-      return false if existing_requested_matches.size >= ENV['MAX_MATCH_REQUESTS_WITH_OPPONENT'].to_i
+    if ENV['MAX_MATCHES_WITH_OPPONENT'].present?
+      requested_player_completed_matches = requested_player.matches.in_season(season).published.reviewed
+      requesting_player_completed_matches = requesting_player.matches.in_season(season).published.reviewed
+
+      return false if (requested_player_completed_matches.ids | requesting_player_completed_matches.ids).length >= ENV['MAX_MATCHES_WITH_OPPONENT'].to_i
     end
 
     true

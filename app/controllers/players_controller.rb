@@ -10,14 +10,16 @@ class PlayersController < ApplicationController
     @player = Player.find params[:id]
 
     if selected_season.present?
-      @all_matches = @player.season_matches(selected_season).includes(assignments: :player)
-      @won_matches_count = @all_matches.count do |match|
+      @pending_matches = @player.matches.in_season(selected_season).published.pending
+      @completed_matches = @player.matches.in_season(selected_season).published.reviewed.sorted.includes(assignments: :player)
+      @won_matches_count = @completed_matches.count do |match|
         player_assignment = match.assignments.find { |a| a.player_id == @player.id }
         match.winner_side == player_assignment.side
       end
 
       if current_player
-        @common_matches = Match.singles_with_players(current_player, @player, competitable: selected_season)
+        @cp_pending_matches = current_player.matches.in_season(selected_season).published.pending
+        @cp_completed_matches = current_player.matches.in_season(selected_season).published.reviewed.sorted.includes(assignments: :player)
       end
     end
   end
