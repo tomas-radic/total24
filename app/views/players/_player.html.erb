@@ -57,7 +57,7 @@
         </p>
       <% end %>
 
-      <% if (@pending_matches.ids | @cp_pending_matches.ids).present? %>
+      <% if (@pending_matches.ids & @cp_pending_matches.ids).present? %>
         <p class="text-center">
           S týmto hráčom<small>/kou</small> ťa čaká zápas.
         </p>

@@ -5,9 +5,12 @@ export default class extends Controller {
 
   score_typing() {
     var scoreInputField = this.finishFormTarget.querySelector("#score-input")
+    scoreInputField.value = scoreInputField.value.replace(/\D+/g, '')
+
+
     var scorePreviewField = this.finishFormTarget.querySelector("#score-preview")
     var submitButton = this.finishFormTarget.querySelector("input[type='submit']")
-    var scoreValues = scoreInputField.value.trim().split(/\s+/)
+    var scoreValues = scoreInputField.value.trim().split("")
     var scorePreviewValue = ""
 
     scoreValues.forEach((e, idx) => {

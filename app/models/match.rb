@@ -159,9 +159,9 @@ class Match < ApplicationRecord
   end
 
   def finish(attributes = {})
-    score = attributes["score"].strip.split
+    score = attributes["score"].strip.split(//)
 
-    if (score.length % 2) != 0
+    unless score.length.in?([2, 4, 6])
       self.errors.add(:score, "Neplatný výsledok zápasu.")
       return self
     end

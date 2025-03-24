@@ -18,19 +18,21 @@
           <%= f.label :score, "Skóre", class: "form-label" %>
           <%= f.text_field :score,
                            value: "",
-                           placeholder: "6 3 6 4",
+                           placeholder: "6364",
                            autocomplete: "off",
-                           pattern: "[0-9\s]*",
-                           # inputmode: "numeric",
+                           pattern: '^(\d{2}|\d{4}|\d{6})$',
+                           inputmode: "numeric",
+                           required: true,
                            id: "score-input",
                            class: "form-control",
                            data: { action: "keyup->matches#score_typing" } %>
           <%= error_for(:score, @match) %>
           <div class="pb-2">
             <small>
-              Skóre zadaj zo svojho pohľadu ako po sebe idúce čísla oddelené medzerou, napr.
-              <code class="border whitespace-nowrap">6 4 6 1</code> ak si vyhral, alebo
-              <code class="border whitespace-nowrap">2 6 3 6</code> ak si prehral.
+              Skóre zadaj zo svojho pohľadu ako po sebe idúce čísla, napr.
+              <code class="border">6461</code> ak si vyhral/a, alebo
+              <code class="border">2636</code> ak si prehral/a. Supertiebreak sa
+              počíta ako jeden gem <code class="border">10</code> alebo <code class="border">01</code>.
             </small>
           </div>
         </div>

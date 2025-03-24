@@ -410,7 +410,7 @@ RSpec.describe Match, type: :model do
         context "Match has not been retired" do
           let(:attributes) do
             {
-              "score" => "6 4 1 6 6 3",
+              "score" => "641663",
               "score_side" => 2,
               "retired_player_id" => "",
               "play_date" => play_date.to_s,
@@ -445,7 +445,7 @@ RSpec.describe Match, type: :model do
         context "Match has been retired" do
           let(:attributes) do
             {
-              "score" => "6 4 1 6 5 3",
+              "score" => "641653",
               "score_side" => 1,
               "retired_player_id" => player1.id,
               "play_date" => play_date.to_s,
@@ -493,7 +493,7 @@ RSpec.describe Match, type: :model do
 
           let(:attributes) do
             {
-              "score" => "6 3",
+              "score" => "63",
               "score_side" => 1,
               "retired_player_id" => "",
               "play_date" => play_date.to_s,
@@ -545,7 +545,7 @@ RSpec.describe Match, type: :model do
 
           let(:attributes) do
             {
-              "score" => "6 3",
+              "score" => "63",
               "score_side" => 1,
               "retired_player_id" => "",
               "play_date" => play_date.to_s,
@@ -584,7 +584,7 @@ RSpec.describe Match, type: :model do
         context "With incorrect score attribute" do
           let(:attributes) do
             {
-              "score" => "6 4 1 6 5 ",
+              "score" => "64165 ",
               "score_side" => 1,
               "retired_player_id" => "",
               "play_date" => play_date.to_s,
@@ -623,7 +623,7 @@ RSpec.describe Match, type: :model do
 
           let(:attributes) do
             {
-              "score" => "6 4",
+              "score" => "64",
               "score_side" => 1,
               "retired_player_id" => "",
               "play_date" => play_date.to_s,
@@ -659,7 +659,7 @@ RSpec.describe Match, type: :model do
       xcontext "With unaccepted match" do
         let(:attributes) do
           {
-            "score" => "6 4",
+            "score" => "64",
             "score_side" => 1,
             "retired_player_id" => "",
             "play_date" => play_date.to_s,

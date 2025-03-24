@@ -22,7 +22,7 @@ class MatchPolicy < ApplicationPolicy
       requested_player_completed_matches = requested_player.matches.in_season(season).published.reviewed
       requesting_player_completed_matches = requesting_player.matches.in_season(season).published.reviewed
 
-      return false if (requested_player_completed_matches.ids | requesting_player_completed_matches.ids).length >= ENV['MAX_MATCHES_WITH_OPPONENT'].to_i
+      return false if (requested_player_completed_matches.ids & requesting_player_completed_matches.ids).length >= ENV['MAX_MATCHES_WITH_OPPONENT'].to_i
     end
 
     true
