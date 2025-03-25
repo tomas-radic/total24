@@ -9,7 +9,4 @@
   <%= content_tag(:span, class: player_assignment.side == match.winner_side ? 'u-nav-green' : 'u-red') do %>
     <%= match.result(side: player_assignment.side) %>
   <% end %>
-  <% if match.retired? %>
-    (skreč)
-  <% end %>
 </p>

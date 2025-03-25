@@ -5,12 +5,6 @@
   </div>
 
   <div class="page-header__text default-color">
-
-
-
-
-    <!-- TODO: Use Pundit player_policy - view_player_details -->
-
     <% if current_manager || (current_player && selected_season && selected_season.enrollments.active.find { |e| e.player_id == current_player.id }) %>
       <div><%= player.phone_nr %></div>
       <div><%= player.email %></div>
@@ -50,10 +44,10 @@
       </p>
     <% end %>
 
-    <% if current_player %>
+    <% if current_player && current_player.id != player.id %>
       <% if ENV["MAX_MATCHES_WITH_OPPONENT"].present? %>
         <p class="text-center">
-          Max. počet zápasov s jedným súperom v sezóne je
+          Max. počet zápasov s jedným súperom v sezóne je <%= ENV["MAX_MATCHES_WITH_OPPONENT"] %>.
         </p>
       <% end %>
 
@@ -63,7 +57,7 @@
         </p>
       <% elsif ENV["MAX_PENDING_MATCHES"].present? && (@pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i || @cp_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i) %>
         <p class="text-center">
-          Je dosiahnutý maximálny počet naplánovaných a neodohratých zápasov (<%= ENV["MAX_PENDING_MATCHES"] %>).
+          Jeden z vás má dosiahnutý maximálny počet plánovaných neodohratých zápasov (<%= ENV["MAX_PENDING_MATCHES"] %>).
         </p>
       <% end %>
     <% end %>
@@ -93,6 +87,6 @@
       </div>
     </div>
   <% elsif selected_season %>
-    <p class="text-center">Žiadne odohraté zápasy v sezóne <%= selected_season.name %>.</p>
+    <p class="text-center">Hráč<small>/ka</small> nemá žiadne odohraté zápasy v sezóne <%= selected_season.name %>.</p>
   <% end %>
 </div>
