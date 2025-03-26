@@ -71,4 +71,8 @@ class Player < ApplicationRecord
 
     self
   end
+
+  def send_confirmation_notification?
+    false
+  end
 end
