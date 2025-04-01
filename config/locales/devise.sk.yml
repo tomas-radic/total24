@@ -44,7 +44,7 @@ sk:
       signed_up: Vitaj v tvojej TOtal lige.
       signed_up_but_inactive: Registrácia bola úspešná. Nemohli sme vás prihlásiť, lebo váš účet ešte nebol aktivovaný.
       signed_up_but_locked: Registrácia bola úspešná. Nemohli sme vás prihlásiť, lebo váš účet je uzamknutý.
-      signed_up_but_unconfirmed: Registrácia sa podarila - kontaktuj správcu webu, aby účet aktivoval.
+      signed_up_but_unconfirmed: Registrácia sa podarila - účet bude aktívny až po potvrdení administrátorom.
       update_needs_confirmation: ! 'Váš účet bol úspešne aktualizovaný ale potrebujeme overiť vašu novú emailovú adresu. Prosím skontrolujte si email a kliknite na potvrdzovací odkaz, aby ste potvrdili novú emailovú adresu.'
       updated: Údaje boli zmenené.
     sessions:

@@ -18,7 +18,7 @@
             <% selected_season.ranking.each.with_index(1) do |player, position| %>
               <tr>
                 <%= content_tag :td, class: "text-center" do %>
-                  <%= "#{position}." if player.played_matches > 0%>
+                  <%= "#{position}." %>
                 <% end %>
                 <%= content_tag :td do %>
                   <%= link_to player.name, player_path(player) %>

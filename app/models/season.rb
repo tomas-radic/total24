@@ -60,7 +60,6 @@ class Season < ApplicationRecord
       player2.points = player2.percentage
     end
 
-    # debugger
     played_matches.each do |match|
       winner = result.find { |p| p.id == match.assignments.find { |a| a.side == match.winner_side }.player_id }
       looser = result.find { |p| p.id == match.assignments.find { |a| a.side != match.winner_side }.player_id }
@@ -68,7 +67,6 @@ class Season < ApplicationRecord
       winner.points += looser.percentage
     end
 
-    # debugger
     result.sort_by do |player|
       [
         -player.points,
