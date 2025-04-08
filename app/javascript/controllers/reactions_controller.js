@@ -6,12 +6,10 @@ export default class extends Controller {
   ]
 
   connect() {
-    // this.initTooltip()
+    this.initTooltip()
   }
 
   initTooltip() {
-    // window.bootstrap = require('bootstrap/dist/js/bootstrap.bundle.js')
-    return new bootstrap.Tooltip(this.reactionsCountTarget)
-    // this.reactionsCountTarget.tooltip()
+    return new window.bootstrap.Tooltip(this.reactionsCountTarget)
   }
 }
