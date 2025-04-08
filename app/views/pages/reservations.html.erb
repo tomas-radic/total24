@@ -1,59 +1,60 @@
- <div class="tiles">
+<div class="page__content p-0">
+  <div class="tiles">
+    <%= content_tag :div, class: "tiles__tile base-red" do %>
+      <p class="accent-color tiles__heading">Mravenisko 🐜</p>
+      <div>
+        <p class="default-color">
+          Kurty na Mravenisku sa rezervujú telefonicky na čísle
+          <span class="text-nowrap"><%= link_to '0911 272 070', 'tel:0911272070' %>.</span>
+        </p>
+        <p class="default-color">
+          <!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je cena 6€/h.-->
+          Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).
+        </p>
+        <p class="mt-5">
+          <%= link_to "📞", "tel:0911272070", class: "btn btn-light" %>
+        </p>
+      </div>
+    <% end %>
 
-   <%= content_tag :div, class: "tiles__tile base-red" do %>
-     <p class="accent-color tiles__heading">Mravenisko 🐜</p>
-     <div>
-       <p class="default-color">
-         Kurty na Mravenisku sa rezervujú telefonicky na čísle
-         <span class="text-nowrap"><%= link_to '0911 272 070', 'tel:0911272070' %>.</span>
-       </p>
-       <p class="default-color">
-<!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je cena 6€/h.-->
-         Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).
-       </p>
-       <p class="mt-5">
-         <%= link_to "📞", "tel:0911272070", class: "btn btn-light" %>
-       </p>
-     </div>
-   <% end %>
+    <%= content_tag :div, class: "tiles__tile base-yellow" do %>
+      <p class="accent-color tiles__heading">Kúpalisko 💦</p>
+      <div>
+        <p class="default-color">
+          Kurty na kúpalisku sa rezervujú telefonicky na čísle
+          <span class="text-nowrap"><%= link_to '0903 260 749', 'tel:0903260749' %>.</span>
+        </p>
+        <p class="default-color">
+          Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).
+          <!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je-->
+          <!--         cena 5€/h.-->
+        </p>
+        <p class="mt-5">
+          <%= link_to "Obsadenosť 💦",
+                      "https://kurtykupko.skedda.com/booking",
+                      class: "btn btn-light", target: :_blank %>
+          <%= link_to "📞", 'tel:0903260749', class: "btn btn-light" %>
+        </p>
+      </div>
+    <% end %>
 
-   <%= content_tag :div, class: "tiles__tile base-yellow" do %>
-     <p class="accent-color tiles__heading">Kúpalisko 💦</p>
-     <div>
-       <p class="default-color">
-         Kurty na kúpalisku sa rezervujú telefonicky na čísle
-         <span class="text-nowrap"><%= link_to '0903 260 749', 'tel:0903260749' %>.</span>
-       </p>
-       <p class="default-color">
-         Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).
-<!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je-->
-<!--         cena 5€/h.-->
-       </p>
-       <p class="mt-5">
-         <%= link_to "Obsadenosť 💦",
-                     "https://kurtykupko.skedda.com/booking",
-                     class: "btn btn-light", target: :_blank %>
-         <%= link_to "📞", 'tel:0903260749', class: "btn btn-light" %>
-       </p>
-     </div>
-   <% end %>
-
-   <%= content_tag :div, class: "tiles__tile base-salmon" do %>
-     <p class="accent-color tiles__heading">Park 🌳</p>
-     <div>
-       <!--       <p class="default-color">-->
-       <!--         Kurty v parku sa rezervujú telefonicky na čísle-->
-       <!--         <span class="text-nowrap"><%#= link_to '0911 071 207', 'tel:0911071207' %>.</span>-->
-       <!--       </p>-->
-       <p class="default-color">
-         Tieto kurty sú zatiaľ mimo prevádzky.
-       </p>
-       <p class="mt-5">
-         <%= link_to "Obsadenosť 🌳",
-                     "https://kurty.zap.sk",
-                     class: "btn btn-light disabled", target: :_blank %>
-         <%= link_to "📞", "tel:0911071207", class: "btn btn-light disabled" %>
-       </p>
-     </div>
-   <% end %>
- </div>
+    <%= content_tag :div, class: "tiles__tile base-salmon" do %>
+      <p class="accent-color tiles__heading">Park 🌳</p>
+      <div>
+        <!--       <p class="default-color">-->
+        <!--         Kurty v parku sa rezervujú telefonicky na čísle-->
+        <!--         <span class="text-nowrap"><%#= link_to '0911 071 207', 'tel:0911071207' %>.</span>-->
+        <!--       </p>-->
+        <p class="default-color">
+          Tieto kurty sú zatiaľ mimo prevádzky.
+        </p>
+        <p class="mt-5">
+          <%= link_to "Obsadenosť 🌳",
+                      "https://kurty.zap.sk",
+                      class: "btn btn-light disabled", target: :_blank %>
+          <%= link_to "📞", "tel:0911071207", class: "btn btn-light disabled" %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>
