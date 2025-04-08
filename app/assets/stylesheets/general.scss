@@ -90,7 +90,7 @@ html {
 
   &__content {
     padding: 1rem;
-    min-height: calc(100vh - $navbar-height - $footer-min-height);
+    min-height: calc(100vh - #{$navbar-height} - #{$footer-min-height});
   }
 
   &__footer {
