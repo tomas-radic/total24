@@ -49,7 +49,7 @@
     <p class="text-center">
       Kontaktuj správcu webu na<br>
       <%= link_to 'tomas.radic@gmail.com', 'mailto:tomas.radic@gmail.com' %><br>
-      <%= link_to '0905 289 248', 'tel:0905289248' %>
+      <%= formatted_phone_nr("0905289248", dialable: true) %>
     </p>
   </div>
 <% end %>

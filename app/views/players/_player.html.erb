@@ -6,7 +6,9 @@
 
   <div class="page-header__text default-color">
     <% if current_manager || (current_player && selected_season && selected_season.enrollments.active.find { |e| e.player_id == current_player.id }) %>
-      <div><%= player.phone_nr %></div>
+      <% if player.phone_nr.present? %>
+        <div><%= formatted_phone_nr(player.phone_nr, dialable: true, classes: "u-no-decoration") %></div>
+      <% end %>
       <div><%= player.email %></div>
       <% if player.birth_year.present? %>
         <div>Nar. <%= player.birth_year %></div>

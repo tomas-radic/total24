@@ -5,7 +5,7 @@
       <div>
         <p class="default-color">
           Kurty na Mravenisku sa rezervujú telefonicky na čísle
-          <span class="text-nowrap"><%= link_to '0911 272 070', 'tel:0911272070' %>.</span>
+          <span class="text-nowrap"><%= formatted_phone_nr("0911272070", dialable: true) %>.</span>
         </p>
         <p class="default-color">
           <!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je cena 6€/h.-->
@@ -22,7 +22,7 @@
       <div>
         <p class="default-color">
           Kurty na kúpalisku sa rezervujú telefonicky na čísle
-          <span class="text-nowrap"><%= link_to '0903 260 749', 'tel:0903260749' %>.</span>
+          <span class="text-nowrap"><%= formatted_phone_nr("0903260749", dialable: true) %>.</span>
         </p>
         <p class="default-color">
           Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).

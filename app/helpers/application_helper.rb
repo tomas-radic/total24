@@ -90,4 +90,16 @@ module ApplicationHelper
   def break_whitespace(text)
     text.gsub(/\s+/, "<br>").html_safe
   end
+
+
+  def formatted_phone_nr(phone_nr, dialable: false, classes: nil)
+    phone_nr.gsub!(/[^0-9]/, "")
+    return "" if phone_nr.length < 9
+
+    phone_nr.reverse!.insert(3, " ").insert(7, " ")
+    phone_nr = (phone_nr[0..10] + "0").reverse
+    return phone_nr unless dialable
+
+    link_to phone_nr, "tel:#{phone_nr.gsub(/[^0-9]/, "")}", class: classes.to_s
+  end
 end
