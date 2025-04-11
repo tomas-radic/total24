@@ -41,11 +41,12 @@
     </p>
     <ul>
       <li>1. Obaja hráči zápasu môžu zapísať výsledok ak je výzva prijatá súperom.</li>
-      <li>2. V menu <%= link_to "Zápasy", matches_path %>, alebo aj na <%= link_to "hlavnej stránke", today_path %> - klikneš na zápas.</li>
+      <li>2. V menu <%= link_to "Zápasy", matches_path %>, alebo aj na <%= link_to "hlavnej stránke", today_path %> - klikneš na svoj zápas.</li>
       <li>3. Klikneš na "Výsledok".</li>
       <li>
-        4. Výsledok zadáš zo svojho pohľadu ako po sebe idúce čísla oddelené medzerou, napr.
-        <code class="text-nowrap">3 6 5 7</code>
+        4. Výsledok zadáš zo svojho pohľadu ako po sebe idúce čísla bez medzier, bez čiarok, bez pomĺčiek, bez dvojbodiek, napr.
+        <code class="text-nowrap">3657</code>. Supertiebreak namiesto tretieho setu nehrávame, ale ak náhodou ste ho odohrali, zapisuje
+        sa ako <code class="text-nowrap">10</code> ak si ho vyhral, alebo <code class="text-nowrap">01</code> ak si ho prehral.
       </li>
       <li>5. Klikneš na "Potvrdiť".</li>
       <li>6. Ak si sa pomýlil, výsledok sa dá rovnakým postupom opraviť po dobu najbližších pár minút po zapísaní.</li>
