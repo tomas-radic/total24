@@ -10,10 +10,11 @@ class MatchPolicy < ApplicationPolicy
     return false if season.enrollments.active.find { |e| e.player_id == requesting_player.id }.blank?
     return false if season.enrollments.active.find { |e| e.player_id == requested_player.id }.blank?
 
-    if ENV["MAX_PENDING_MATCHES"].present?
-      requested_player_pending_matches = requested_player.matches.in_season(season).published.pending
-      requesting_player_pending_matches = requesting_player.matches.in_season(season).published.pending
+    requested_player_pending_matches = requested_player.matches.in_season(season).published.pending
+    requesting_player_pending_matches = requesting_player.matches.in_season(season).published.pending
+    return false if (requested_player_pending_matches.ids & requesting_player_pending_matches.ids).present?
 
+    if ENV["MAX_PENDING_MATCHES"].present?
       return false if requesting_player_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i
       return false if requested_player_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i
     end
