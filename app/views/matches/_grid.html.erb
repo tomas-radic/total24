@@ -21,7 +21,7 @@
         <%= match_looser_link(match, break_whitespace: true, options: { class: "u-no-decoration default-color" }) %>
       </div>
       <div class="matches-grid__col matches-grid__col4 default-color">
-        <%= app_date(match.date, prefix: true, vertical: true) if match.date %>
+        <%= app_date(match.finished_at.to_date, prefix: true, vertical: true) %>
       </div>
     </div>
   <% else %>
