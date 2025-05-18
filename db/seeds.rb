@@ -105,6 +105,7 @@ ActiveRecord::Base.transaction do
       password: "rogerf"
     )
 
+    player.confirm
     season.players << player
   end
 

@@ -35,17 +35,17 @@
                   <h3 class="caption-l3 accent-color text-center text-md-start">Nepotvrdené výzvy</h3>
                   <% @requested_matches.each do |match| %>
                     <div class="today__request-link">
-                      <%= link_to "#{match.side_name 1} - #{match.side_name 2}",
+                      <%= link_to "#{match.side_name(1, privacy: current_player.blank?)} - #{match.side_name(2, privacy: current_player.blank?)}",
                                   match_path(match),
                                   class: "default-color #{'u-red-bg' if current_player.present? && (policy(match).accept? || policy(match).destroy?)}" %>
-                      <%= render partial: "shared/reactions_buttons_tiny", locals: { reactionable: match } %>
+                      <%= render partial: "shared/reactions_buttons_tiny", locals: { reactionable: match, player: current_player } %>
                     </div>
                   <% end %>
 
                   <div class="mt-3">
                     <% @rejected_matches.each do |match| %>
                       <div class="today__request-link">
-                        <%= link_to "#{match.side_name 2} odmietol/la - #{match.side_name 1}",
+                        <%= link_to "#{match.side_name(2, privacy: current_player.blank?)} odmietol/la - #{match.side_name(1, privacy: current_player.blank?)}",
                                     match_path(match),
                                     class: "u-silver" %>
                       </div>
@@ -60,7 +60,7 @@
                   <div class="mt-3">
                     <% @canceled_matches.each do |match| %>
                       <div class="today__request-link">
-                        <%= link_to "#{match.side_name 1} - #{match.side_name 2}",
+                        <%= link_to "#{match.side_name(1, privacy: current_player.blank?)} - #{match.side_name(2, privacy: current_player.blank?)}",
                                     match_path(match),
                                     class: "u-silver" %>
                       </div>
@@ -72,7 +72,7 @@
               <!-- Players open to play -->
               <div id="players_open_to_play_top">
                 <%= render partial: "shared/players_open_to_play",
-                           locals: { players: @players_open_to_play } %>
+                           locals: { players: @players_open_to_play, player: current_player } %>
               </div>
             </div>
           <% end %>
@@ -129,7 +129,7 @@
           <div class="matches-grid__col matches-grid__col4"></div>
         </div>
         <% @recent_matches.each do |match| %>
-          <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+          <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
         <% end %>
       <% elsif selected_season && !selected_season.ended_at? %>
         <p class="py-8 text-center default-color">Žiadne zápasy sa v poslednej dobe nehrali.</p>
@@ -162,7 +162,7 @@
           <div class="matches-grid__col matches-grid__col4"></div>
         </div>
         <% @planned_matches.each do |match| %>
-          <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+          <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
         <% end %>
       <% elsif selected_season && !selected_season.ended_at? %>
         <p class="py-8 text-center">Nikto neplánuje hrať zápas.</p>
@@ -179,7 +179,7 @@
 
       <div id="players_open_to_play" class="text-center">
         <%= render partial: "shared/players_open_to_play",
-                   locals: { players: @players_open_to_play } %>
+                   locals: { players: @players_open_to_play, player: current_player } %>
       </div>
 
       <div class="today-navigation my-2">

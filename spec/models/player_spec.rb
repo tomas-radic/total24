@@ -7,6 +7,28 @@ RSpec.describe Player, type: :model do
 
   describe "Instance methods" do
 
+    describe "display_name" do
+      subject { player.display_name(privacy:) }
+
+      let!(:player) { create(:player, name: "Roger Federer jr") }
+
+      context "When privacy is false" do
+        let(:privacy) { false }
+
+        it "Returns whole player name" do
+          expect(subject).to eq(player.name)
+        end
+      end
+
+      context "When privacy is true" do
+        let(:privacy) { true }
+
+        it "Returns private player name" do
+          expect(subject).to eq("Roger F. j.")
+        end
+      end
+    end
+
     describe "season_matches" do
 
       subject { player.season_matches(season) }

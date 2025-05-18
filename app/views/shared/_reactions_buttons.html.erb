@@ -2,15 +2,15 @@
 
 <div class="d-inline-block" id='<%= "#{reactionable.class.to_s.downcase}_#{reactionable.id}_reactions" %>'>
   <div class="reactions">
-    <% if current_player.present? %>
-      <% r_icon = reactionable.reactions.find { |r| r.player_id == current_player.id }.present? ? "liked.png" : "like.png" %>
-      <% c_icon = reactionable.comments.find { |c| c.player_id == current_player.id }.present? ? "commented.png" : "comment.png" %>
+    <% if player.present? %>
+      <% r_icon = reactionable.reactions.find { |r| r.player_id == player.id }.present? ? "liked.png" : "like.png" %>
+      <% c_icon = reactionable.comments.find { |c| c.player_id == player.id }.present? ? "commented.png" : "comment.png" %>
       <div class="reactions__col default-color">
         <%= link_to toggle_reaction_path, data: { turbo_method: :post }, class: "reactions__col reactions__link" do %>
           <%= image_tag(r_icon, class: "reactions__icon") %>
         <% end %>
         <% if reactionable.reactions_count > 0 %>
-          <div data-controller="reactions" data-reactions-target="reactionsCount" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover focus click" title="<%= reactionable.reacted_player_names(max_count: 5) %>">
+          <div data-controller="reactions" data-reactions-target="reactionsCount" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover focus click" title="<%= reactionable.reacted_player_names(max_count: 5, privacy: player.blank?) %>">
             <%= reactionable.reactions_count %>
           </div>
         <% else %>
@@ -27,7 +27,7 @@
       <div class="reactions__col default-color">
         <%= image_tag("like.png", class: "reactions__icon") %>
         <% if reactionable.reactions_count > 0 %>
-          <div data-controller="reactions" data-reactions-target="reactionsCount" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover focus click" title="<%= reactionable.reacted_player_names(max_count: 5) %>">
+          <div data-controller="reactions" data-reactions-target="reactionsCount" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover focus click" title="<%= reactionable.reacted_player_names(max_count: 5, privacy: player.blank?) %>">
             <%= reactionable.reactions_count %>
           </div>
         <% else %>
