@@ -48,6 +48,18 @@ class Player < ApplicationRecord
     @won_matches || 0
   end
 
+  def display_name(privacy: false)
+    return name unless privacy
+
+    name_parts = name.split(/\s+/).reject(&:blank?)
+    privacy_name_parts = []
+
+    name_parts[1..-1].each do |np|
+      privacy_name_parts << np[0] + "."
+    end
+
+    privacy_name_parts.unshift(name_parts[0]).join(" ")
+  end
 
   def season_matches(season)
     matches.published.reviewed.sorted

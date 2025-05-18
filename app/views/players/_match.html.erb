@@ -4,7 +4,7 @@
 <p>
   <%= app_date(match.finished_at) %>
   <%= player_assignment.side == match.winner_side ? 'výhra s' : 'prehra s' %>
-  <%= match_player_link(match, side: opponent_assignment.side) %>
+  <%= match_player_link(match, side: opponent_assignment.side, privacy: current_player.blank?) %>
   <br>
   <%= content_tag(:span, class: player_assignment.side == match.winner_side ? 'u-nav-green' : 'u-red') do %>
     <%= match.result(side: player_assignment.side) %>

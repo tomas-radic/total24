@@ -3,5 +3,5 @@
 <% end %>
 
 <%= turbo_frame_tag "match_#{@match.id}" do %>
-  <%= render partial: "matches/match", locals: { match: @match } %>
+  <%= render partial: "matches/match", locals: { match: @match, player: current_player, privacy: current_player.blank? } %>
 <% end %>

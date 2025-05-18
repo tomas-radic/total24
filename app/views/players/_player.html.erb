@@ -1,7 +1,7 @@
 <section class="page-header base-red">
   <div></div>
   <div class="page-header__heading accent-color">
-    <h2><%= player.name %></h2>
+    <h2><%= player.display_name(privacy: current_player.blank?) %></h2>
   </div>
 
   <div class="page-header__text default-color">

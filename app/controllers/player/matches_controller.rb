@@ -42,7 +42,7 @@ class Player::MatchesController < Player::BaseController
       @match.assignments.each do |assignment|
         Turbo::StreamsChannel.broadcast_update_to(
           "match_#{@match.id}_for_player_#{assignment.player.id}",
-          partial: "matches/match", locals: { match: @match, current_player: assignment.player },
+          partial: "matches/match", locals: { match: @match, player: assignment.player, privacy: current_player.blank? },
           target: "match_#{@match.id}"
         )
       end
@@ -81,7 +81,7 @@ class Player::MatchesController < Player::BaseController
       @match.assignments.each do |assignment|
         Turbo::StreamsChannel.broadcast_update_to(
           "match_#{@match.id}_for_player_#{assignment.player.id}",
-          partial: "matches/match", locals: { match: @match, current_player: assignment.player },
+          partial: "matches/match", locals: { match: @match, player: assignment.player, privacy: current_player.blank? },
           target: "match_#{@match.id}"
         )
       end
@@ -96,7 +96,7 @@ class Player::MatchesController < Player::BaseController
     @match.assignments.each do |assignment|
       Turbo::StreamsChannel.broadcast_update_to(
         "match_#{@match.id}_for_player_#{assignment.player.id}",
-        partial: "matches/match", locals: { match: @match, current_player: assignment.player },
+        partial: "matches/match", locals: { match: @match, player: assignment.player, privacy: current_player.blank? },
         target: "match_#{@match.id}"
       )
     end
@@ -123,7 +123,7 @@ class Player::MatchesController < Player::BaseController
       @match.assignments.each do |assignment|
         Turbo::StreamsChannel.broadcast_update_to(
           "match_#{@match.id}_for_player_#{assignment.player.id}",
-          partial: "matches/match", locals: { match: @match, current_player: assignment.player },
+          partial: "matches/match", locals: { match: @match, player: assignment.player, privacy: current_player.blank? },
           target: "match_#{@match.id}"
         )
       end
@@ -140,7 +140,7 @@ class Player::MatchesController < Player::BaseController
     @match.assignments.each do |assignment|
       Turbo::StreamsChannel.broadcast_update_to(
         "match_#{@match.id}_for_player_#{assignment.player.id}",
-        partial: "matches/match", locals: { match: @match, current_player: assignment.player },
+        partial: "matches/match", locals: { match: @match, player: assignment.player, privacy: current_player.blank? },
         target: "match_#{@match.id}"
       )
     end
@@ -175,12 +175,13 @@ class Player::MatchesController < Player::BaseController
                            partial: "shared/reactions_buttons",
                            locals: {
                              reactionable: @match,
+                             player: current_player,
                              toggle_reaction_path: toggle_reaction_player_match_path(@match),
                              object_path: match_path(@match)
                            }),
       turbo_stream.replace("tiny_match_#{@match.id}_tiny_reactions",
                            partial: "shared/reactions_buttons_tiny",
-                           locals: { reactionable: @match })
+                           locals: { reactionable: @match, player: current_player })
     ]
   end
 
@@ -206,7 +207,7 @@ class Player::MatchesController < Player::BaseController
     render turbo_stream: [
       turbo_stream.update("match_#{@match.id}_predictions",
                            partial: "matches/predictions",
-                           locals: { match: @match, current_player: current_player }),
+                           locals: { match: @match, player: current_player }),
 
     ]
   end

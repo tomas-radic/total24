@@ -2,7 +2,7 @@
   <div class="text-center u-fs-dominant mb-4"><%= heading %></div>
   <% if players.any? %>
     <% players.each.with_index do |player, idx| %>
-      <div><%= "#{idx + 1}. #{player.name}" %></div>
+      <div><%= "#{idx + 1}. #{player.display_name(privacy: player.blank?)}" %></div>
     <% end %>
   <% else %>
     <div class="text-center">V tejto kategórii nie je nominovaný nikto.</div>

@@ -9,20 +9,19 @@
           <%= render partial: "shared/reactions_buttons",
                      locals: {
                        reactionable: reactionable,
-                       current_player: current_player,
+                       player: player,
                        toggle_reaction_path: toggle_reaction_path,
                        object_path: object_path
                      } %>
         </div>
         <% if reactionable.reactions_count > 0 %>
-          <p class="fst-italic"><small>Pozitívne reakcie od: <%= reactionable.reacted_player_names %></small></p>
+          <p class="fst-italic"><small>Pozitívne reakcie od: <%= reactionable.reacted_player_names(privacy: player.blank?) %></small></p>
         <% end %>
-        <% if current_player.present? %>
+        <% if player.present? %>
           <%= render partial: "player/comments/form",
                      locals: {
                        # commentable: reactionable,
-                       comment: @comment || reactionable.comments.new,
-                       current_player: current_player,
+                       comment: @comment || reactionable.comments.new
                      } %>
         <% else %>
           <p>
@@ -45,7 +44,7 @@
             <%= render partial: "player/comments/comment",
                        locals: {
                          comment: c,
-                         current_player: current_player
+                         player: player
                        } %>
           </div>
           <div class="col-md-2"></div>

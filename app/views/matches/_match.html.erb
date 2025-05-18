@@ -1,4 +1,4 @@
-<%= render partial: "matches/header", locals: { match: match } %>
+<%= render partial: "matches/header", locals: { match: match, privacy: } %>
 
 <div class="page__content">
   <div class="page-controls">
@@ -11,11 +11,11 @@
         / <%= link_to "Turnaj", tournament_path(match.competitable_id), target: :_top %>
       <% end %>
     </div>
-    <% if current_player %>
+    <% if player %>
       <div class="page-controls__buttons">
         <% if match.requested? %>
           <div>
-            <% if MatchPolicy.new(current_player, match).accept? %>
+            <% if MatchPolicy.new(player, match).accept? %>
               <%= link_to "Odmietnuť",
                           reject_player_match_path(match),
                           class: "btn btn-warning",
@@ -24,7 +24,7 @@
                           accept_player_match_path(match),
                           class: "btn btn-success", data: { turbo_method: :post } %>
             <% end %>
-            <% if MatchPolicy.new(current_player, match).destroy? %>
+            <% if MatchPolicy.new(player, match).destroy? %>
               <%= link_to "Zmazať",
                           player_match_path(match),
                           class: "btn btn-warning",
@@ -35,11 +35,11 @@
           <div>
             <%= link_to "Zrušiť", cancel_player_match_path(match),
                         data: { turbo_method: :post, turbo_confirm: "Chceš naozaj zrušiť tento zápas?" },
-                        class: "btn btn-outline-danger #{'disabled' unless MatchPolicy.new(current_player, match).cancel?}" %>
+                        class: "btn btn-outline-danger #{'disabled' unless MatchPolicy.new(player, match).cancel?}" %>
             <%= link_to "Upraviť", edit_player_match_path(match),
-                        class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, match).edit?}" %>
+                        class: "btn btn-warning #{'disabled' unless MatchPolicy.new(player, match).edit?}" %>
             <%= link_to "Výsledok", finish_init_player_match_path(match),
-                        class: "btn btn-danger #{'disabled' unless MatchPolicy.new(current_player, match).finish?}" %>
+                        class: "btn btn-danger #{'disabled' unless MatchPolicy.new(player, match).finish?}" %>
           </div>
         <% end %>
       </div>
@@ -51,17 +51,17 @@
   <% if match.reviewed? || (!match.ranking_counted && match.finished?) %>
     <p class="u-fs-giant py-4 text-center"><%= match.result %></p>
     <p class="text-center">
-      <%= match.side_name(match.winner_side) %>
+      <%= match.side_name(match.winner_side, privacy:) %>
       zvíťazil<small>/a</small> v tomto zápase.
     </p>
     <% if match.retired? %>
       <p class="text-center">
-        <%= match.looser_name %> zápas skrečoval<small>/a</small>.
+        <%= match.looser_name(privacy:) %> zápas skrečoval<small>/a</small>.
       </p>
     <% end %>
   <% elsif match.requested? %>
     <p class="text-center">
-      Na túto výzvu <%= match.side_name(2) %> zatiaľ nereagoval<small>/a</small>.
+      Na túto výzvu <%= match.side_name(2, privacy:) %> zatiaľ nereagoval<small>/a</small>.
     </p>
   <% elsif match.canceled_at %>
     <p class="text-center text-danger">
@@ -69,11 +69,11 @@
     </p>
   <% elsif match.accepted_at %>
     <p class="text-center">
-      <%= match.side_name(2) %> akceptoval<small>/a</small> výzvu <%= app_date match.accepted_at %>.
+      <%= match.side_name(2, privacy:) %> akceptoval<small>/a</small> výzvu <%= app_date match.accepted_at %>.
     </p>
   <% elsif match.rejected_at %>
     <p class="text-center">
-      <%= match.side_name(2) %> odmietol<small>/la</small> túto výzvu <%= app_date match.rejected_at %>.
+      <%= match.side_name(2, privacy:) %> odmietol<small>/la</small> túto výzvu <%= app_date match.rejected_at %>.
     </p>
   <% end %>
 
@@ -105,14 +105,14 @@
 
   <%= content_tag :div, id: "match_#{match.id}_predictions" do %>
     <%= render partial: "matches/predictions",
-               locals: { match: match, current_player: current_player } %>
+               locals: { match: match, player: player } %>
   <% end %>
 
   <hr>
   <%= render partial: "shared/comments_list",
              locals: {
                reactionable: match,
-               current_player: current_player,
+               player: player,
                reactionable_type: "match",
                toggle_reaction_path: toggle_reaction_player_match_path(match),
                object_path: match_path(match, anchor: "comments")

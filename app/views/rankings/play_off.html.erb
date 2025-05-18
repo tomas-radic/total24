@@ -6,13 +6,13 @@
         <p class="default-color">Účasť v Play Off vyžaduje odohratie min. <%= ENV["PLAY_OFF_MIN_MATCHES_COUNT"].to_i %> zápasov behom sezóny.</p>
         <div class="row g-0">
           <div class="col-12 col-md-6 col-lg-4 mb-2">
-            <%= render 'play_off_players', heading: 'Registrovaní', players: @play_offs[0] %>
+            <%= render 'play_off_players', heading: 'Registrovaní', players: @play_offs[0], player: current_player %>
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-2">
-            <%= render 'play_off_players', heading: 'Neregistrovaní A', players: @play_offs[1] %>
+            <%= render 'play_off_players', heading: 'Neregistrovaní A', players: @play_offs[1], player: current_player %>
           </div>
           <div class="col-12 col-md-6 col-lg-4 mb-2">
-            <%= render 'play_off_players', heading: 'Neregistrovaní B', players: @play_offs[2] %>
+            <%= render 'play_off_players', heading: 'Neregistrovaní B', players: @play_offs[2], player: current_player %>
           </div>
         </div>
       </div>

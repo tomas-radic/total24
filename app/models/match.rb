@@ -70,20 +70,20 @@ class Match < ApplicationRecord
     set3_side1_score.present? || set3_side2_score.present?
   end
 
-  def winner_name
+  def winner_name(privacy: false)
     return nil unless reviewed?
 
     assignments.select do |a|
       a.side == winner_side
-    end.map { |a| a.player.name }.join(", ")
+    end.map { |a| a.player.display_name(privacy:) }.join(", ")
   end
 
-  def looser_name
+  def looser_name(privacy: false)
     return nil unless reviewed?
 
     assignments.select do |a|
       a.side != winner_side
-    end.map { |a| a.player.name }.join(", ")
+    end.map { |a| a.player.display_name(privacy:) }.join(", ")
   end
 
   def result(side: 1)
@@ -107,10 +107,10 @@ class Match < ApplicationRecord
     sets.reject(&:blank?).join(", ")
   end
 
-  def side_name(side)
+  def side_name(side, privacy: false)
     assignments.select do |a|
       a.side == side
-    end.map { |a| a.player.name }.join(", ")
+    end.map { |a| a.player.display_name(privacy:) }.join(", ")
   end
 
   def predictions_text
@@ -295,12 +295,12 @@ class Match < ApplicationRecord
 
     assignments.each do |a|
       if finished_at.nil? && a.player.anonymized_at.present?
-        errors.add(:base, "#{a.player.name} si zrušil/a registráciu.")
+        errors.add(:base, "Hráč/ka si zrušil/a registráciu.")
       end
 
       if competitable.is_a? Season
         unless competitable.enrollments.find { |e| e.player_id == a.player_id }
-          errors.add(:base, "#{a.player.name} nie je prihlásený/á do sezóny.")
+          errors.add(:base, "Hráč/ka nie je prihlásený/á do sezóny.")
         end
       end
     end

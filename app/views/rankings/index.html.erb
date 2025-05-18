@@ -21,7 +21,7 @@
                   <%= "#{position}." %>
                 <% end %>
                 <%= content_tag :td do %>
-                  <%= link_to player.name, player_path(player) %>
+                  <%= link_to player.display_name(privacy: current_player.blank?), player_path(player) %>
                   <% player.tags.each do |tag| %>
                     <%= render 'tags/tag', tag: %>
                   <% end %>

@@ -13,7 +13,7 @@
         <div class="matches-grid__col matches-grid__col4"></div>
       </div>
       <% @pending_matches.each do |match| %>
-        <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+        <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
       <% end %>
     </div>
   </section>
@@ -30,7 +30,7 @@
           Plánovaných <%= @planned_count %>
         </p>
         <% @matches.each do |match| %>
-          <%= render partial: "matches/grid", locals: { match: match, current_player: current_player } %>
+          <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
         <% end %>
         <p><%= paginate @matches %></p>
       <% else %>

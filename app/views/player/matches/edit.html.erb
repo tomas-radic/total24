@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "match_#{@match.id}" do %>
-  <%= render partial: "matches/header", locals: { match: @match } %>
+  <%= render partial: "matches/header", locals: { match: @match, privacy: false } %>
 
   <div class="page__content">
     <%= form_with model: [:player, @match], data: { turbo: false } do |f| %>
