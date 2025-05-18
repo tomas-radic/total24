@@ -14,8 +14,7 @@ class Player::CommentsController < Player::BaseController
         "comment-form",
         partial: "player/comments/form",
         locals: {
-          comment: @comment,
-          current_player: current_player,
+          comment: @comment
         }), status: :unprocessable_entity
     end
   end
