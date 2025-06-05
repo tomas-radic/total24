@@ -3,7 +3,7 @@
     <h3 class="base-heading accent-color">Nominácie na Play Off.</h3>
     <% if selected_season %>
       <div clas="container">
-        <p class="default-color">Účasť v Play Off vyžaduje odohratie min. <%= ENV["PLAY_OFF_MIN_MATCHES_COUNT"].to_i %> zápasov behom sezóny.</p>
+        <p class="default-color">Do Play Off budú prioritne nominovaní tí hráči, ktorí odohrali aspoň <%= ENV["PLAY_OFF_MIN_MATCHES_COUNT"].to_i %> zápasov behom sezóny.</p>
         <div class="row g-0">
           <div class="col-12 col-md-6 col-lg-4 mb-2">
             <%= render 'play_off_players', heading: 'Registrovaní', players: @play_offs[0], player: current_player %>
