@@ -72,7 +72,7 @@
               <!-- Players open to play -->
               <div id="players_open_to_play_top">
                 <%= render partial: "shared/players_open_to_play",
-                           locals: { players: @players_open_to_play, player: current_player } %>
+                           locals: { players: @players_open_to_play } %>
               </div>
             </div>
           <% end %>
@@ -179,7 +179,7 @@
 
       <div id="players_open_to_play" class="text-center">
         <%= render partial: "shared/players_open_to_play",
-                   locals: { players: @players_open_to_play, player: current_player } %>
+                   locals: { players: @players_open_to_play } %>
       </div>
 
       <div class="today-navigation my-2">
