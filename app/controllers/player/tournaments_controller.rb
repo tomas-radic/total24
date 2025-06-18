@@ -18,7 +18,8 @@ class Player::TournamentsController < Player::BaseController
                            locals: {
                              reactionable: @tournament,
                              toggle_reaction_path: toggle_reaction_player_tournament_path(@tournament),
-                             object_path: tournament_path(@tournament)
+                             object_path: tournament_path(@tournament),
+                             player: current_player
                            })
     ]
   end

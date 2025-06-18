@@ -18,7 +18,8 @@ class Player::ArticlesController < Player::BaseController
                            locals: {
                              reactionable: @article,
                              toggle_reaction_path: toggle_reaction_player_article_path(@article),
-                             object_path: article_path(@article)
+                             object_path: article_path(@article),
+                             player: current_player
                            })
     ]
   end
