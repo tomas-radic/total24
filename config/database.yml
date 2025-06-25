@@ -9,6 +9,9 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
+  host: <%= ENV.fetch("DB_HOST") { "db" } %>
+  username: <%= ENV.fetch("DB_USER") { "postgres" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "password" } %>
 
 development:
   <<: *default
@@ -24,4 +27,4 @@ test:
 production:
   <<: *default
   database: total24_production
-  url: <%= ENV['DATABASE_URL'] %>
+  url: <%= ENV.fetch('DB_URL') %>
