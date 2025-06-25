@@ -89,4 +89,3 @@ gem 'kaminari'
 gem 'net-smtp'
 gem 'sassc'
 gem "solid_cable", "~> 3.0"
-gem 'ffi', "1.16.3"

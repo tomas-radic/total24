@@ -354,7 +354,6 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_list
-  bigdecimal
   bootsnap
   bootstrap (~> 5.3.3)
   capybara
@@ -363,7 +362,6 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  ffi (= 1.16.3)
   gravatar_image_tag
   importmap-rails
   jbuilder
