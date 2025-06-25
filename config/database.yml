@@ -24,4 +24,4 @@ test:
 production:
   <<: *default
   database: total24_production
-  url: <%= ENV.fetch('DB_URL') %>
+  url: <%= ENV['DATABASE_URL'] %>
