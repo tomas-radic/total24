@@ -4,7 +4,7 @@
     <% players.each do |player| %>
       <div class="today__request-link">
         <span class="m-auto">
-          <%= link_to player.display_name(privacy: current_player.blank?), player_path(player), class: "default-color" %>
+          <%= link_to player.display_name(privacy: signed_in_player.blank?), player_path(player), class: "default-color" %>
           hľadá niekoho už od
           <%= app_date(player.open_to_play_since) %>
         </span>

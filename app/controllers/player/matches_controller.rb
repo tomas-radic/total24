@@ -71,12 +71,12 @@ class Player::MatchesController < Player::BaseController
       Turbo::StreamsChannel.broadcast_update_to "players_open_to_play",
                                                 target: "players_open_to_play",
                                                 partial: "shared/players_open_to_play",
-                                                locals: { players: @players_open_to_play }
+                                                locals: { players: @players_open_to_play, signed_in_player: current_player }
 
       Turbo::StreamsChannel.broadcast_update_to "players_open_to_play",
                                                 target: "players_open_to_play_top",
                                                 partial: "shared/players_open_to_play",
-                                                locals: { players: @players_open_to_play }
+                                                locals: { players: @players_open_to_play, signed_in_player: current_player }
 
       @match.assignments.each do |assignment|
         Turbo::StreamsChannel.broadcast_update_to(
