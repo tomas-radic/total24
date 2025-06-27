@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_195011) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_26_103229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -206,6 +206,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_195011) do
     t.datetime "ended_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "performance_play_off_size", default: 4, null: false
+    t.integer "regular_a_play_off_size", default: 8, null: false
+    t.integer "regular_b_play_off_size", default: 16, null: false
+    t.string "performance_player_tag_label", default: "reg.", null: false
+    t.integer "play_off_min_matches_count", default: 10, null: false
+    t.text "play_off_conditions"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|

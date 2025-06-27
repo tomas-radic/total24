@@ -114,7 +114,7 @@ ActiveRecord::Base.transaction do
   raise "Existing data" if Match.any?
 
   # Finished & reviewed matches
-  16.times do
+  100.times do
     players = Player.all.sample(2)
     match_time = rand(2.weeks).seconds.ago.to_date
 

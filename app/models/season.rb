@@ -42,7 +42,6 @@ class Season < ApplicationRecord
     played_matches.each do |match|
       player1 = result.find { |p| p.id == match.assignments.find { |a| a.side == 1 }.player_id }
       player2 = result.find { |p| p.id == match.assignments.find { |a| a.side == 2 }.player_id }
-      # debugger
 
       player1.played_matches += 1
       player2.played_matches += 1
@@ -78,25 +77,37 @@ class Season < ApplicationRecord
 
 
   def play_offs
-    # debugger
-    all_ranking_players = ranking
-    min_matches = ENV['PLAY_OFF_MIN_MATCHES_COUNT'].to_i
-    perf_play_off_size = (ENV['PERFORMANCE_PLAY_OFF_SIZE'] || 4).to_i
-    reg_a_play_off_size = (ENV['REGULAR_A_PLAY_OFF_SIZE'] || 8).to_i
-    reg_b_play_off_size = (ENV['REGULAR_B_PLAY_OFF_SIZE'] || 16).to_i
+    all_players = ranking
 
-    all_ranking_players.delete_if { |p| p.played_matches < min_matches } if min_matches > 0
-
-    performance_players = all_ranking_players.select do |p|
-      p.tags.find { |t| t.label == ENV['PERFORMANCE_PLAYER_TAG_LABEL'] }
+    perf_players = all_players.select do |p|
+      p.tags.find { |t| t.label == performance_player_tag_label }
     end
 
-    performance_play_off = performance_players.first(perf_play_off_size)
-    all_ranking_players.delete_if { |p| p.id.in?(performance_players.map(&:id)) }
+    rgl_players = all_players.select do |p|
+      p.tags.count { |t| t.label == performance_player_tag_label } == 0
+    end
 
-    regular_play_off_a = all_ranking_players[0...reg_a_play_off_size]
-    regular_play_off_b = all_ranking_players[reg_a_play_off_size...(reg_a_play_off_size + reg_b_play_off_size)]
+    perf_players = nominate_play_off(perf_players, performance_play_off_size)
+    rgl_players = nominate_play_off(rgl_players, regular_a_play_off_size + regular_b_play_off_size)
 
-    [performance_play_off.to_a, regular_play_off_a.to_a, regular_play_off_b.to_a]
+    rgl_a_players = rgl_players[0...regular_a_play_off_size]
+    rgl_b_players = rgl_players[regular_a_play_off_size...(regular_a_play_off_size + regular_b_play_off_size)]
+
+    [perf_players, rgl_a_players, rgl_b_players]
+  end
+
+  private
+
+  def nominate_play_off(players_group, play_off_size)
+    nr_of_extra_players = play_off_size - players_group.count { |p| p.played_matches >= play_off_min_matches_count }
+
+    players_group.reject! do |player|
+      next false if player.played_matches >= play_off_min_matches_count
+
+      nr_of_extra_players -= 1
+      nr_of_extra_players < 0
+    end
+
+    players_group.first(play_off_size)
   end
 end

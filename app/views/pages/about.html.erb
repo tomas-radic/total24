@@ -32,13 +32,10 @@
       samotného. Výsledné číslo je počet hráčových bodov v rebríčku. Tzn. ak jeho bývalí súperi, s ktorými zápasy
       vyhral neskôr viac vyhrávajú počet bodov hráčovi priebežne zvyšujú a naopak.
     </p>
-    <p class="u-text-justify">
-      Na konci sezóny sa hrá Play Off - záverečný turnaj ligy. Do Play Off sú prioritne nominovaní tí hráči,
-      ktorí počas sezóny odohrali min. <%= ENV["PLAY_OFF_MIN_MATCHES_COUNT"] %> zápasov. Na turnaji sa hrajú 3 nezávislé kategórie. V kategórii
-      "Registrovaní" hrajú štyria najvyššie postavení hráči rebríčka, označení ako "reg" (hráč, kt. hrával registrovaný
-      tenis vo zväze a má menej ako 50 rokov). V kategórii "Neregistrovaní A" hrá 8 najvyššie postavených hráčov rebríčka, ktorí
-      nie sú označení ako "reg". V kategórii "Neregistrovaní B" hrá nasledujúcich 16 hráčov rebríčka, ktorí nie sú označení
-      ako "reg".
-    </p>
+    <% if @last_season&.play_off_conditions.present? %>
+      <p class="u-text-justify">
+        <%= @last_season.play_off_conditions %>
+      </p>
+    <% end %>
   </section>
 </div>

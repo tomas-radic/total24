@@ -161,67 +161,58 @@ RSpec.describe Season, type: :model do
     describe "play_offs" do
       subject { season.play_offs }
 
-      let!(:season) { create(:season) }
+      let!(:season) { create(:season, performance_play_off_size: 2, regular_a_play_off_size: 2, regular_b_play_off_size: 4) }
 
       before do
-        ENV['PERFORMANCE_PLAYER_TAG_LABEL'] > 'perf'
-        ENV['PERFORMANCE_PLAY_OFF_SIZE'] = '2'
-        ENV['REGULAR_A_PLAY_OFF_SIZE'] = '2'
-        ENV['REGULAR_B_PLAY_OFF_SIZE'] = '4'
-
         expect_any_instance_of(Season).to(receive(:ranking).and_return(ranking))
       end
 
-      context "With enough players for each category" do
+      context "When all players meet condition for play off" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 5, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
-            double('perf2', id: 'perf2', played_matches: 6, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
+            double('perf1', id: 'perf1', played_matches: 6, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
             double('reg1', id: 'reg1', played_matches: 8, tags: []),
-            double('reg2', id: 'reg2', played_matches: 5, tags: []),
-            double('perf3', id: 'perf3', played_matches: 7, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
-            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
+            double('reg2', id: 'reg2', played_matches: 7, tags: []),
+            double('perf3', id: 'perf3', played_matches: 7, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: season.performance_player_tag_label)]),
             double('reg3', id: 'reg3', played_matches: 8, tags: []),
-            double('reg4', id: 'reg4', played_matches: 5, tags: []),
+            double('reg4', id: 'reg4', played_matches: 8, tags: []),
             double('reg5', id: 'reg5', played_matches: 9, tags: []),
-            double('perf5', id: 'perf5', played_matches: 5, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
+            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
             double('reg6', id: 'reg6', played_matches: 8, tags: []),
             double('reg7', id: 'reg7', played_matches: 9, tags: []),
-            double('reg8', id: 'reg8', played_matches: 4, tags: []),
+            double('reg8', id: 'reg8', played_matches: 6, tags: []),
             double('reg9', id: 'reg9', played_matches: 9, tags: []),
             double('reg10', id: 'reg10', played_matches: 9, tags: []),
             double('reg11', id: 'reg11', played_matches: 9, tags: [])
           ]
         end
 
-        context "With minimum played matches count" do
-          before do
-            ENV['PLAY_OFF_MIN_MATCHES_COUNT'] = '6'
-          end
+        context "And the condition is enabled" do
+          before { season.update!(play_off_min_matches_count: 6) }
 
           it "Returns players matching play off conditions" do
             perf_playoff, reg_a_playoff, reg_b_playoff = subject
 
             expect(perf_playoff.length).to eq(2)
-            expect(perf_playoff[0].id).to eq('perf2')
-            expect(perf_playoff[1].id).to eq('perf3')
+            expect(perf_playoff[0].id).to eq('perf1')
+            expect(perf_playoff[1].id).to eq('perf2')
 
             expect(reg_a_playoff.length).to eq(2)
             expect(reg_a_playoff[0].id).to eq('reg1')
-            expect(reg_a_playoff[1].id).to eq('reg3')
+            expect(reg_a_playoff[1].id).to eq('reg2')
 
             expect(reg_b_playoff.length).to eq(4)
-            expect(reg_b_playoff[0].id).to eq('reg5')
-            expect(reg_b_playoff[1].id).to eq('reg6')
-            expect(reg_b_playoff[2].id).to eq('reg7')
-            expect(reg_b_playoff[3].id).to eq('reg9')
+            expect(reg_b_playoff[0].id).to eq('reg3')
+            expect(reg_b_playoff[1].id).to eq('reg4')
+            expect(reg_b_playoff[2].id).to eq('reg5')
+            expect(reg_b_playoff[3].id).to eq('reg6')
           end
         end
 
-        context "Without minimum played matches count" do
-          before do
-            ENV['PLAY_OFF_MIN_MATCHES_COUNT'] = nil
-          end
+        context "And the condition is disabled" do
+          before { season.update!(play_off_min_matches_count: 0) }
 
           it "Returns players matching play off conditions" do
             perf_playoff, reg_a_playoff, reg_b_playoff = subject
@@ -243,37 +234,210 @@ RSpec.describe Season, type: :model do
         end
       end
 
-      context "When not enough players for categories" do
+      context "When some players meet condition for play off and some don't" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 5, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
-            double('perf2', id: 'perf2', played_matches: 6, tags: [double('tag', label: ENV['PERFORMANCE_PLAYER_TAG_LABEL'])]),
-            double('reg1', id: 'reg1', played_matches: 8, tags: []),
-            double('reg2', id: 'reg2', played_matches: 5, tags: []),
+            double('perf1', id: 'perf1', played_matches: 3, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg1', id: 'reg1', played_matches: 1, tags: []),
+            double('reg2', id: 'reg2', played_matches: 7, tags: []),
+            double('perf3', id: 'perf3', played_matches: 4, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: season.performance_player_tag_label)]),
             double('reg3', id: 'reg3', played_matches: 8, tags: []),
-            double('reg4', id: 'reg4', played_matches: 5, tags: []),
-            double('reg5', id: 'reg5', played_matches: 9, tags: []),
-            double('reg6', id: 'reg6', played_matches: 4, tags: [])
+            double('reg4', id: 'reg4', played_matches: 3, tags: []),
+            double('reg5', id: 'reg5', played_matches: 4, tags: []),
+            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg6', id: 'reg6', played_matches: 1, tags: []),
+            double('reg7', id: 'reg7', played_matches: 2, tags: []),
+            double('reg8', id: 'reg8', played_matches: 4, tags: []),
+            double('reg9', id: 'reg9', played_matches: 2, tags: []),
+            double('reg10', id: 'reg10', played_matches: 9, tags: []),
+            double('reg11', id: 'reg11', played_matches: 9, tags: [])
           ]
         end
 
-        context "With minimum played matches count" do
-          before do
-            ENV['PLAY_OFF_MIN_MATCHES_COUNT'] = '6'
+        context "And the condition is enabled" do
+          before { season.update!(play_off_min_matches_count: 6) }
+
+          it "Returns players matching play off conditions" do
+            perf_playoff, reg_a_playoff, reg_b_playoff = subject
+
+            expect(perf_playoff.length).to eq(2)
+            expect(perf_playoff[0].id).to eq('perf2')
+            expect(perf_playoff[1].id).to eq('perf4')
+
+            expect(reg_a_playoff.length).to eq(2)
+            expect(reg_a_playoff[0].id).to eq('reg1')
+            expect(reg_a_playoff[1].id).to eq('reg2')
+
+            expect(reg_b_playoff.length).to eq(4)
+            expect(reg_b_playoff[0].id).to eq('reg3')
+            expect(reg_b_playoff[1].id).to eq('reg4')
+            expect(reg_b_playoff[2].id).to eq('reg10')
+            expect(reg_b_playoff[3].id).to eq('reg11')
           end
+        end
+
+        context "And the condition is disabled" do
+          before { season.update!(play_off_min_matches_count: 0) }
+
+          it "Returns players matching play off conditions" do
+            perf_playoff, reg_a_playoff, reg_b_playoff = subject
+
+            expect(perf_playoff.length).to eq(2)
+            expect(perf_playoff[0].id).to eq('perf1')
+            expect(perf_playoff[1].id).to eq('perf2')
+
+            expect(reg_a_playoff.length).to eq(2)
+            expect(reg_a_playoff[0].id).to eq('reg1')
+            expect(reg_a_playoff[1].id).to eq('reg2')
+
+            expect(reg_b_playoff.length).to eq(4)
+            expect(reg_b_playoff[0].id).to eq('reg3')
+            expect(reg_b_playoff[1].id).to eq('reg4')
+            expect(reg_b_playoff[2].id).to eq('reg5')
+            expect(reg_b_playoff[3].id).to eq('reg6')
+          end
+        end
+      end
+
+      context "When some players meet condition for play off and some don't" do
+        let(:ranking) do
+          [
+            double('perf1', id: 'perf1', played_matches: 7, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg1', id: 'reg1', played_matches: 1, tags: []),
+            double('reg2', id: 'reg2', played_matches: 2, tags: []),
+            double('perf3', id: 'perf3', played_matches: 6, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg3', id: 'reg3', played_matches: 8, tags: []),
+            double('reg4', id: 'reg4', played_matches: 3, tags: []),
+            double('reg5', id: 'reg5', played_matches: 4, tags: []),
+            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg6', id: 'reg6', played_matches: 1, tags: []),
+            double('reg7', id: 'reg7', played_matches: 8, tags: []),
+            double('reg8', id: 'reg8', played_matches: 4, tags: []),
+            double('reg9', id: 'reg9', played_matches: 2, tags: []),
+            double('reg10', id: 'reg10', played_matches: 9, tags: []),
+            double('reg11', id: 'reg11', played_matches: 9, tags: [])
+          ]
+        end
+
+        context "And the condition is enabled" do
+          before { season.update!(play_off_min_matches_count: 6) }
+
+          it "Returns players matching play off conditions" do
+            perf_playoff, reg_a_playoff, reg_b_playoff = subject
+
+            expect(perf_playoff.length).to eq(2)
+            expect(perf_playoff[0].id).to eq('perf1')
+            expect(perf_playoff[1].id).to eq('perf2')
+
+            expect(reg_a_playoff.length).to eq(2)
+            expect(reg_a_playoff[0].id).to eq('reg1')
+            expect(reg_a_playoff[1].id).to eq('reg2')
+
+            expect(reg_b_playoff.length).to eq(4)
+            expect(reg_b_playoff[0].id).to eq('reg3')
+            expect(reg_b_playoff[1].id).to eq('reg7')
+            expect(reg_b_playoff[2].id).to eq('reg10')
+            expect(reg_b_playoff[3].id).to eq('reg11')
+          end
+        end
+      end
+
+      context "When no players meet condition for play off" do
+        let(:ranking) do
+          [
+            double('perf1', id: 'perf1', played_matches: 2, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 3, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg1', id: 'reg1', played_matches: 4, tags: []),
+            double('reg2', id: 'reg2', played_matches: 2, tags: []),
+            double('perf3', id: 'perf3', played_matches: 3, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 2, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg3', id: 'reg3', played_matches: 4, tags: []),
+            double('reg4', id: 'reg4', played_matches: 5, tags: []),
+            double('reg5', id: 'reg5', played_matches: 3, tags: []),
+            double('perf5', id: 'perf5', played_matches: 2, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg6', id: 'reg6', played_matches: 3, tags: []),
+            double('reg7', id: 'reg7', played_matches: 4, tags: []),
+            double('reg8', id: 'reg8', played_matches: 4, tags: []),
+            double('reg9', id: 'reg9', played_matches: 2, tags: []),
+            double('reg10', id: 'reg10', played_matches: 2, tags: []),
+            double('reg11', id: 'reg11', played_matches: 1, tags: [])
+          ]
+        end
+
+        context "And the condition is enabled" do
+          before { season.update!(play_off_min_matches_count: 6) }
+
+          it "Returns players matching play off conditions" do
+            perf_playoff, reg_a_playoff, reg_b_playoff = subject
+
+            expect(perf_playoff.length).to eq(2)
+            expect(perf_playoff[0].id).to eq('perf1')
+            expect(perf_playoff[1].id).to eq('perf2')
+
+            expect(reg_a_playoff.length).to eq(2)
+            expect(reg_a_playoff[0].id).to eq('reg1')
+            expect(reg_a_playoff[1].id).to eq('reg2')
+
+            expect(reg_b_playoff.length).to eq(4)
+            expect(reg_b_playoff[0].id).to eq('reg3')
+            expect(reg_b_playoff[1].id).to eq('reg4')
+            expect(reg_b_playoff[2].id).to eq('reg5')
+            expect(reg_b_playoff[3].id).to eq('reg6')
+          end
+        end
+
+        context "And the condition is disabled" do
+          before { season.update!(play_off_min_matches_count: 0) }
+
+          it "Returns players matching play off conditions" do
+            perf_playoff, reg_a_playoff, reg_b_playoff = subject
+
+            expect(perf_playoff.length).to eq(2)
+            expect(perf_playoff[0].id).to eq('perf1')
+            expect(perf_playoff[1].id).to eq('perf2')
+
+            expect(reg_a_playoff.length).to eq(2)
+            expect(reg_a_playoff[0].id).to eq('reg1')
+            expect(reg_a_playoff[1].id).to eq('reg2')
+
+            expect(reg_b_playoff.length).to eq(4)
+            expect(reg_b_playoff[0].id).to eq('reg3')
+            expect(reg_b_playoff[1].id).to eq('reg4')
+            expect(reg_b_playoff[2].id).to eq('reg5')
+            expect(reg_b_playoff[3].id).to eq('reg6')
+          end
+        end
+      end
+
+      context "With very few players" do
+        let(:ranking) do
+          [
+            double('perf1', id: 'perf1', played_matches: 1, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('reg1', id: 'reg1', played_matches: 8, tags: []),
+            double('reg2', id: 'reg2', played_matches: 2, tags: []),
+            double('reg3', id: 'reg3', played_matches: 8, tags: []),
+          ]
+        end
+
+        context "And the condition is enabled" do
+          before { season.update!(play_off_min_matches_count: 6) }
 
           it "Returns players matching play off conditions" do
             perf_playoff, reg_a_playoff, reg_b_playoff = subject
 
             expect(perf_playoff.length).to eq(1)
-            expect(perf_playoff[0].id).to eq('perf2')
+            expect(perf_playoff[0].id).to eq('perf1')
 
             expect(reg_a_playoff.length).to eq(2)
             expect(reg_a_playoff[0].id).to eq('reg1')
-            expect(reg_a_playoff[1].id).to eq('reg3')
+            expect(reg_a_playoff[1].id).to eq('reg2')
 
             expect(reg_b_playoff.length).to eq(1)
-            expect(reg_b_playoff[0].id).to eq('reg5')
+            expect(reg_b_playoff[0].id).to eq('reg3')
           end
         end
       end

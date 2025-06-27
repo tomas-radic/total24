@@ -1,6 +1,8 @@
 class PagesController < ApplicationController
 
-  def about; end
+  def about
+    @last_season = Season.sorted.first
+  end
 
 
   def not_found; end
