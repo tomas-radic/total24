@@ -83,7 +83,7 @@ Rails.application.routes.draw do
     resources :seasons, only: [:new, :create, :edit, :update]
 
     resources :players, only: [:edit, :update] do
-      post :toggle_access, on: :member
+      post :toggle_confirmed, on: :member
     end
 
     post "enrollments/toggle", to: "enrollments#toggle", as: "toggle_enrollment"

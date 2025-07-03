@@ -45,13 +45,13 @@ Reloaded at <%= Time.now.in_time_zone.to_s %>
             </td>
             <td>
               <%= turbo_frame_tag "player_access_#{player.id}" do %>
-                <% if player.access_denied_since.present? %>
-                  <%= form_with url: toggle_access_manager_player_path(player) do |f| %>
-                    <%= f.submit "blokovaný", class: "underline text-danger" %>
+                <% if player.confirmed? %>
+                  <%= form_with url: toggle_confirmed_manager_player_path(player) do |f| %>
+                    <%= f.submit "povolený", class: "underline text-success" %>
                   <% end %>
                 <% else %>
-                  <%= form_with url: toggle_access_manager_player_path(player) do |f| %>
-                    <%= f.submit "povolený", class: "underline text-success" %>
+                  <%= form_with url: toggle_confirmed_manager_player_path(player) do |f| %>
+                    <%= f.submit "blokovaný", class: "underline text-danger" %>
                   <% end %>
                 <% end %>
               <% end %>

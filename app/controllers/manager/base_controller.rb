@@ -6,16 +6,6 @@ class Manager::BaseController < ApplicationController
   before_action :set_managed_season
 
 
-  def authenticate_manager!
-    super
-
-    if current_manager.access_denied_since.present?
-      sign_out current_manager
-      redirect_to new_manager_session_path
-    end
-  end
-
-
   def set_managed_season
     @managed_season = Season.sorted.where(ended_at: nil).first
     @managed_season ||= Season.sorted.first

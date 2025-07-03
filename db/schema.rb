@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_26_103229) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_03_102204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -80,7 +80,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_103229) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "access_denied_since"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_managers_on_email", unique: true
@@ -145,7 +144,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_26_103229) do
     t.string "phone_nr"
     t.integer "birth_year"
     t.datetime "anonymized_at"
-    t.datetime "access_denied_since"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"

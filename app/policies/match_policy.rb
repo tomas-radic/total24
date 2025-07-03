@@ -5,7 +5,7 @@ class MatchPolicy < ApplicationPolicy
     return false if requested_player.cant_play_since.present?
     return false if requesting_player.id == requested_player.id
     return false if season.ended_at.present?
-    return false if requesting_player.access_denied_since.present? || requested_player.access_denied_since.present?
+    return false unless requested_player.confirmed?
     return false if requesting_player.anonymized_at.present? || requested_player.anonymized_at.present?
     return false if season.enrollments.active.find { |e| e.player_id == requesting_player.id }.blank?
     return false if season.enrollments.active.find { |e| e.player_id == requested_player.id }.blank?

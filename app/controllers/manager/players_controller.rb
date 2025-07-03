@@ -1,6 +1,6 @@
 class Manager::PlayersController < Manager::BaseController
 
-  before_action :load_player, only: [:edit, :update, :toggle_access]
+  before_action :load_player, only: [:edit, :update, :toggle_confirmed]
 
 
   def edit
@@ -11,11 +11,11 @@ class Manager::PlayersController < Manager::BaseController
   end
 
 
-  def toggle_access
-    if @player.access_denied_since.nil?
-      @player.update(access_denied_since: Time.now)
+  def toggle_confirmed
+    if @player.confirmed?
+      @player.update(confirmed_at: nil)
     else
-      @player.update(access_denied_since: nil)
+      @player.confirm
     end
 
     redirect_back fallback_location: manager_pages_dashboard_path

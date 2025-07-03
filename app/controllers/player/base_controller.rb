@@ -7,7 +7,7 @@ class Player::BaseController < ApplicationController
   private
 
   def verify_player!
-    if current_player.access_denied_since.present? || current_player.anonymized_at.present?
+    if current_player.anonymized_at.present?
       sign_out current_player
       redirect_to root_path
     end
