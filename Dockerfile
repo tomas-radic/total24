@@ -37,5 +37,5 @@ RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
 # Configure the main process to run when running the image
-EXPOSE 3000
+EXPOSE 3001
 CMD ["bundle", "exec", "rails", "server", "-e", "production", "-b", "0.0.0.0"]
