@@ -23,5 +23,9 @@ test:
 
 production:
   <<: *default
-  database: total24_production
-  url: <%= ENV['DATABASE_URL'] %>
+  host: db
+  database: <%= ENV['DB_NAME'] || 'total24_production' %>
+  username: <%= ENV['DB_USER'] || 'postgres' %>
+  password: <%= ENV['DB_PASSWORD'] || 'password' %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
