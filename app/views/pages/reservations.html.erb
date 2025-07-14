@@ -9,7 +9,7 @@
         </p>
         <p class="default-color">
           <!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je cena 6€/h.-->
-          Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).
+          Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe je zvýhodnená na 6€/h.
         </p>
         <p class="mt-5">
           <%= link_to "📞", "tel:0911272070", class: "btn btn-light" %>
@@ -25,7 +25,7 @@
           <span class="text-nowrap"><%= formatted_phone_nr("0903260749", dialable: true) %>.</span>
         </p>
         <p class="default-color">
-          Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe bude zvýhodnená (presné info neskôr).
+          Cena na ohlásené ligové zápasy, ktoré sú riadne zverejnené na tomto webe je zvýhodnená na 5€/h.
           <!--         Na všetky ohlásené ligové zápasy, ktoré sú zverejnené na príslušnom ligovom webe je-->
           <!--         cena 5€/h.-->
         </p>
@@ -41,18 +41,14 @@
     <%= content_tag :div, class: "tiles__tile base-salmon" do %>
       <p class="accent-color tiles__heading">Park 🌳</p>
       <div>
-        <!--       <p class="default-color">-->
-        <!--         Kurty v parku sa rezervujú telefonicky na čísle-->
-        <!--         <span class="text-nowrap"><%#= link_to '0911 071 207', 'tel:0911071207' %>.</span>-->
-        <!--       </p>-->
         <p class="default-color">
-          Tieto kurty sú zatiaľ mimo prevádzky.
+          Kurty v parku spravuje mesto Topoľčany a rezervujú sa cez stránky mesta.
         </p>
         <p class="mt-5">
-          <%= link_to "Obsadenosť 🌳",
-                      "https://kurty.zap.sk",
-                      class: "btn btn-light disabled", target: :_blank %>
-          <%= link_to "📞", "tel:0911071207", class: "btn btn-light disabled" %>
+          <%= link_to "Rezervácie 🌳",
+                      "https://www.sluzbyto.sk/tenisove-kurty-v-parku",
+                      class: "btn btn-light", target: :_blank %>
+          <%= link_to "📞", "tel:0940499761", class: "btn btn-light" %>
         </p>
       </div>
     <% end %>
