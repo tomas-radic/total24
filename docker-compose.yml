@@ -7,11 +7,8 @@ services:
     restart: unless-stopped
     ports:
       - "3005:3000"
-    environment:
-      - RAILS_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
-      - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+    env_file:
+      - .env
     networks:
       - postgres-network
     depends_on:
