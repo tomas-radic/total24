@@ -21,7 +21,7 @@ services:
       - "traefik.http.routers.rails-app1.rule=Host(`total24.webiky.online`)"
       - "traefik.http.routers.rails-app1.tls=true"
       - "traefik.http.routers.rails-app1.tls.certresolver=letsencrypt"
-      - "traefik.http.services.rails-app1.loadbalancer.server.port=3000"
+      - "traefik.http.services.rails-app1.loadbalancer.server.port=3005"
 
 networks:
   postgres-network:
