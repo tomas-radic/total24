@@ -16,6 +16,12 @@ services:
         bundle exec rails db:migrate &&
         bundle exec rails server -b 0.0.0.0 -e production
       "
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rails-app1.rule=Host(`total24.webiky.online`)"
+      - "traefik.http.routers.rails-app1.tls=true"
+      - "traefik.http.routers.rails-app1.tls.certresolver=letsencrypt"
+      - "traefik.http.services.rails-app1.loadbalancer.server.port=3000"
 
 networks:
   postgres-network:
