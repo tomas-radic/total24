@@ -11,8 +11,6 @@ services:
       - .env
     networks:
       - postgres-network
-    depends_on:
-      - postgres
     command: >
       bash -c "
         bundle exec rails db:create &&
