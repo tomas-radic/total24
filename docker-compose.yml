@@ -19,8 +19,6 @@ services:
       - "traefik.http.routers.app1.tls.certresolver=letsencrypt"
     networks:
       - postgres-network
-    depends_on:
-      - postgres
     command: >
       bash -c "
         bundle install &&

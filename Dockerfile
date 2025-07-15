@@ -12,17 +12,25 @@ RUN apt-get update -qq && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy Gemfile and Gemfile.lock (if they exist)
+# Copy Gemfile and Gemfile.lock first (for better Docker layer caching)
 COPY Gemfile* ./
 
 # Install gems
 RUN bundle install
 
-# Copy application code
+# Copy the rest of the application code
 COPY . .
+
+# Precompile assets for production
+RUN RAILS_ENV=production bundle exec rails assets:precompile
+
+# Create a non-root user
+RUN groupadd -r rails && useradd -r -g rails rails
+RUN chown -R rails:rails /app
+USER rails
 
 # Expose port
 EXPOSE 3000
 
 # Start the Rails server
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-e", "production"]
