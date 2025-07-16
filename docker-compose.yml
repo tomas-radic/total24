@@ -28,3 +28,5 @@ networks:
   postgres-network:
     external: true
     name: postgres-network
+  traefik:
+    external: true
