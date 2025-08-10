@@ -1,0 +1,31 @@
+
+<div class="dropdown-menu dropdown-menu-end notifications-dropdown p-0" aria-labelledby="notificationsDropdown">
+  <div class="notifications-body">
+    <% if false # Replace with actual notifications check %>
+      <div class="list-group list-group-flush">
+        <% # Loop through notifications when implemented %>
+        <a href="#" class="list-group-item list-group-item-action px-3 py-2">
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">Nový zápas</h6>
+            <small class="text-muted">3 dni</small>
+          </div>
+          <p class="mb-1">Bol pridaný nový zápas s Petrom Novákom.</p>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action px-3 py-2">
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">Nový komentár</h6>
+            <small class="text-muted">včera</small>
+          </div>
+          <p class="mb-1">Tomáš pridal komentár k vášmu zápasu.</p>
+        </a>
+      </div>
+    <% else %>
+      <div class="p-3 text-center">
+        <p class="mb-0">Nemáte žiadne notifikácie</p>
+      </div>
+    <% end %>
+  </div>
+  <div class="notifications-footer border-top p-2 text-center">
+    <a href="#" class="text-decoration-none">Zobraziť všetky notifikácie</a>
+  </div>
+</div>

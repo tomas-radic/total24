@@ -5,13 +5,17 @@
 
       <div class="d-flex align-items-center ms-auto">
         <% if player_signed_in? %>
-          <!-- Bell icon for mobile view (to the left of the toggler) -->
+          <!-- Bell icon for mobile view -->
           <div class="d-lg-none me-4">
-            <%= link_to "#", class: "nav-link text-light position-relative p-0" do %>
-              <%= render "shared/bell_icon" %>
-            <% end %>
+            <div class="dropdown">
+              <a href="#" class="nav-link text-light position-relative p-0" id="mobileNotificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <%= render "shared/bell_icon" %>
+              </a>
+              <%= render "shared/notifications_dropdown" %>
+            </div>
           </div>
-        <% end %>
+
+      <% end %>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -48,12 +52,14 @@
 
         <% if player_signed_in? %>
           <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-            <!-- Bell icon for desktop view (to the left of dropdown) -->
-            <li class="nav-item d-none d-lg-block">
-              <%= link_to "#", class: "nav-link position-relative" do %>
+            <!-- Bell icon for desktop view -->
+            <li class="nav-item d-none d-lg-block dropdown">
+              <a href="#" class="nav-link position-relative" id="desktopNotificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <%= render "shared/bell_icon" %>
-              <% end %>
+              </a>
+              <%= render "shared/notifications_dropdown" %>
             </li>
+
 
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
