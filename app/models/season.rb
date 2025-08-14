@@ -66,6 +66,8 @@ class Season < ApplicationRecord
       winner.points += looser.percentage
     end
 
+    result = result.reject { |p| p.anonymized_at.present? || p.confirmed_at.blank? }
+
     result.sort_by do |player|
       [
         -player.points,

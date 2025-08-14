@@ -74,6 +74,7 @@ class Player < ApplicationRecord
 
       update!(
         anonymized_at: Time.now,
+        confirmed_at: nil,
         email: "#{SecureRandom.hex}@anonymized.player",
         name: "(zmazaný hráč)",
         phone_nr: nil,
