@@ -4,6 +4,7 @@ class Player::NotificationsController < Player::BaseController
   def show
     now = Time.current
     @notification.update(seen_at: now, read_at: now)
+    Noticed::Event.where("created_at < ?", 45.days.ago).destroy_all
     redirect_to @notification.url
 
     # respond_to do |format|

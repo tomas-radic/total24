@@ -90,6 +90,8 @@ class Player::MatchesController < Player::BaseController
           target: "match_#{@match.id}"
         )
       end
+
+      MatchAcceptedNotifier.with(record: @match).deliver(@match.assignments.find { |a| a.side == 1 }.player)
     end
 
     redirect_to match_path(@match)
@@ -105,6 +107,8 @@ class Player::MatchesController < Player::BaseController
         target: "match_#{@match.id}"
       )
     end
+
+    MatchRejectedNotifier.with(record: @match).deliver(@match.assignments.find { |a| a.side == 1 }.player)
 
     redirect_to match_path(@match)
   end

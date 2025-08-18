@@ -35,8 +35,9 @@ class MatchesController < ApplicationController
       @comment = @match.comments.new
       @player_prediction = @match.predictions.find_by(player: current_player)
 
+      now = Time.current
       @match.notifications.where(recipient_id: current_player.id).each do |n|
-        n.update(seen_at: nil, read_at: nil)
+        n.update(seen_at: now, read_at: now)
       end
     end
   end
