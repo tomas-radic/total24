@@ -1,5 +1,7 @@
 <i class="bi bi-bell"></i>
-<span class="position-absolute top-10 start-70 translate-middle badge rounded-pill bg-danger">
-  9+
-  <span class="visually-hidden">unread notifications</span>
-</span>
+<% if player.notifications.unseen.size > 0 %>
+  <span class="position-absolute top-10 start-70 translate-middle badge rounded-pill bg-danger">
+    <%= player.notifications.unseen.size %>
+    <span class="visually-hidden">unread notifications</span>
+  </span>
+<% end %>

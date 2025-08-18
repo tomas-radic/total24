@@ -89,3 +89,4 @@ gem 'kaminari'
 gem 'net-smtp'
 gem 'sassc'
 gem "solid_cable", "~> 3.0"
+gem "noticed", "~> 2.8"

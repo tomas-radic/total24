@@ -11,6 +11,8 @@ class Match < ApplicationRecord
   has_many :players, through: :assignments
   has_many :predictions, dependent: :destroy
   belongs_to :canceled_by, class_name: "Player", optional: true
+  has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
+  has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
 
   # Validations -----
   validates :kind, presence: true
@@ -111,6 +113,10 @@ class Match < ApplicationRecord
     assignments.select do |a|
       a.side == side
     end.map { |a| a.player.display_name(privacy:) }.join(", ")
+  end
+
+  def name(privacy: false)
+    "#{side_name(1, privacy: privacy)} vs. #{side_name(2, privacy: privacy)}"
   end
 
   def predictions_text
@@ -276,6 +282,26 @@ class Match < ApplicationRecord
     result = result.where(competitable:) if competitable.present?
     result.joins("join assignments side1 on side1.match_id = matches.id and side1.side = 1 join assignments side2 on side2.match_id = matches.id and side2.side = 2")
           .where("(side1.player_id = ? and side2.player_id = ?) or (side1.player_id = ? and side2.player_id = ?)", player1.id, player2.id, player2.id, player1.id)
+  end
+
+
+  def interested_players
+    player_ids = assignments.map(&:player_id)
+    player_ids += Comment.where(commentable: self).distinct.pluck(:player_id)
+    Player.where(id: player_ids.uniq)
+  end
+
+
+  def notification_recipients_for(notifier_class)
+    interested_players
+      .where.not(
+      id: Noticed::Notification
+            .where(type: "#{notifier_class}::Notification")
+            .where(seen_at: nil)
+            .joins(:event)
+            .where(noticed_events: { record: self })
+            .select(:recipient_id)
+    )
   end
 
 

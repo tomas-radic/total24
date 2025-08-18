@@ -61,6 +61,13 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :notifications, only: [:show] do
+      collection do
+        post :mark_all_as_seen
+      end
+    end
+
+
     post "players/toggle_open_to_play"
     post "players/toggle_cant_play"
     post "players/anonymize"

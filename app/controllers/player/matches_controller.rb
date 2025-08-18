@@ -25,6 +25,7 @@ class Player::MatchesController < Player::BaseController
     current_player.update(cant_play_since: nil)
 
     if @match.save
+      NewMatchNotifier.with(record: @match).deliver(@requested_player)
       redirect_with_message match_path(@match), 'Výzva bola vytvorená.'
     else
       redirect_with_message player_path(@requested_player), 'Výzvu sa nepodarilo vytvoriť.', :alert
@@ -46,6 +47,10 @@ class Player::MatchesController < Player::BaseController
           target: "match_#{@match.id}"
         )
       end
+
+      recipients = @match.notification_recipients_for(MatchUpdatedNotifier)
+      recipients = recipients.reject { |recipient| recipient.id == current_player.id }
+      MatchUpdatedNotifier.with(record: @match).deliver(recipients)
 
       redirect_with_message match_path(@match)
     else
@@ -144,6 +149,10 @@ class Player::MatchesController < Player::BaseController
         target: "match_#{@match.id}"
       )
     end
+
+    recipients = @match.notification_recipients_for(MatchCanceledNotifier)
+    recipients = recipients.reject { |recipient| recipient.id == current_player.id }
+    MatchCanceledNotifier.with(record: @match).deliver(recipients)
 
     redirect_with_message match_path(@match), 'Zápas bol zrušený.'
   end

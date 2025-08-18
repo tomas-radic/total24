@@ -1,18 +1,22 @@
+@import "colors";
+
 /* Notifications Dropdown Styles */
 .notifications-dropdown {
-  width: 320px;
+  width: 260px;
   max-height: 450px;
   overflow-y: auto;
+  background-color: $color-nav-grey;
   color: $color-white;
+
+  .list-group-item {
+    background-color: inherit;
+    color: inherit;
+  }
 }
 
 .notifications-body {
   max-height: 300px;
   overflow-y: auto;
-}
-
-.notifications-dropdown .list-group-item:hover {
-  background-color: rgba(0, 0, 0, 0.03);
 }
 
 /* Hide scrollbar for notifications dropdown in Webkit browsers */

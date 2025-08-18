@@ -12,9 +12,13 @@ class Player < ApplicationRecord
   has_many :assignments, dependent: :destroy
   has_many :matches, through: :assignments
   has_many :comments, dependent: :destroy
+  has_many :reactions, dependent: :destroy
   has_many :predictions, dependent: :destroy
   has_many :player_tags, dependent: :destroy
   has_many :tags, through: :player_tags
+  has_many :notifications, dependent: :destroy, as: :recipient, class_name: "Noticed::Notification"
+  has_many :recent_unread_notifications, -> { unread.newest_first.limit((ENV["NOTIFICATIONS_DROPDOWN_SIZE"] || 8).to_i) },
+           as: :recipient, class_name: "Noticed::Notification"
 
   # Validations -----
   validates :cant_play_since, absence: true, if: -> { open_to_play_since.present? }

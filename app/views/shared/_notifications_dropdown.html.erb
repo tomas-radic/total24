@@ -1,31 +1,23 @@
-
 <div class="dropdown-menu dropdown-menu-end notifications-dropdown p-0" aria-labelledby="notificationsDropdown">
   <div class="notifications-body">
-    <% if false # Replace with actual notifications check %>
+    <% if player.recent_unread_notifications.any? %>
       <div class="list-group list-group-flush">
-        <% # Loop through notifications when implemented %>
-        <a href="#" class="list-group-item list-group-item-action px-3 py-2">
-          <div class="d-flex w-100 justify-content-between">
-            <h6 class="mb-1">Nový zápas</h6>
-            <small class="text-muted">3 dni</small>
-          </div>
-          <p class="mb-1">Bol pridaný nový zápas s Petrom Novákom.</p>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action px-3 py-2">
-          <div class="d-flex w-100 justify-content-between">
-            <h6 class="mb-1">Nový komentár</h6>
-            <small class="text-muted">včera</small>
-          </div>
-          <p class="mb-1">Tomáš pridal komentár k vášmu zápasu.</p>
-        </a>
+        <% player.recent_unread_notifications.each do |notification| %>
+          <%= link_to player_notification_path(notification), class: "list-group-item list-group-item-action" do %>
+            <div class="u-fs-small">
+              <%= notification.message %>
+            </div>
+            <div class="u-fs-small"><%= app_time(notification.created_at) %></div>
+          <% end %>
+        <% end %>
       </div>
     <% else %>
-      <div class="p-3 text-center">
-        <p class="mb-0">Nemáte žiadne notifikácie</p>
+      <div class="u-fs-small text-center p-2">
+        Nič nové
       </div>
     <% end %>
   </div>
-  <div class="notifications-footer border-top p-2 text-center">
-    <a href="#" class="text-decoration-none">Zobraziť všetky notifikácie</a>
-  </div>
+<!--  <div class="notifications-footer border-top p-2 text-center">-->
+<!--    <a href="#" class="text-decoration-none">Predchádzajúce</a>-->
+<!--  </div>-->
 </div>
