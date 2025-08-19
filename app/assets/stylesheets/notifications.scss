@@ -1,4 +1,5 @@
 @import "colors";
+@import "general";
 
 /* Notifications Dropdown Styles */
 .notifications-dropdown {
@@ -13,6 +14,22 @@
     color: inherit;
   }
 }
+
+@media (max-width: $breakpoint-lg) {
+  .mobile-notifications {
+    position: fixed !important;
+    top: $navbar-height !important; /* Adjust this value based on your navbar height */
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    border-radius: 0 !important;
+    max-height: calc(100vh - $navbar-height) !important;
+    overflow-y: auto;
+    transform: none !important;
+  }
+}
+
 
 .notifications-body {
   max-height: 300px;
