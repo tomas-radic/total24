@@ -137,6 +137,7 @@ class Player::MatchesController < Player::BaseController
         )
       end
 
+      MatchFinishedNotifier.with(record: @match, finished_by: current_player).deliver(@match.assignments.find { |a| a.player_id != current_player.id }.player)
       redirect_with_message match_path(@match), 'Zápas bol zapísaný, rebríček sa aktualizuje časom.'
     else
       render_with_message :finish_init, 'Zápas sa nepodarilo zapísať.'
