@@ -16,12 +16,23 @@ class Player::NotificationsController < Player::BaseController
   def mark_all_as_seen
     current_player.notifications.update_all(seen_at: Time.current)
 
-    Turbo::StreamsChannel.broadcast_update_to(
-      "notifications_#{current_player.id}",
-      target: "bell-icon",
-      partial: "shared/bell_icon",
-      locals: { player: current_player }
-    )
+    respond_to do |format|
+      format.turbo_stream do
+        Turbo::StreamsChannel.broadcast_update_to(
+          "notifications_#{current_player.id}",
+          target: "bell-icon",
+          partial: "shared/bell_icon",
+          locals: { player: current_player }
+        )
+
+        head :ok
+      end
+
+      # format.html { redirect_back(fallback_location: root_path) }
+    end
+
+
+
   end
 
 

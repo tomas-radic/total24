@@ -5,7 +5,7 @@ class MatchCommentedNotifier < TurboStreamNotifier
     end
 
     def url
-      match_path(record)
+      "#{match_url(record)}#comments"
     end
   end
 end
