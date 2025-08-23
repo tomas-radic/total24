@@ -20,7 +20,14 @@ class Player::NotificationsController < Player::BaseController
       format.turbo_stream do
         Turbo::StreamsChannel.broadcast_update_to(
           "notifications_#{current_player.id}",
-          target: "bell-icon",
+          target: "bell-icon-mobile",
+          partial: "shared/bell_icon",
+          locals: { player: current_player }
+        )
+
+        Turbo::StreamsChannel.broadcast_update_to(
+          "notifications_#{current_player.id}",
+          target: "bell-icon-desktop",
           partial: "shared/bell_icon",
           locals: { player: current_player }
         )
