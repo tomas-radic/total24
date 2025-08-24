@@ -259,7 +259,7 @@ class Match < ApplicationRecord
   end
 
   def recently_finished?
-    finished_at.present? && finished_at >= 7.days.ago
+    finished_at.present? && finished_at >= 3.days.ago.beginning_of_day
   end
 
   def recently_rejected?
