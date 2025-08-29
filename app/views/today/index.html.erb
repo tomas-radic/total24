@@ -22,10 +22,7 @@
 
       <% if selected_season.present? %>
         <div class="today__main">
-          <div class="today-navigation my-4">
-            <div><a href="#recent-matches" class="default-color" data-turbo="false">Posledné zápasy</a></div>
-            <div><a href="#planned-matches" class="default-color" data-turbo="false">Zápasy na pláne</a></div>
-          </div>
+          <%= render "today/navigation" %>
 
           <% if @requested_matches.first || @rejected_matches.first || @canceled_matches.first || @players_open_to_play.first %>
             <div class="today__content">
@@ -142,10 +139,7 @@
       <p class="text-center my-4">
         <%= link_to "Všetky zápasy", matches_path, class: "default-color" %>
       </p>
-      <div class="today-navigation">
-        <div><%= link_to "Hore", today_path, class: "default-color" %></div>
-        <div><a href="#planned-matches" class="default-color" data-turbo="false">Zápasy na pláne</a></div>
-      </div>
+      <%= render "today/navigation" %>
     </div>
   </section>
 
@@ -182,10 +176,7 @@
                    locals: { players: @players_open_to_play, signed_in_player: current_player } %>
       </div>
 
-      <div class="today-navigation my-2">
-        <div><%= link_to "Hore", today_path, class: "default-color" %></div>
-        <div><a href="#recent-matches" class="default-color" data-turbo="false">Posledné zápasy</a></div>
-      </div>
+      <%= render "today/navigation" %>
     </div>
   </section>
 <% end %>
