@@ -8,12 +8,12 @@ class Player::CommentsController < Player::BaseController
     @comment.player = current_player
 
     if @comment.save
-      if @comment.commentable.is_a?(Match)
-        recipients = @match.notification_recipients_for(MatchCommentedNotifier)
-        recipients = recipients.reject { |recipient| recipient.id == current_player.id }
-        MatchCommentedNotifier.with(record: @comment.commentable).deliver(recipients)
-      end
 
+      # TODO: zriadit nejake include Commentable, kde budu notification_recipients_for
+      #
+      recipients =  @comment.commentable.notification_recipients_for(NewCommentNotifier)
+      recipients = recipients.reject { |recipient| recipient.id == current_player.id }
+      NewCommentNotifier.with(record: @comment.commentable).deliver(recipients)
       redirect_back(fallback_location: root_path)
     else
       render turbo_stream: turbo_stream.replace(

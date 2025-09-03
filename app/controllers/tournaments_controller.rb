@@ -15,6 +15,13 @@ class TournamentsController < ApplicationController
     @finished_matches = @tournament.matches
                                    .published.finished.sorted
                                    .includes(:reactions, :comments, :reacted_players, assignments: :player)
+
+    if current_player.present?
+      now = Time.current
+      @tournament.notifications.where(recipient_id: current_player.id).each do |n|
+        n.update(seen_at: now, read_at: now)
+      end
+    end
   end
 
 end
