@@ -20,6 +20,8 @@ module ApplicationHelper
 
   def app_date(datetime, prefix: false, vertical: false)
     result = ""
+    return result if datetime.blank?
+
     days = ["pon", "uto", "str", "štv", "pia", "sob", "ned"]
     months = ["jan", "feb", "mar", "apr", "máj", "jún", "júl", "aug", "sep", "okt", "nov", "dec"]
 
