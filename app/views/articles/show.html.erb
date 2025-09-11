@@ -20,7 +20,7 @@
   </div>
 
   <p class="text-secondary fst-italic">
-    <%= "Autor - #{@article.manager.email}, #{app_date @article.created_at}" %>
+    <%= "Autor - #{@article.manager.email}, #{app_date @article.published_at}" %>
   </p>
   <p>
     <%= simple_format(@article.content) %>
