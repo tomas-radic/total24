@@ -1,0 +1,108 @@
+<section class="today base-green">
+  <div class="page__content">
+    <div class="u-nav-green u-fs-small">Zobrazené od <%= app_time(DateTime.current) %></div>
+    <div class="today__facade">
+      <h1 class="today__heading accent-color">Topoľčianska tenisová<br>amatérska liga.</h1>
+      <div class="today__brand">
+        <a href="#recent-matches" class="today__brand__link mb-5" data-turbo="false">TOtal.</a>
+      </div>
+
+      <div class="text-center mt-5">
+        <% if current_player.nil? %>
+          <%= link_to "Registrácia", new_player_registration_path, class: "btn btn-warning btn-lg mb-3" %>
+          <%= link_to "Mám registráciu", new_player_session_path, class: "btn btn-success btn-lg mb-3" %>
+        <% end %>
+        <%= link_to "Rezervácie kurtov", reservations_path, class: "btn btn-success btn-lg mb-3" %>
+      </div>
+
+      <% if selected_season.present? %>
+        <div class="today__main">
+          <%= render "today/navigation" %>
+
+          <% if requested_matches.first || rejected_matches.first || canceled_matches.first || players_open_to_play.first %>
+            <div class="today__content">
+              <!-- Requested matches -->
+              <% if requested_matches.first || rejected_matches.first %>
+                <div class="unconfirmed-matches">
+                  <h3 class="caption-l3 accent-color text-center text-md-start">Nepotvrdené výzvy</h3>
+                  <% requested_matches.each do |match| %>
+                    <div class="today__request-link">
+                      <%= link_to "#{match.side_name(1, privacy: current_player.blank?)} - #{match.side_name(2, privacy: current_player.blank?)}",
+                                  match_path(match),
+                                  class: "default-color #{'u-red-bg' if current_player.present? && (policy(match).accept? || policy(match).destroy?)}" %>
+                      <%= render partial: "shared/reactions_buttons_tiny", locals: { reactionable: match, player: current_player } %>
+                    </div>
+                  <% end %>
+
+                  <div class="mt-3">
+                    <% rejected_matches.each do |match| %>
+                      <div class="today__request-link">
+                        <%= link_to "#{match.side_name(2, privacy: current_player.blank?)} odmietol/la - #{match.side_name(1, privacy: current_player.blank?)}",
+                                    match_path(match),
+                                    class: "u-silver" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+
+              <% if canceled_matches.first %>
+                <div class="unconfirmed-matches">
+                  <h3 class="caption-l3 accent-color text-center text-md-start">Zrušené zápasy</h3>
+                  <div class="mt-3">
+                    <% canceled_matches.each do |match| %>
+                      <div class="today__request-link">
+                        <%= link_to "#{match.side_name(1, privacy: current_player.blank?)} - #{match.side_name(2, privacy: current_player.blank?)}",
+                                    match_path(match),
+                                    class: "u-silver" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+
+              <!-- Players open to play -->
+              <div id="players_open_to_play_top">
+                <%= render partial: "shared/players_open_to_play",
+                           locals: { players: players_open_to_play, signed_in_player: current_player } %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <h3 class="today__no-season default-color">Nie je sezóna.<br>Všetci netrpezlivo čakáme.</h3>
+      <% end %>
+    </div>
+
+    <!-- Tournaments / News -->
+    <% if selected_season.present? && (upcoming_tournaments.first || actual_articles.first) %>
+      <h3 class="caption-l3 accent-color text-center text-md-start mt-3">
+        <%= link_to "Turnaje", tournaments_path, class: "u-no-decoration accent-color" %>
+        /
+        <%= link_to "Novinky", articles_path, class: "u-no-decoration accent-color" %>
+      </h3>
+      <div class="tiles">
+        <% upcoming_tournaments.each do |tournament| %>
+          <%= render partial: "today/tile",
+                     locals: {
+                       link_path: tournament_path(tournament),
+                       heading: tournament.name,
+                       bottom_text: tournament.date,
+                       color_base: tournament.color_base_css
+                     } %>
+        <% end %>
+
+        <% actual_articles.each do |article| %>
+          <%= render partial: "today/tile",
+                     locals: {
+                       link_path: article_path(article),
+                       heading: article.title,
+                       bottom_text: nil,
+                       color_base: article.color_base_css
+                     } %>
+        <% end %>
+
+      </div>
+    <% end %>
+  </div>
+</section>

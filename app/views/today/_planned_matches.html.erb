@@ -1,0 +1,35 @@
+<section id="planned-matches" class="today-planned base-salmon">
+  <div class="page__content">
+    <h3 class="text-end base-heading accent-color">Zápasy, ktoré uvidíme.</h3>
+
+    <% if matches.first %>
+      <div class="matches-grid">
+        <div class="matches-grid__col matches-grid__col1">Vyzývateľ</div>
+        <div class="matches-grid__col matches-grid__col2"></div>
+        <div class="matches-grid__col matches-grid__col3">Vyzvaný</div>
+        <div class="matches-grid__col matches-grid__col4"></div>
+      </div>
+      <% matches.each do |match| %>
+        <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
+      <% end %>
+    <% elsif selected_season && !selected_season.ended_at? %>
+      <p class="py-8 text-center">Nikto neplánuje hrať zápas.</p>
+      <p class="py-2 text-center">
+        <%= link_to "Vyzvi niekoho!", rankings_path, class: "btn btn-success btn-lg" %>
+      </p>
+    <% else %>
+      <p class="py-8 text-center">Nie je otvorená sezóna.</p>
+    <% end %>
+
+    <p class="text-center my-4">
+      <%= link_to "Všetky zápasy", matches_path, class: "default-color" %>
+    </p>
+
+    <div id="players_open_to_play" class="text-center">
+      <%= render partial: "shared/players_open_to_play",
+                 locals: { players:, signed_in_player: current_player } %>
+    </div>
+
+    <%= render "today/navigation" %>
+  </div>
+</section>
