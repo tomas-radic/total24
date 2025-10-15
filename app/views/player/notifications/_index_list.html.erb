@@ -1,0 +1,11 @@
+<% player.notifications.each do |notification| %>
+  <%= link_to player_notification_path(notification), class: "u-no-decoration #{notification_style(notification)}",
+              data: { turbo_stream: "" } do %>
+    <div class="mb-2">
+      <div>
+        <%= notification.message %>
+      </div>
+      <div class="u-fs-small"><%= app_time(notification.created_at) %></div>
+    </div>
+  <% end %>
+<% end %>

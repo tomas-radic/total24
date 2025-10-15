@@ -7,7 +7,7 @@ export default class extends Controller {
 
   connect() {
     this.element.addEventListener('show.bs.dropdown', function () {
-      fetch("/player/notifications/mark_all_as_seen",
+      fetch("/player/notifications/mark_all_seen",
           {
             method: "POST",
             headers: {

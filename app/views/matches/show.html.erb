@@ -1,5 +1,17 @@
 <% if current_player.present? %>
   <%= turbo_stream_from "match_#{@match.id}_for_player_#{current_player.id}" %>
+
+  <%= turbo_frame_tag "mark_notifications_read" do %>
+    <%= form_with url: mark_notifications_read_player_match_path,
+                   method: :post,
+                   data: {
+                     turbo_frame: "_top",
+                     turbo_progress: "none",
+                     controller: "auto-submit"
+                  } do |f| %>
+      <%= f.hidden_field :id, value: @match.id %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <%= turbo_frame_tag "match_#{@match.id}" do %>

@@ -37,6 +37,7 @@ Rails.application.routes.draw do
       post :finish, on: :member
       post :cancel, on: :member
       post :toggle_reaction, on: :member
+      post :mark_notifications_read, on: :member
 
       resources :comments, only: [:create, :edit, :update], module: :matches do
         post :delete, on: :member
@@ -61,9 +62,10 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :notifications, only: [:show] do
+    resources :notifications, only: [:index, :show] do
       collection do
-        post :mark_all_as_seen
+        post :mark_all_seen
+        post :mark_all_read
       end
     end
 

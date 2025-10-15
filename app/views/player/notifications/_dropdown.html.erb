@@ -4,7 +4,9 @@
     <% if player.recent_unread_notifications.any? %>
       <div class="list-group list-group-flush">
         <% player.recent_unread_notifications.each do |notification| %>
-          <%= link_to player_notification_path(notification), class: "list-group-item list-group-item-action" do %>
+          <%= link_to player_notification_path(notification),
+                      class: "list-group-item list-group-item-action",
+                      data: { turbo_stream: "" } do %>
             <div class="u-fs-small">
               <%= notification.message %>
             </div>
@@ -18,7 +20,7 @@
       </div>
     <% end %>
   </div>
-<!--  <div class="notifications-footer border-top p-2 text-center">-->
-<!--    <a href="#" class="text-decoration-none">Predchádzajúce</a>-->
-<!--  </div>-->
+  <div class="notifications-footer border-top p-2 text-center">
+    <%= link_to "všetky", player_notifications_path, class: "text-decoration-none u-fs-small" %>
+  </div>
 </div>

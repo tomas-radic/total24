@@ -8,14 +8,14 @@ class TurboStreamNotifier < ApplicationNotifier
       broadcast_update_to(
         "notifications_#{recipient.id}",
         target: "notifications-mobile",
-        partial: "shared/notifications_mobile",
+        partial: "player/notifications/navbar_item_mobile",
         locals: { player: recipient }
       )
 
       broadcast_update_to(
         "notifications_#{recipient.id}",
         target: "notifications-desktop",
-        partial: "shared/notifications_desktop",
+        partial: "player/notifications/navbar_item_desktop",
         locals: { player: recipient }
       )
     end

@@ -125,6 +125,11 @@ class MatchPolicy < ApplicationPolicy
   end
 
 
+  def mark_notifications_read?
+    true
+  end
+
+
   private
 
   def player_enrolled?(player, match)

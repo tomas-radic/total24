@@ -20,14 +20,20 @@ RSpec.describe "Player::Matches", type: :request do
         sign_in player
       end
 
-
       before do
         season.players << player
         season.players << requested_player
       end
 
-      it "Creates new match and redirects" do
+      it "Creates new match, new notification and redirects" do
         expect { subject }.to change { Match.count }.by(1)
+
+        last_match = Match.order(:created_at).last
+        notification = requested_player.notifications.joins(:event)
+                                       .where(noticed_events: { record_type: "Match", record_id: last_match.id })
+                                       .order(:created_at).last
+
+        expect(notification).to be_present
         expect(response).to redirect_to(match_path(Match.order(:created_at).last))
       end
 
@@ -149,6 +155,67 @@ RSpec.describe "Player::Matches", type: :request do
                          )
 
         expect(response).to redirect_to(match_path match)
+      end
+
+      context "When other player previously commented on the match" do
+        let!(:other_player) { create(:player) }
+        let!(:comment) { create(:comment, commentable: match, player: other_player) }
+
+        it "Creates new notification" do
+          subject
+
+          notifications = other_player.notifications.order(:created_at)
+          expect(notifications.count).to eq(1)
+          expect(notifications.first.event.record).to eq(match)
+        end
+
+        context "And already has unseen notification for the match" do
+          before do
+            Noticed::Notification.create!(recipient: other_player, seen_at: nil, read_at: nil,
+                                          type: "MatchUpdatedNotifier::Notification",
+                                          event: Noticed::Event.new(record: match, type: "MatchUpdatedNotifier"))
+          end
+
+          it "Does not create new notification" do
+            subject
+
+            notifications = other_player.notifications.order(:created_at)
+            expect(notifications.count).to eq(1)
+
+          end
+        end
+
+        context "And already has seen and unread notification for the match" do
+          before do
+            Noticed::Notification.create!(recipient: other_player, seen_at: 1.hour.ago, read_at: nil,
+                                          type: "MatchUpdatedNotifier::Notification",
+                                          event: Noticed::Event.new(record: match, type: "MatchUpdatedNotifier"))
+          end
+
+          it "Creates new notification" do
+            subject
+
+            notifications = other_player.notifications.order(:created_at)
+            expect(notifications.count).to eq(2)
+            expect(notifications.last.event.record).to eq(match)
+          end
+        end
+
+        context "And already has seen and read notification for the match" do
+          before do
+            Noticed::Notification.create!(recipient: other_player, seen_at: 1.hour.ago, read_at: 1.hour.ago,
+                                          type: "MatchUpdatedNotifier::Notification",
+                                          event: Noticed::Event.new(record: match, type: "MatchUpdatedNotifier"))
+          end
+
+          it "Creates new notification" do
+            subject
+
+            notifications = other_player.notifications.order(:created_at)
+            expect(notifications.count).to eq(2)
+            expect(notifications.last.event.record).to eq(match)
+          end
+        end
       end
 
       # context "With invalid params" (currently no params are invalid)

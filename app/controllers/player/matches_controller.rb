@@ -227,6 +227,23 @@ class Player::MatchesController < Player::BaseController
   end
 
 
+  def mark_notifications_read
+    now = Time.current
+    @match.notifications.where(recipient: current_player)
+                .where(read_at: nil)
+                .update_all(seen_at: now, read_at: now)
+
+    respond_to do |format|
+      format.turbo_stream do
+        refresh_notifications_for(current_player)
+      end
+
+      format.html { redirect_back(fallback_location: root_path) }
+      format.any { head :ok }
+    end
+  end
+
+
   private
 
   def whitelisted_params

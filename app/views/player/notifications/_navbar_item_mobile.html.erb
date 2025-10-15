@@ -1,8 +1,8 @@
 <div class="d-lg-none me-3">
   <div class="dropdown" data-controller="notifications">
     <a href="#" class="nav-link text-light position-relative p-0" id="mobileNotificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <span id="bell-icon-mobile"><%= render "shared/bell_icon", player: %></span>
+      <span id="bell-icon-mobile"><%= render "player/notifications/bell_icon", player: %></span>
     </a>
-    <%= render "shared/notifications_dropdown", player: %>
+    <%= render "player/notifications/dropdown", player: %>
   </div>
 </div>
