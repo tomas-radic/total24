@@ -3,11 +3,13 @@ require 'rails_helper'
 RSpec.describe MatchService do
   let!(:current_player) { create(:player) }
   let!(:opponent) { create(:player) }
-  let!(:season) { create(:season, enrollments: [
-    build(:enrollment, player: current_player),
-    build(:enrollment, player: opponent)
-  ]) }
+  let!(:season) { create(:season) }
   let(:service) { MatchService.new(current_player) }
+
+  before do
+    season.players << current_player
+    season.players << opponent
+  end
 
   describe '#initialize' do
     it 'requires current_player' do
@@ -20,54 +22,54 @@ RSpec.describe MatchService do
   end
 
   describe '#create' do
+    subject { service.create(season, opponent) }
+
     context 'with valid parameters' do
       it 'creates and saves a new match' do
-        expect {
-          service.create(season, opponent)
-        }.to change(Match, :count).by(1)
+        expect { subject }.to change(Match, :count).by(1)
       end
 
       it 'sets the current player as challenger (side 1)' do
-        service.create(season, opponent)
+        subject
         challenger_assignment = service.match.assignments.find_by(side: 1)
         expect(challenger_assignment.player).to eq(current_player)
       end
 
       it 'sets the opponent as challenged (side 2)' do
-        service.create(season, opponent)
+        subject
         challenged_assignment = service.match.assignments.find_by(side: 2)
         expect(challenged_assignment.player).to eq(opponent)
       end
 
       it 'sets requested_at and published_at' do
-        service.create(season, opponent)
+        subject
         expect(service.match.requested_at).to be_present
         expect(service.match.published_at).to be_present
       end
 
       it 'sets ranking_counted to true' do
-        service.create(season, opponent)
+        subject
         expect(service.match.ranking_counted).to be true
       end
 
       it 'clears cant_play_since for the current player' do
         current_player.update(cant_play_since: Time.current)
-        service.create(season, opponent)
+        subject
         expect(current_player.reload.cant_play_since).to be_nil
       end
 
       it 'sends a notification to the opponent' do
         expect(NewMatchNotifier).to receive(:with).with(hash_including(:record)).and_call_original
         expect_any_instance_of(NewMatchNotifier).to receive(:deliver).with(opponent)
-        service.create(season, opponent)
+        subject
       end
 
       it 'returns true' do
-        expect(service.create(season, opponent)).to be true
+        expect(subject).to be true
       end
 
       it 'exposes the created match' do
-        service.create(season, opponent)
+        subject
         expect(service.match).to be_a(Match)
         expect(service.match).to be_persisted
       end
@@ -79,19 +81,104 @@ RSpec.describe MatchService do
       end
 
       it 'does not save the match' do
-        expect {
-          service.create(season, opponent)
-        }.not_to change(Match, :count)
+        expect { subject }.not_to change(Match, :count)
       end
 
       it 'returns false' do
-        expect(service.create(season, opponent)).to be false
+        expect(subject).to be false
       end
 
       it 'exposes the unsaved match' do
-        service.create(season, opponent)
+        subject
         expect(service.match).to be_a(Match)
         expect(service.match).not_to be_persisted
+      end
+    end
+  end
+
+  describe '#update' do
+    let!(:match) do
+      create(:match, :requested, :accepted, competitable: season,
+             assignments: [
+               build(:assignment, player: current_player, side: 1),
+               build(:assignment, player: opponent, side: 2)
+             ])
+    end
+
+    context 'with valid params' do
+      let(:place) { create(:place) }
+      let(:play_date) { Date.tomorrow }
+      let(:play_time) { Match.play_times.keys.sample }
+      let(:params) do
+        {
+          play_date: play_date,
+          play_time: play_time,
+          notes: "Updated notes",
+          place_id: place.id
+        }
+      end
+
+      subject { service.update(match, params) }
+
+      it 'updates the match attributes' do
+        subject
+        match.reload
+
+        expect(match.play_date).to eq(play_date)
+        expect(match.play_time).to eq(play_time)
+        expect(match.notes).to eq("Updated notes")
+        expect(match.place_id).to eq(place.id)
+      end
+
+      it 'returns true' do
+        expect(subject).to be true
+      end
+
+      context 'with another player who commented' do
+        let!(:other_player) { create(:player) }
+        let!(:comment) { create(:comment, commentable: match, player: other_player) }
+
+        subject { service.update(match, { notes: "Updated" }) }
+
+        it 'sends notification to interested players except current player' do
+          expect(MatchUpdatedNotifier).to receive(:with).with(hash_including(:record)).and_call_original
+          expect_any_instance_of(MatchUpdatedNotifier).to receive(:deliver)
+          subject
+        end
+
+        context 'when player already has unseen notification for the match' do
+          before do
+            Noticed::Notification.create!(
+              recipient: other_player,
+              seen_at: nil,
+              read_at: nil,
+              type: "MatchUpdatedNotifier::Notification",
+              event: Noticed::Event.create!(record: match, type: "MatchUpdatedNotifier")
+            )
+          end
+
+          it 'does not send duplicate notification' do
+            notifications_count = other_player.notifications.count
+            subject
+            expect(other_player.notifications.count).to eq(notifications_count)
+          end
+        end
+
+        context 'when player has seen notification for the match' do
+          before do
+            Noticed::Notification.create!(
+              recipient: other_player,
+              seen_at: 1.hour.ago,
+              read_at: nil,
+              type: "MatchUpdatedNotifier::Notification",
+              event: Noticed::Event.create!(record: match, type: "MatchUpdatedNotifier")
+            )
+          end
+
+          it 'sends new notification' do
+            expect { subject }.to change { other_player.notifications.count }.by(1)
+          end
+        end
       end
     end
   end
@@ -104,8 +191,10 @@ RSpec.describe MatchService do
       ])
     end
 
+    subject { service.accept(match) }
+
     it 'sets the accepted_at timestamp' do
-      service.accept(match)
+      subject
       expect(match.reload.accepted_at).to be_present
     end
 
@@ -113,7 +202,7 @@ RSpec.describe MatchService do
       current_player.update(open_to_play_since: Time.current)
       opponent.update(open_to_play_since: Time.current)
 
-      service.accept(match)
+      subject
 
       expect(current_player.reload.open_to_play_since).to be_nil
       expect(opponent.reload.open_to_play_since).to be_nil
@@ -122,11 +211,11 @@ RSpec.describe MatchService do
     it 'sends a notification to the challenger' do
       expect(MatchAcceptedNotifier).to receive(:with).with(hash_including(:record)).and_call_original
       expect_any_instance_of(MatchAcceptedNotifier).to receive(:deliver).with(current_player)
-      service.accept(match)
+      subject
     end
 
     it 'returns true' do
-      expect(service.accept(match)).to be true
+      expect(subject).to be true
     end
 
     context 'when update fails' do
@@ -136,11 +225,11 @@ RSpec.describe MatchService do
       end
 
       it 'returns false' do
-        expect(service.accept(match)).to be false
+        expect(subject).to be false
       end
 
       it 'populates errors' do
-        service.accept(match)
+        subject
         expect(service.errors).to include("Error message")
       end
     end
@@ -154,55 +243,30 @@ RSpec.describe MatchService do
       ])
     end
 
+    subject { service.reject(match) }
+
     it 'sets the rejected_at timestamp' do
-      expect {
-        service.reject(match)
-      }.to change { match.reload.rejected_at }.from(nil)
+      expect { subject }.to change { match.reload.rejected_at }.from(nil)
+    end
+
+    it 'preserves open_to_play_since flags for players' do
+      current_player.update(open_to_play_since: Time.current)
+      opponent.update(open_to_play_since: Time.current)
+
+      subject
+
+      expect(current_player.reload.open_to_play_since).not_to be_nil
+      expect(opponent.reload.open_to_play_since).not_to be_nil
     end
 
     it 'sends a notification to the challenger' do
       expect(MatchRejectedNotifier).to receive(:with).with(hash_including(:record)).and_call_original
       expect_any_instance_of(MatchRejectedNotifier).to receive(:deliver).with(current_player)
-      service.reject(match)
+      subject
     end
 
     it 'returns true' do
-      expect(service.reject(match)).to be true
-    end
-  end
-
-  describe '#cancel' do
-    let!(:match) do
-      create(:match, :requested, :accepted, competitable: season, assignments: [
-        build(:assignment, player: current_player, side: 1),
-        build(:assignment, player: opponent, side: 2)
-      ])
-    end
-
-    before do
-      allow(match).to receive(:notification_recipients_for).and_return([opponent])
-    end
-
-    it 'sets the canceled_at timestamp' do
-      expect {
-        service.cancel(match)
-      }.to change { match.reload.canceled_at }.from(nil)
-    end
-
-    it 'sets the canceled_by to the current player' do
-      expect {
-        service.cancel(match)
-      }.to change { match.reload.canceled_by }.to(current_player)
-    end
-
-    it 'sends a notification to match participants except the current player' do
-      expect(MatchCanceledNotifier).to receive(:with).with(hash_including(:record)).and_call_original
-      expect_any_instance_of(MatchCanceledNotifier).to receive(:deliver).with([opponent])
-      service.cancel(match)
-    end
-
-    it 'returns true' do
-      expect(service.cancel(match)).to be true
+      expect(subject).to be true
     end
   end
 
@@ -217,53 +281,86 @@ RSpec.describe MatchService do
     end
 
     context 'with valid score' do
+      subject { service.finish(match, { "score" => "64" }) }
+
       it 'finishes the match' do
-        expect {
-          service.finish(match, { "score" => "64" })
-        }.to change { match.reload.finished_at }.from(nil)
+        expect { subject }.to change { match.reload.finished_at }.from(nil)
       end
 
       it 'sends notification to opponent' do
         expect(MatchFinishedNotifier).to receive(:with).with(hash_including(:record, :finished_by)).and_call_original
         expect_any_instance_of(MatchFinishedNotifier).to receive(:deliver).with(opponent)
-        service.finish(match, { "score" => "64" })
+        subject
       end
 
       it 'returns true' do
-        expect(service.finish(match, { "score" => "64" })).to be true
+        expect(subject).to be true
       end
     end
 
     context 'with invalid score' do
+      subject { service.finish(match, { "score" => "6" }) }
+
       it 'does not finish the match' do
-        expect {
-          service.finish(match, { "score" => "6" })
-        }.not_to change { match.reload.finished_at }
+        expect { subject }.not_to change { match.reload.finished_at }
       end
 
       it 'returns false' do
-        expect(service.finish(match, { "score" => "6" })).to be false
+        expect(subject).to be false
       end
 
       it 'populates errors' do
-        service.finish(match, { "score" => "6" })
+        subject
         expect(service.errors).not_to be_empty
       end
+    end
+  end
+
+  describe '#cancel' do
+    let!(:match) do
+      create(:match, :requested, :accepted, competitable: season, assignments: [
+        build(:assignment, player: current_player, side: 1),
+        build(:assignment, player: opponent, side: 2)
+      ])
+    end
+
+    subject { service.cancel(match) }
+
+    before do
+      allow(match).to receive(:notification_recipients_for).and_return([opponent])
+    end
+
+    it 'sets the canceled_at timestamp' do
+      expect { subject }.to change { match.reload.canceled_at }.from(nil)
+    end
+
+    it 'sets the canceled_by to the current player' do
+      expect { subject }.to change { match.reload.canceled_by }.to(current_player)
+    end
+
+    it 'sends a notification to match participants except the current player' do
+      expect(MatchCanceledNotifier).to receive(:with).with(hash_including(:record)).and_call_original
+      expect_any_instance_of(MatchCanceledNotifier).to receive(:deliver).with([opponent])
+      subject
+    end
+
+    it 'returns true' do
+      expect(subject).to be true
     end
   end
 
   describe '#toggle_reaction' do
     let!(:match) { create(:match, competitable: season) }
 
+    subject { service.toggle_reaction(match) }
+
     context 'when no reaction exists' do
       it 'creates a new reaction' do
-        expect {
-          service.toggle_reaction(match)
-        }.to change(Reaction, :count).by(1)
+        expect { subject }.to change(Reaction, :count).by(1)
       end
 
       it 'creates reaction for current player' do
-        service.toggle_reaction(match)
+        subject
         expect(match.reactions.find_by(player: current_player)).to be_present
       end
     end
@@ -272,9 +369,7 @@ RSpec.describe MatchService do
       let!(:existing_reaction) { create(:reaction, reactionable: match, player: current_player) }
 
       it 'removes the existing reaction' do
-        expect {
-          service.toggle_reaction(match)
-        }.to change(Reaction, :count).by(-1)
+        expect { subject }.to change(Reaction, :count).by(-1)
       end
     end
   end
@@ -283,14 +378,14 @@ RSpec.describe MatchService do
     let!(:match) { create(:match, competitable: season) }
 
     context 'when no prediction exists' do
+      subject { service.switch_prediction(match, 1) }
+
       it 'creates a new prediction' do
-        expect {
-          service.switch_prediction(match, 1)
-        }.to change(Prediction, :count).by(1)
+        expect { subject }.to change(Prediction, :count).by(1)
       end
 
-      it 'creates prediction for current player' do
-        service.switch_prediction(match, 1)
+      it 'creates prediction for current player with correct side' do
+        subject
         expect(match.predictions.find_by(player: current_player, side: 1)).to be_present
       end
     end
@@ -299,51 +394,19 @@ RSpec.describe MatchService do
       let!(:existing_prediction) { create(:prediction, match: match, player: current_player, side: 1) }
 
       context 'and switching to the same side' do
+        subject { service.switch_prediction(match, 1) }
+
         it 'removes the prediction' do
-          expect {
-            service.switch_prediction(match, 1)
-          }.to change(Prediction, :count).by(-1)
+          expect { subject }.to change(Prediction, :count).by(-1)
         end
       end
 
       context 'and switching to a different side' do
-        it 'updates the prediction' do
-          expect {
-            service.switch_prediction(match, 2)
-          }.to change { existing_prediction.reload.side }.from(1).to(2)
+        subject { service.switch_prediction(match, 2) }
+
+        it 'updates the prediction to new side' do
+          expect { subject }.to change { existing_prediction.reload.side }.from(1).to(2)
         end
-      end
-    end
-  end
-
-  describe '#update' do
-    let!(:match) do
-      create(:match, :requested, :accepted, competitable: season,
-             assignments: [
-               build(:assignment, player: current_player, side: 1),
-               build(:assignment, player: opponent, side: 2)
-             ])
-    end
-
-    let(:params) { { notes: "Updated notes" } }
-
-    it 'updates the match' do
-      expect {
-        service.update(match, params)
-      }.to change { match.reload.notes }.to("Updated notes")
-    end
-
-    it 'returns true' do
-      expect(service.update(match, params)).to be true
-    end
-
-    context 'with another player who commented' do
-      let!(:other_player) { create(:player) }
-      let!(:comment) { create(:comment, commentable: match, player: other_player) }
-
-      it 'sends notification to interested players except current player' do
-        expect(MatchUpdatedNotifier).to receive(:with).with(hash_including(:record)).and_call_original
-        service.update(match, params)
       end
     end
   end
