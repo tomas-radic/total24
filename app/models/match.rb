@@ -320,10 +320,6 @@ class Match < ApplicationRecord
     end
 
     assignments.each do |a|
-      if finished_at.nil? && a.player.anonymized_at.present?
-        errors.add(:base, "Hráč/ka si zrušil/a registráciu.")
-      end
-
       if competitable.is_a? Season
         unless competitable.enrollments.find { |e| e.player_id == a.player_id }
           errors.add(:base, "Hráč/ka nie je prihlásený/á do sezóny.")
