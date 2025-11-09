@@ -1,52 +1,22 @@
 class Player::PlayersController < Player::BaseController
 
   def toggle_open_to_play
-    open_to_play_since = if current_player.open_to_play_since.blank?
-                           Time.now
-                         end
+    is_currently_open = current_player.open_to_play_since.present?
 
-    cant_play_since = open_to_play_since.present? ? nil : current_player.cant_play_since
+    player_service.set_open_to_play(current_player, !is_currently_open)
 
-    if current_player.update(open_to_play_since: open_to_play_since, cant_play_since: cant_play_since)
-      @players_open_to_play = Player.where.not(open_to_play_since: nil)
-                                    .order(open_to_play_since: :desc)
-
-      Turbo::StreamsChannel.broadcast_update_to "players_open_to_play",
-                                                target: "players_open_to_play",
-                                                partial: "shared/players_open_to_play",
-                                                locals: { players: @players_open_to_play, signed_in_player: current_player }
-
-      Turbo::StreamsChannel.broadcast_update_to "players_open_to_play",
-                                                target: "players_open_to_play_top",
-                                                partial: "shared/players_open_to_play",
-                                                locals: { players: @players_open_to_play, signed_in_player: current_player }
-    end
+    broadcast_players_open_to_play
 
     render partial: "shared/navbar"
   end
 
 
   def toggle_cant_play
-    cant_play_since = if current_player.cant_play_since.blank?
-                        Time.now
-                      end
+    is_currently_cant_play = current_player.cant_play_since.present?
 
-    open_to_play_since = cant_play_since.present? ? nil : current_player.open_to_play_since
+    player_service.set_cant_play(current_player, is_currently_cant_play)
 
-    if current_player.update(cant_play_since: cant_play_since, open_to_play_since: open_to_play_since)
-      @players_open_to_play = Player.where.not(open_to_play_since: nil)
-                                    .order(open_to_play_since: :desc)
-
-      Turbo::StreamsChannel.broadcast_update_to "players_open_to_play",
-                                                target: "players_open_to_play",
-                                                partial: "shared/players_open_to_play",
-                                                locals: { players: @players_open_to_play, signed_in_player: current_player }
-
-      Turbo::StreamsChannel.broadcast_update_to "players_open_to_play",
-                                                target: "players_open_to_play_top",
-                                                partial: "shared/players_open_to_play",
-                                                locals: { players: @players_open_to_play, signed_in_player: current_player }
-    end
+    broadcast_players_open_to_play
 
     render partial: "shared/navbar"
   end
@@ -60,5 +30,31 @@ class Player::PlayersController < Player::BaseController
     else
       redirect_with_message edit_player_registration_path, 'Registráciu sa nepodarilo zrušiť.', :alert
     end
+  end
+
+  private
+
+  def player_service
+    @player_service ||= PlayerService.new
+  end
+
+  def broadcast_players_open_to_play
+    return unless selected_season.present?
+
+    players_open_to_play = player_service.get_players_open_to_play(selected_season)
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "players_open_to_play",
+      target: "players_open_to_play",
+      partial: "shared/players_open_to_play",
+      locals: { players: players_open_to_play, signed_in_player: current_player }
+    )
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "players_open_to_play",
+      target: "players_open_to_play_top",
+      partial: "shared/players_open_to_play",
+      locals: { players: players_open_to_play, signed_in_player: current_player }
+    )
   end
 end
