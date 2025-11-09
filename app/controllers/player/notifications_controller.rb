@@ -6,7 +6,6 @@ class Player::NotificationsController < Player::BaseController
   end
 
   def show
-    notification_service.mark_as_read(@notification)
     redirect_to @notification.url
   end
 
