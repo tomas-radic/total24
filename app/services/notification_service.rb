@@ -1,4 +1,3 @@
-# app/services/notification_service.rb
 class NotificationService
   def initialize(player)
     raise ArgumentError, "player is required" if player.nil?
