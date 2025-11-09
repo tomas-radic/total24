@@ -110,10 +110,8 @@ class Player::MatchesController < Player::BaseController
   end
 
   def mark_notifications_read
-    now = Time.current
-    @match.notifications.where(recipient: current_player)
-          .where(read_at: nil)
-          .update_all(seen_at: now, read_at: now)
+    service = MatchService.new(current_player)
+    service.mark_notifications_read(@match)
 
     respond_to do |format|
       format.turbo_stream do

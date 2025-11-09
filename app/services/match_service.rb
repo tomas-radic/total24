@@ -135,6 +135,13 @@ class MatchService
     match.reload
   end
 
+  def mark_notifications_read(match)
+    now = Time.current
+    match.notifications.where(recipient: @current_player)
+         .where(read_at: nil)
+         .update_all(seen_at: now, read_at: now)
+  end
+
   private
 
   def broadcast_match_update(match)
