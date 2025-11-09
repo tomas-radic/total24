@@ -56,32 +56,71 @@ RSpec.describe "Player::Players", type: :request do
   describe "POST /player/players/toggle_open_to_play" do
     subject { post player_players_toggle_open_to_play_path }
 
-    context "When player is logged in" do
-      before do
-        sign_in player
-      end
+    let!(:season) { create(:season) }
 
-      it "Sets timestamp to open_to_play_since attribute and unsets timestamp from cant_play_since attribute" do
-        player.update_column(:cant_play_since, 2.days.ago)
+    it_behaves_like "player_request"
 
-        subject
+    context "when player is logged in" do
+      before { sign_in player }
 
-        player.reload
-        expect(player.open_to_play_since).not_to be_nil
-        expect(player.cant_play_since).to be_nil
-      end
+      context "when player is not currently open to play" do
+        it "calls PlayerService#set_open_to_play with true" do
+          service_double = instance_double(PlayerService,
+                                           set_open_to_play: true,
+                                           get_players_open_to_play: Player.none)
+          allow(PlayerService).to receive(:new).and_return(service_double)
 
-      context "When open_to_play_since is already set" do
-        before do
-          player.update_column(:open_to_play_since, 2.days.ago)
-        end
-
-        it "Sets nil to open_to_play_since attribute" do
           subject
 
-          player.reload
-          expect(player.open_to_play_since).to be_nil
-          expect(player.cant_play_since).to be_nil
+          expect(service_double).to have_received(:set_open_to_play).with(player, true)
+          expect(response).to have_http_status(:success)
+        end
+
+        it "sets player as open to play" do
+          expect {
+            subject
+          }.to change { player.reload.open_to_play_since }.from(nil)
+        end
+
+        it "broadcasts the update" do
+          expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).twice
+          subject
+        end
+      end
+
+      context "when player is currently open to play" do
+        before do
+          player.update(open_to_play_since: 1.hour.ago)
+        end
+
+        it "calls PlayerService#set_open_to_play with false" do
+          service_double = instance_double(PlayerService,
+                                           set_open_to_play: true,
+                                           get_players_open_to_play: Player.none)
+          allow(PlayerService).to receive(:new).and_return(service_double)
+
+          subject
+
+          expect(service_double).to have_received(:set_open_to_play).with(player, false)
+        end
+
+        it "removes player from open to play" do
+          expect {
+            subject
+          }.to change { player.reload.open_to_play_since }.to(nil)
+        end
+      end
+
+      context "when player has cant_play_since set" do
+        before do
+          player.update(cant_play_since: 1.hour.ago)
+        end
+
+        it "clears cant_play_since when setting open to play" do
+          expect {
+            subject
+          }.to change { player.reload.cant_play_since }.to(nil)
+                                                       .and change { player.reload.open_to_play_since }.from(nil)
         end
       end
     end
@@ -97,32 +136,71 @@ RSpec.describe "Player::Players", type: :request do
   describe "POST /player/players/toggle_cant_play" do
     subject { post player_players_toggle_cant_play_path }
 
-    context "When player is logged in" do
-      before do
-        sign_in player
-      end
+    let!(:season) { create(:season) }
 
-      it "Sets timestamp to cant_play_since attribute and unsets timestamp from open_to_play_since attribute" do
-        player.update_column(:open_to_play_since, 2.days.ago)
+    it_behaves_like "player_request"
 
-        subject
+    context "when player is logged in" do
+      before { sign_in player }
 
-        player.reload
-        expect(player.cant_play_since).not_to be_nil
-        expect(player.open_to_play_since).to be_nil
-      end
+      context "when player can currently play" do
+        it "calls PlayerService#set_cant_play with false" do
+          service_double = instance_double(PlayerService,
+                                           set_cant_play: true,
+                                           get_players_open_to_play: Player.none)
+          allow(PlayerService).to receive(:new).and_return(service_double)
 
-      context "When cant_play_since is already set" do
-        before do
-          player.update_column(:cant_play_since, 2.days.ago)
-        end
-
-        it "Sets nil to cant_play_since attribute" do
           subject
 
-          player.reload
-          expect(player.cant_play_since).to be_nil
-          expect(player.open_to_play_since).to be_nil
+          expect(service_double).to have_received(:set_cant_play).with(player, false)
+          expect(response).to have_http_status(:success)
+        end
+
+        it "sets player as cant play" do
+          expect {
+            subject
+          }.to change { player.reload.cant_play_since }.from(nil)
+        end
+
+        it "broadcasts the update" do
+          expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).twice
+          subject
+        end
+      end
+
+      context "when player currently cant play" do
+        before do
+          player.update(cant_play_since: 1.hour.ago)
+        end
+
+        it "calls PlayerService#set_cant_play with true" do
+          service_double = instance_double(PlayerService,
+                                           set_cant_play: true,
+                                           get_players_open_to_play: Player.none)
+          allow(PlayerService).to receive(:new).and_return(service_double)
+
+          subject
+
+          expect(service_double).to have_received(:set_cant_play).with(player, true)
+        end
+
+        it "removes cant play flag" do
+          expect {
+            subject
+          }.to change { player.reload.cant_play_since }.to(nil)
+        end
+      end
+
+      context "when player has open_to_play_since set" do
+        before do
+          player.update(open_to_play_since: 1.hour.ago)
+        end
+
+        it "clears open_to_play_since when setting cant play" do
+          expect {
+            subject
+          }.to change { player.reload.open_to_play_since }.to(nil)
+                                                          .and change { player.reload.cant_play_since }.from(nil)
         end
       end
     end
