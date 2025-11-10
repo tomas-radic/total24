@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'shared_examples/player_examples'
 
 RSpec.describe "Player::Notifications", type: :request do
   let!(:player) { create(:player, name: "Player") }

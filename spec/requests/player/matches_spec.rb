@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'shared_examples/player_examples'
 
 RSpec.describe "Player::Matches", type: :request do
   let!(:season) { create(:season) }
