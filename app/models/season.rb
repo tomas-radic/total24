@@ -37,7 +37,7 @@ class Season < ApplicationRecord
     result = players.includes(:tags, :enrollments)
 
     played_matches = matches.published.finished.reviewed.singles
-                            .order(:finished_at).includes(assignments: :player)
+                            .order(:finished_at).includes(:assignments)
 
     played_matches.each do |match|
       player1 = result.find { |p| p.id == match.assignments.find { |a| a.side == 1 }.player_id }
