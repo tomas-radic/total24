@@ -14,7 +14,7 @@ class TodayController < ApplicationController
   def load_matches
     season_matches = selected_season.matches.published.ranking_counted
                                     .order(play_date: :asc, play_time: :asc, updated_at: :desc)
-                                    .includes(:reactions, :comments, :reacted_players, :place,
+                                    .includes(:reactions, :comments, :players,
                                               :predictions, assignments: :player)
 
     @requested_matches = season_matches.select do |match|

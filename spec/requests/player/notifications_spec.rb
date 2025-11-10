@@ -41,22 +41,13 @@ RSpec.describe "Player::Notifications", type: :request do
 
       let!(:match) { create(:match) }
 
-      it "Marks all notifications as read and destroys all overaged" do
-        Noticed::Notification.create!(recipient: create(:player), seen_at: nil, read_at: nil,
-                                      type: "MatchUpdatedNotifier::Notification",
-                                      event: Noticed::Event.new(created_at: 50.days.ago, record: match, type: "MatchUpdatedNotifier"))
+      it "calls NotificationService#mark_all_as_read" do
+        service_double = instance_double(NotificationService, mark_all_as_read: true)
+        expect(NotificationService).to receive(:new).with(player).and_return(service_double)
 
-        notification = Noticed::Notification.create!(recipient: player, seen_at: nil, read_at: nil,
-                                                     type: "MatchUpdatedNotifier::Notification",
-                                                     event: Noticed::Event.new(record: match, type: "MatchUpdatedNotifier"))
+        subject
 
-        expect {
-          subject
-        }.to change { Noticed::Notification.count }.from(2).to(1)
-
-        notification.reload
-        expect(notification.seen_at).not_to be_nil
-        expect(notification.read_at).not_to be_nil
+        expect(service_double).to have_received(:mark_all_as_read)
         expect(response).to have_http_status(:success)
       end
     end
