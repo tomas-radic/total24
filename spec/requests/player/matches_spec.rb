@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Player::Matches", type: :request do
+  before do
+    get new_player_session_path
+  end
+
   let!(:season) { create(:season) }
   let!(:player) { create(:player, name: "Player", seasons: [season]) }
 
@@ -66,7 +70,9 @@ RSpec.describe "Player::Matches", type: :request do
     it_behaves_like "player_request"
 
     context "when player is logged in and authorized" do
-      before { sign_in player }
+      before do
+        sign_in player
+      end
 
       it "renders edit template" do
         subject

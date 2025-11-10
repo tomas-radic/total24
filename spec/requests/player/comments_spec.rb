@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Player::Comments", type: :request do
+  before do
+    get new_player_session_path
+  end
 
   let!(:season) { create(:season) }
   let!(:match) { create(:match, competitable: season) }

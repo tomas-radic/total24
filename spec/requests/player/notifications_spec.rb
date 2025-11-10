@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Player::Notifications", type: :request do
+  before do
+    get new_player_session_path
+  end
+
   let!(:player) { create(:player, name: "Player") }
 
   describe "GET /player/notifications" do

@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe "Player::Players", type: :request do
+  before do
+    get new_player_session_path
+  end
 
   let!(:player) { create(:player, name: "Player", email: "player@somewhere.com") }
 

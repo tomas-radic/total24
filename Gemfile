@@ -80,7 +80,7 @@ end
 gem 'pg'
 gem 'faker'
 # gem 'hotwire-rails'
-gem 'devise'
+gem 'devise', github: 'heartcombo/devise', branch: 'main'
 gem 'acts_as_list'
 gem 'pundit'
 gem 'gravatar_image_tag'
