@@ -1,8 +1,18 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
+# Remove pre-existing server.pid if it exists
+if [ -f tmp/pids/server.pid ]; then
+  rm tmp/pids/server.pid
 fi
 
-exec "${@}"
+# Wait for database to be ready
+until pg_isready -h db -U postgres; do
+  echo "Waiting for database to be ready..."
+  sleep 2
+done
+
+# Create database if it doesn't exist
+bundle exec rails db:prepare
+
+# Execute the main process
+exec "$@"
