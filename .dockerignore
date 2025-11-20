@@ -2,6 +2,39 @@
 
 # Ignore git directory.
 /.git/
+.git
+.gitignore
+
+# Documentation
+README.md
+CHANGELOG.md
+
+# Development/test files
+.rspec
+spec
+test
+tmp
+log/*
+storage/*
+
+# Build artifacts
+*.log
+*.pid
+*.seed
+*.sqlite3
+*.sqlite3-journal
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
 
 # Ignore bundler config.
 /.bundle
