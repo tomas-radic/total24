@@ -13,7 +13,7 @@
     </div>
     <% if player %>
       <div class="page-controls__buttons">
-        <% if match.requested? %>
+        <% if match.requested? && !match.accepted? && !match.rejected? %>
           <div>
             <% if MatchPolicy.new(player, match).accept? %>
               <%= link_to "Odmietnuť",
@@ -59,7 +59,7 @@
         <%= match.looser_name(privacy:) %> zápas skrečoval<small>/a</small>.
       </p>
     <% end %>
-  <% elsif match.requested? %>
+  <% elsif match.requested? && !match.accepted? && !match.rejected? %>
     <p class="text-center">
       Na túto výzvu <%= match.side_name(2, privacy:) %> zatiaľ nereagoval<small>/a</small>.
     </p>

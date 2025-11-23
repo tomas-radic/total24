@@ -105,9 +105,8 @@ class MatchPolicy < ApplicationPolicy
     if record.competitable.is_a?(Season)
       return false unless record.assignments.find { |a| a.player_id == user.id }
       return false if record.canceled?
-      return false if record.finished?
       return false if record.rejected?
-      return false if record.requested?
+      return false if record.finished?
       true
     else
       false

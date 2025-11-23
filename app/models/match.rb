@@ -1,10 +1,12 @@
 class Match < ApplicationRecord
   include Reactions
 
+  #region Callbacks
   before_validation :set_defaults
   after_commit :broadcast, if: Proc.new { |match| match.published_at.present? }
+  #endregion Callbacks
 
-  # Relations -----
+  #region Relations
   belongs_to :competitable, polymorphic: true
   belongs_to :place, optional: true
   has_many :assignments, dependent: :destroy
@@ -13,8 +15,9 @@ class Match < ApplicationRecord
   belongs_to :canceled_by, class_name: "Player", optional: true
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
   has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
+  #endregion Relations
 
-  # Validations -----
+  #region Validations
   validates :kind, presence: true
   validates :winner_side, inclusion: { in: [1, 2] }, if: Proc.new { |m| m.finished_at }
   validates :rejected_at, absence: true, if: Proc.new { |m| m.accepted_at }
@@ -39,8 +42,9 @@ class Match < ApplicationRecord
   validate :result_state, if: Proc.new { |m| m.finished_at }
   validate :player_assignments
   validate :existing_matches, if: Proc.new { |m| m.single? && m.finished_at.blank? && m.competitable_type == "Season" }
+  #endregion Validations
 
-  # Enums -----
+  #region Enums
   enum :kind, {
     single: 0,
     double: 1
@@ -52,8 +56,9 @@ class Match < ApplicationRecord
     "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30",
     "21:00", "21:30", "22:00"
   ]
+  #endregion Enums
 
-  # Scopes
+  #region Scopes
   scope :sorted, -> { order(finished_at: :desc) }
   scope :published, -> { where.not(published_at: nil) }
   scope :requested, -> { where.not(requested_at: nil).where(accepted_at: nil, rejected_at: nil, canceled_at: nil) }
@@ -67,6 +72,7 @@ class Match < ApplicationRecord
   scope :ranking_counted, -> { where(ranking_counted: true) }
   scope :singles, -> { where(kind: "single") }
   scope :doubles, -> { where(kind: "double") }
+  #endregion Scopes
 
   def played_3rd_set?
     set3_side1_score.present? || set3_side2_score.present?
@@ -137,7 +143,7 @@ class Match < ApplicationRecord
   end
 
   def requested?
-    requested_at && accepted_at.blank? && rejected_at.blank? && finished_at.blank?
+    requested_at.present?
   end
 
   def accepted?
