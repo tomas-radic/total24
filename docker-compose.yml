@@ -35,6 +35,8 @@ services:
       - .:/rails
       - bundle_cache:/usr/local/bundle
       - node_modules:/rails/node_modules
+      - .:/app
+      - ./public:/app/public
     ports:
       - "3000:3000"
     environment:
