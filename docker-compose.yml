@@ -30,7 +30,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
+    command: bundle exec rails server -b 0.0.0.0 -p 3000 -e production
     volumes:
       - .:/rails
       - bundle_cache:/usr/local/bundle
@@ -38,10 +38,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/total24_production
-      REDIS_URL: redis://redis:6379/0
-      RAILS_ENV: production
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/total24_production"
+      REDIS_URL: "redis://redis:6379/0"
+      RAILS_ENV: "production"
       RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
     depends_on:
       db:
