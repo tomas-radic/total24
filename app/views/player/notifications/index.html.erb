@@ -1,8 +1,14 @@
 <div class="page__content">
-  <div class="mb-4">
-    <%= render "player/notifications/mark_all_read", text: "označ ako prečítané" %>
-  </div>
-  <div id="notifications-list">
-    <%= render "player/notifications/index_list", player: current_player %>
-  </div>
+  <% if current_player.notifications.any? %>
+    <div class="mb-4">
+      <%= render "player/notifications/mark_all_read", text: "označ ako prečítané" %>
+    </div>
+    <div id="notifications-list">
+      <%= render "player/notifications/index_list", player: current_player %>
+    </div>
+  <% else %>
+    <div class="mb-2">
+      Žiadne notifikácie
+    </div>
+  <% end %>
 </div>
