@@ -8,11 +8,14 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DB_HOST") { "db" } %>
+  username: <%= ENV.fetch("DB_USER") { "" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "" } %>
   timeout: 5000
 
 development:
   <<: *default
-  database: total24_development
+  database: total24_dev
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -23,5 +26,5 @@ test:
 
 production:
   <<: *default
-  database: total24_production
+  database: total24_prod
   url: <%= ENV['DATABASE_URL'] %>

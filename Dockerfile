@@ -1,0 +1,23 @@
+FROM ruby:3.3.6
+
+# Install dependencies (includes dev tools)
+RUN apt-get update -qq && apt-get install -y \
+    postgresql-client \
+    vim \
+    less \
+    git
+
+WORKDIR /app
+
+# Install gems (no deployment flag, includes development/test groups)
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copy application code (often skipped since we use bind mounts)
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Run as root (easier with bind mounts)
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]
