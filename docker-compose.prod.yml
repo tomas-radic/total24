@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3001:3000"  # Unique host port
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@localhost:5432/total24_prod
+      - REDIS_URL=redis://localhost:6379/0
+    network_mode: host  # Use host network to reach shared services
+    restart: unless-stopped

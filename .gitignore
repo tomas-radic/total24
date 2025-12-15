@@ -35,4 +35,25 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-.idea/
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
+
+# Environment files
+.env*
+!.env.example
+
+# Node modules
+/node_modules
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
+# Ignore uploaded files
+/public/uploads
+
+# IDEs
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.idea

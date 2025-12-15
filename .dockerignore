@@ -4,6 +4,7 @@
 /.git/
 .git
 .gitignore
+.github
 
 # Documentation
 README.md
@@ -26,7 +27,7 @@ storage/*
 
 # Docker
 .dockerignore
-Dockerfile
+Dockerfile.dev
 docker-compose.yml
 
 # Editor files
@@ -42,6 +43,7 @@ docker-compose.yml
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
+.env*
 
 # Ignore all default key files.
 /config/master.key
@@ -50,6 +52,7 @@ docker-compose.yml
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
+tmp/*
 !/log/.keep
 !/tmp/.keep
 
@@ -68,3 +71,10 @@ docker-compose.yml
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /public/assets
+
+.kamal
+.DS_Store
+node_modules/
+coverage/
+spec/
+test/
