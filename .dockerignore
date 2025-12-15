@@ -27,8 +27,6 @@ storage/*
 
 # Docker
 .dockerignore
-Dockerfile.dev
-docker-compose.yml
 
 # Editor files
 .vscode

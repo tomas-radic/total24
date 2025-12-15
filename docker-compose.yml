@@ -1,45 +1,36 @@
 services:
-  db:
-    image: postgres:17
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"  # Exposed for debugging tools
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"  # Solid Cache/Queue/Cable use Redis
-    volumes:
-      - redis_data:/data
-
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0"
-    volumes:
-      - .:/app                          # Bind mount for live reloading
-      - bundle_cache:/usr/local/bundle  # Cache gems
-      - node_modules:/app/node_modules  # Cache node modules
-    ports:
-      - "3000:3000"  # Rails server
+  total24:
+    build: .
+    container_name: total24
     env_file: .env
-#    environment:
-#      DATABASE_HOST: db  # This should match your postgres service name
-#      DATABASE_USER: ${DB_USER}
-#      DATABASE_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db
       - redis
-    stdin_open: true   # For debugger
-    tty: true
+    networks:
+      - web
+      - internal
+    restart: unless-stopped
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: total24_production
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  redis:
+    image: redis:7
+    networks:
+      - internal
 
 volumes:
-  postgres_data:
-  redis_data:
-  bundle_cache:
-  node_modules:
+  pgdata:
+
+networks:
+  web:
+    external: true
+  internal:
