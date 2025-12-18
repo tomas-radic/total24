@@ -90,3 +90,4 @@ gem 'net-smtp'
 gem 'sassc'
 gem "solid_cable", "~> 3.0"
 gem "noticed", "~> 2.8"
+gem "image_processing", "~> 1.2"
