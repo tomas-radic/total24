@@ -55,7 +55,7 @@ RUN bundle exec bootsnap precompile -j 1 app/ lib/
 RUN SECRET_KEY_BASE_DUMMY=1 \
     RAILS_ENV=production \
     DATABASE_URL=nulldb://user:pass@localhost/db \
-    ./bin/rails assets:precompile
+    ./bin/rails assets:precompile --verbose
 
 
 
