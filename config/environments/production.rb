@@ -4,6 +4,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   config.secret_key_base = ENV['SECRET_KEY_BASE']
+  config.assets.initialize_on_precompile = false if ENV['ASSETS_PRECOMPILE']
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
