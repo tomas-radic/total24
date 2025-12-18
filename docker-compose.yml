@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:18.1-alpine3.23
+    container_name: postgres_db
+    restart: unless-stopped
+    user: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-myapp_development}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+#  redis:
+#    image: redis:7-alpine
+#    container_name: redis_cache
+#    restart: unless-stopped
+#    ports:
+#      - "${REDIS_PORT:-6379}:6379"
+#    volumes:
+#      - redis_data:/data
+#    command: redis-server --appendonly yes
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+
+  # Optional: pgAdmin for database management
+#  pgadmin:
+#    image: dpage/pgadmin4:latest
+#    container_name: pgadmin
+#    restart: unless-stopped
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+#      PGADMIN_CONFIG_SERVER_MODE: 'False'
+#    ports:
+#      - "${PGADMIN_PORT:-5050}:80"
+#    volumes:
+#      - pgadmin_data:/var/lib/pgadmin
+#    depends_on:
+#      - postgres
+
+volumes:
+  postgres_data:
+  redis_data:
+  pgadmin_data:
