@@ -21,10 +21,10 @@
 
     <p class="u-text-justify">
       Vyzvať môže ktokoľvek kohokoľvek.<br>
-      <% if @last_season&.max_matches_with_opponent > 0 %>
+      <% if @last_season&.max_matches_with_opponent.to_i > 0 %>
         Max. počet vzájomných zápasov dvoch hráčov za sezónu je <%= @last_season&.max_matches_with_opponent %>.<br>
       <% end %>
-      <% if @last_season&.max_pending_matches > 0 %>
+      <% if @last_season&.max_pending_matches.to_i > 0 %>
         Max. počet čakajúcich, ešte neodohratých zápasov (tzn. výziev, kt. hráč dal, alebo dostal) je <%= @last_season&.max_pending_matches %>.<br>
       <% end %>
     </p>
