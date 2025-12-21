@@ -47,9 +47,9 @@
     <% end %>
 
     <% if current_player && current_player.id != player.id %>
-      <% if ENV["MAX_MATCHES_WITH_OPPONENT"].present? %>
+      <% if selected_season.max_matches_with_opponent > 0 %>
         <p class="text-center">
-          Max. počet zápasov s jedným súperom v sezóne je <%= ENV["MAX_MATCHES_WITH_OPPONENT"] %>.
+          Max. počet zápasov s jedným súperom v sezóne je <%= selected_season.max_matches_with_opponent %>.
         </p>
       <% end %>
 
@@ -57,9 +57,9 @@
         <p class="text-center">
           S týmto hráčom<small>/kou</small> ťa čaká zápas.
         </p>
-      <% elsif ENV["MAX_PENDING_MATCHES"].present? && (@pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i || @cp_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i) %>
+      <% elsif (@pending_matches.size >= selected_season.max_pending_matches || @cp_pending_matches.size >= selected_season.max_pending_matches) %>
         <p class="text-center">
-          Jeden z vás má dosiahnutý maximálny počet plánovaných neodohratých zápasov (<%= ENV["MAX_PENDING_MATCHES"] %>).
+          Jeden z vás má dosiahnutý maximálny počet plánovaných neodohratých zápasov (<%= selected_season.max_pending_matches %>).
         </p>
       <% end %>
     <% end %>

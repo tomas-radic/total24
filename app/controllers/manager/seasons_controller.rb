@@ -39,9 +39,10 @@ class Manager::SeasonsController < Manager::BaseController
 
   def whitelisted_params
     params.require(:season).permit(
-      :name, :play_off_size,
-      :points_single_20, :points_single_21, :points_single_02, :points_single_12,
-      :points_double_20, :points_double_21, :points_double_02, :points_double_12,
-      :ended_at)
+      :name,
+      :ended_at,
+      :performance_play_off_size, :regular_a_play_off_size, :regular_b_play_off_size,
+      :performance_player_tag_label,
+      :play_off_conditions, :play_off_min_matches_count)
   end
 end

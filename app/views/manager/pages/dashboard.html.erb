@@ -106,42 +106,7 @@ Reloaded at <%= Time.now.in_time_zone.to_s %>
 
       <hr class="my-4">
 
-      <li>
-        Počet hráčov do PLAY-OFF:
-        <%= @managed_season.play_off_size %>
-      </li>
-      <li>
-        Body za výhru 2:0 v 2hre:
-        <%= @managed_season.points_single_20 %>
-      </li>
-      <li>
-        Body za výhru 2:1 v 2hre:
-        <%= @managed_season.points_single_21 %>
-      </li>
-      <li>
-        Body za prehru 0:2 v 2hre:
-        <%= @managed_season.points_single_02 %>
-      </li>
-      <li>
-        Body za prehru 1:2 v 2hre:
-        <%= @managed_season.points_single_12 %>
-      </li>
-      <li>
-        Body za výhru 2:0 vo 4hre:
-        <%= @managed_season.points_double_20 %>
-      </li>
-      <li>
-        Body za výhru 2:1 vo 4hre:
-        <%= @managed_season.points_double_21 %>
-      </li>
-      <li>
-        Body za prehru 0:2 vo 4hre:
-        <%= @managed_season.points_double_02 %>
-      </li>
-      <li>
-        Body za prehru 1:2 vo 4hre:
-        <%= @managed_season.points_double_12 %>
-      </li>
+
     </ul>
     <div class="text-center py-2">
       <%= link_to "Zmeniť údaje",

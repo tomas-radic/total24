@@ -17,7 +17,7 @@ class Player < ApplicationRecord
   has_many :player_tags, dependent: :destroy
   has_many :tags, through: :player_tags
   has_many :notifications, dependent: :destroy, as: :recipient, class_name: "Noticed::Notification"
-  has_many :recent_unread_notifications, -> { unread.newest_first.limit((ENV["NOTIFICATIONS_DROPDOWN_SIZE"] || 8).to_i) },
+  has_many :recent_unread_notifications, -> { unread.newest_first.limit(Config.notifications_dropdown_size) },
            as: :recipient, class_name: "Noticed::Notification"
 
   # Validations -----

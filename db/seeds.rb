@@ -13,14 +13,6 @@ ActiveRecord::Base.transaction do
   puts "\nCreating season..."
   raise "Existing data" if Season.any?
   season = Season.create!(name: Date.today.year.to_s,
-                          points_single_20: 1,
-                          points_single_21: 1,
-                          points_single_12: 0,
-                          points_single_02: 0,
-                          points_double_20: 1,
-                          points_double_21: 1,
-                          points_double_12: 0,
-                          points_double_02: 0,
                           play_off_conditions: "Zápasy sa hrajú do konca augusta, potom sa rebríček uzavrie. Na základe rebríčka z konca augusta sú hráči nominovaní do Play Off, ktoré sa odohrá v septembri. V Play Off sa hrajú 3 samostatné turnajové pavúky. Štyria najvyššie postavení hráči označení ako \"reg.\", tzn. registrovaní hráči hrajú svoj vlastný pavúk registrovaných hráčov. Ostatní hráči, tzn. neregistrovaní hrajú dva pavúky - pavúk A, do ktorého sú nominovaní ôsmi najvyššie postavení neregistrovaní hráči rebríčka a pavúk B, kde sú nominovaní ďalší 16-ti neregistrovaní hráči. To znamená, celkovo 24 neregistrovaných hráčov hrá Play Off. POZOR! Do všetkých pavúkov Play Off sú prioritizovaní tí hráči, ktorí za sezónu odohrali aspoň 10 zápasov počas leta! To znamená, že hráč, ktorý by rebríčkovo nebol nominovaný do Play Off, ale splnil túto podmienku vystrieda najnižšie postaveného nominovaného hráča, ktorý túto podmienku nesplnil.")
 
 

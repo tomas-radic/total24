@@ -6,18 +6,6 @@ module ApplicationHelper
   end
 
 
-  def ranking_row_css(season, position)
-    result = ""
-
-    if position > season.play_off_size
-      result += "text-gray-400"
-      result += " border-yellow-400 border-solid border-t-4" if (position - 1) == season.play_off_size
-    end
-
-    result
-  end
-
-
   def app_date(datetime, prefix: false, vertical: false)
     result = ""
     return result if datetime.blank?

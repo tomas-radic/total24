@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_10_164236) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_21_105932) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -216,20 +216,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_10_164236) do
   create_table "seasons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "ended_at"
+    t.integer "max_matches_with_opponent", default: 2, null: false
+    t.integer "max_pending_matches", default: 3, null: false
     t.string "name", null: false
     t.integer "performance_play_off_size", default: 4, null: false
     t.string "performance_player_tag_label", default: "reg.", null: false
     t.text "play_off_conditions"
     t.integer "play_off_min_matches_count", default: 10, null: false
-    t.integer "play_off_size", default: 8, null: false
-    t.integer "points_double_02", null: false
-    t.integer "points_double_12", null: false
-    t.integer "points_double_20", null: false
-    t.integer "points_double_21", null: false
-    t.integer "points_single_02", null: false
-    t.integer "points_single_12", null: false
-    t.integer "points_single_20", null: false
-    t.integer "points_single_21", null: false
     t.integer "position", null: false
     t.integer "regular_a_play_off_size", default: 8, null: false
     t.integer "regular_b_play_off_size", default: 16, null: false

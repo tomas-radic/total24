@@ -14,16 +14,16 @@ class MatchPolicy < ApplicationPolicy
     requesting_player_pending_matches = requesting_player.matches.in_season(season).published.pending
     return false if (requested_player_pending_matches.ids & requesting_player_pending_matches.ids).present?
 
-    if ENV["MAX_PENDING_MATCHES"].present?
-      return false if requesting_player_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i
-      return false if requested_player_pending_matches.size >= ENV["MAX_PENDING_MATCHES"].to_i
+    if season.max_pending_matches > 0
+      return false if requesting_player_pending_matches.size >= season.max_pending_matches
+      return false if requested_player_pending_matches.size >= season.max_pending_matches
     end
 
-    if ENV['MAX_MATCHES_WITH_OPPONENT'].present?
+    if season.max_matches_with_opponent > 0
       requested_player_completed_matches = requested_player.matches.in_season(season).published.reviewed
       requesting_player_completed_matches = requesting_player.matches.in_season(season).published.reviewed
 
-      return false if (requested_player_completed_matches.ids & requesting_player_completed_matches.ids).length >= ENV['MAX_MATCHES_WITH_OPPONENT'].to_i
+      return false if (requested_player_completed_matches.ids & requesting_player_completed_matches.ids).length >= season.max_matches_with_opponent
     end
 
     true

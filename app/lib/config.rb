@@ -4,4 +4,8 @@ module Config
   def notifications_max_age_days
     (ENV["NOTIFICATIONS_MAX_AGE_DAYS"] || 45).to_i
   end
+
+  def notifications_dropdown_size
+    (ENV["NOTIFICATIONS_DROPDOWN_SIZE"] || 8).to_i
+  end
 end
