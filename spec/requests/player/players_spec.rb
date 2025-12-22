@@ -67,22 +67,11 @@ RSpec.describe "Player::Players", type: :request do
       before { sign_in player }
 
       context "when player is not currently open to play" do
-        it "calls PlayerService#set_open_to_play with true" do
-          service_double = instance_double(PlayerService,
-                                           set_open_to_play: true,
-                                           get_players_open_to_play: Player.none)
-          allow(PlayerService).to receive(:new).and_return(service_double)
-
-          subject
-
-          expect(service_double).to have_received(:set_open_to_play).with(player, true)
-          expect(response).to have_http_status(:success)
-        end
-
         it "sets player as open to play" do
           expect {
             subject
           }.to change { player.reload.open_to_play_since }.from(nil)
+          expect(response).to have_http_status(:success)
         end
 
         it "broadcasts the update" do
@@ -94,17 +83,6 @@ RSpec.describe "Player::Players", type: :request do
       context "when player is currently open to play" do
         before do
           player.update(open_to_play_since: 1.hour.ago)
-        end
-
-        it "calls PlayerService#set_open_to_play with false" do
-          service_double = instance_double(PlayerService,
-                                           set_open_to_play: true,
-                                           get_players_open_to_play: Player.none)
-          allow(PlayerService).to receive(:new).and_return(service_double)
-
-          subject
-
-          expect(service_double).to have_received(:set_open_to_play).with(player, false)
         end
 
         it "removes player from open to play" do
@@ -147,22 +125,11 @@ RSpec.describe "Player::Players", type: :request do
       before { sign_in player }
 
       context "when player can currently play" do
-        it "calls PlayerService#set_cant_play with false" do
-          service_double = instance_double(PlayerService,
-                                           set_cant_play: true,
-                                           get_players_open_to_play: Player.none)
-          allow(PlayerService).to receive(:new).and_return(service_double)
-
-          subject
-
-          expect(service_double).to have_received(:set_cant_play).with(player, false)
-          expect(response).to have_http_status(:success)
-        end
-
         it "sets player as cant play" do
           expect {
             subject
           }.to change { player.reload.cant_play_since }.from(nil)
+          expect(response).to have_http_status(:success)
         end
 
         it "broadcasts the update" do
@@ -174,17 +141,6 @@ RSpec.describe "Player::Players", type: :request do
       context "when player currently cant play" do
         before do
           player.update(cant_play_since: 1.hour.ago)
-        end
-
-        it "calls PlayerService#set_cant_play with true" do
-          service_double = instance_double(PlayerService,
-                                           set_cant_play: true,
-                                           get_players_open_to_play: Player.none)
-          allow(PlayerService).to receive(:new).and_return(service_double)
-
-          subject
-
-          expect(service_double).to have_received(:set_cant_play).with(player, true)
         end
 
         it "removes cant play flag" do

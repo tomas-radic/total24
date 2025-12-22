@@ -22,22 +22,23 @@ RSpec.describe "Player::Matches", type: :request do
 
       context "when authorized" do
         it "calls MatchService#create and redirects on success" do
-          service_double = instance_double(MatchService, create: true, match: build_stubbed(:match))
-          allow(MatchService).to receive(:new).with(player).and_return(service_double)
-
-          subject
-
-          expect(service_double).to have_received(:create).with(season, requested_player)
-          expect(response).to redirect_to(match_path(service_double.match))
+          expect { subject }.to change(Match, :count).by(1)
+          expect(response).to redirect_to(match_path(Match.last))
         end
 
         it "calls MatchService#create and redirects on failure" do
-          service_double = instance_double(MatchService, create: false, match: nil)
-          allow(MatchService).to receive(:new).with(player).and_return(service_double)
-
+          # To cause failure, we can try to create a match with a player that doesn't exist or similar,
+          # but here it's easier to just use a non-existent player_id or something that fails validation.
+          # MatchService#create takes a requested_player object.
+          # In the controller: @requested_player = Player.find(params[:player_id])
+          # If we want it to reach service but fail, Match.save must be false.
+          
+          # Let's mock only the save call if we must, but the goal is "wherever possible".
+          # If Match.save fails naturally, it's better.
+          # Match validation: maybe missing season? but post goes to season-scoped matches.
+          
+          allow_any_instance_of(Match).to receive(:save).and_return(false)
           subject
-
-          expect(service_double).to have_received(:create).with(season, requested_player)
           expect(response).to redirect_to(player_path(requested_player))
         end
       end
@@ -119,22 +120,17 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       it "calls MatchService#update and redirects on success" do
-        service_double = instance_double(MatchService, update: true)
-        allow(MatchService).to receive(:new).with(player).and_return(service_double)
-
         subject
 
-        expect(service_double).to have_received(:update).with(match, anything)
+        expect(match.reload.notes).to eq("A note about this match.")
         expect(response).to redirect_to(match_path(match))
       end
 
       it "calls MatchService#update and renders edit on failure" do
-        service_double = instance_double(MatchService, update: false)
-        allow(MatchService).to receive(:new).with(player).and_return(service_double)
+        allow_any_instance_of(Match).to receive(:update).and_return(false)
 
         subject
 
-        expect(service_double).to have_received(:update).with(match, anything)
         expect(response).to render_template(:edit)
       end
     end
@@ -207,23 +203,20 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player2 }
 
       it "calls MatchService#accept and redirects on success" do
-        service_double = instance_double(MatchService, accept: true, errors: [])
-        allow(MatchService).to receive(:new).with(player2).and_return(service_double)
-
         subject
 
-        expect(service_double).to have_received(:accept).with(match)
+        expect(match.reload.accepted_at).to be_present
         expect(response).to redirect_to(match_path(match))
       end
 
       it "calls MatchService#accept and redirects with alert on failure" do
-        service_double = instance_double(MatchService, accept: false, errors: ["Error message"])
-        allow(MatchService).to receive(:new).with(player2).and_return(service_double)
+        allow_any_instance_of(Match).to receive(:update).and_return(false)
+        allow_any_instance_of(ActiveModel::Errors).to receive(:full_messages).and_return(["Error message"])
 
         subject
 
-        expect(service_double).to have_received(:accept).with(match)
         expect(response).to redirect_to(match_path(match))
+        expect(flash[:alert]).to eq("Error message")
       end
     end
 
@@ -256,12 +249,9 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player2 }
 
       it "calls MatchService#reject and redirects" do
-        service_double = instance_double(MatchService, reject: true, errors: [])
-        allow(MatchService).to receive(:new).with(player2).and_return(service_double)
-
         subject
 
-        expect(service_double).to have_received(:reject).with(match)
+        expect(match.reload.rejected_at).to be_present
         expect(response).to redirect_to(match_path(match))
       end
     end
@@ -330,22 +320,17 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       it "calls MatchService#finish and redirects on success" do
-        service_double = instance_double(MatchService, finish: true, errors: [])
-        allow(MatchService).to receive(:new).with(player).and_return(service_double)
-
         subject
 
-        expect(service_double).to have_received(:finish).with(match, hash_including("score" => "64"))
+        expect(match.reload.finished_at).to be_present
         expect(response).to redirect_to(match_path(match))
       end
 
       it "calls MatchService#finish and renders finish_init on failure" do
-        service_double = instance_double(MatchService, finish: false, errors: ["Error"])
-        allow(MatchService).to receive(:new).with(player).and_return(service_double)
+        params[:score] = "invalid"
 
         subject
 
-        expect(service_double).to have_received(:finish).with(match, hash_including("score" => "64"))
         expect(response).to render_template(:finish_init)
       end
     end
@@ -380,12 +365,9 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player2 }
 
       it "calls MatchService#cancel and redirects" do
-        service_double = instance_double(MatchService, cancel: true, errors: [])
-        allow(MatchService).to receive(:new).with(player2).and_return(service_double)
-
         subject
 
-        expect(service_double).to have_received(:cancel).with(match)
+        expect(match.reload.canceled_at).to be_present
         expect(response).to redirect_to(match_path(match))
       end
     end
@@ -412,12 +394,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       it "calls MatchService#toggle_reaction and responds with turbo stream" do
-        service_double = instance_double(MatchService, toggle_reaction: match)
-        allow(MatchService).to receive(:new).with(player).and_return(service_double)
-
-        subject
-
-        expect(service_double).to have_received(:toggle_reaction).with(match)
+        expect { subject }.to change(Reaction, :count).by(1)
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       end
     end
@@ -435,12 +412,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       it "calls MatchService#switch_prediction and responds with turbo stream" do
-        service_double = instance_double(MatchService, switch_prediction: match)
-        allow(MatchService).to receive(:new).with(player).and_return(service_double)
-
-        subject
-
-        expect(service_double).to have_received(:switch_prediction).with(match, "2")
+        expect { subject }.to change(Prediction, :count).by(1)
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       end
     end

@@ -30,26 +30,26 @@ RSpec.describe MatchService do
       end
 
       it 'sets the current player as challenger (side 1)' do
-        subject
-        challenger_assignment = service.match.assignments.find_by(side: 1)
+        result = subject
+        challenger_assignment = result.value.assignments.find_by(side: 1)
         expect(challenger_assignment.player).to eq(current_player)
       end
 
       it 'sets the opponent as challenged (side 2)' do
-        subject
-        challenged_assignment = service.match.assignments.find_by(side: 2)
+        result = subject
+        challenged_assignment = result.value.assignments.find_by(side: 2)
         expect(challenged_assignment.player).to eq(opponent)
       end
 
       it 'sets requested_at and published_at' do
-        subject
-        expect(service.match.requested_at).to be_present
-        expect(service.match.published_at).to be_present
+        result = subject
+        expect(result.value.requested_at).to be_present
+        expect(result.value.published_at).to be_present
       end
 
       it 'sets ranking_counted to true' do
-        subject
-        expect(service.match.ranking_counted).to be true
+        result = subject
+        expect(result.value.ranking_counted).to be true
       end
 
       it 'clears cant_play_since for the current player' do
@@ -64,34 +64,25 @@ RSpec.describe MatchService do
         subject
       end
 
-      it 'returns true' do
-        expect(subject).to be true
+      it 'returns success result' do
+        expect(subject).to be_success
       end
 
       it 'exposes the created match' do
-        subject
-        expect(service.match).to be_a(Match)
-        expect(service.match).to be_persisted
+        result = subject
+        expect(result.value).to be_a(Match)
+        expect(result.value).to be_persisted
       end
     end
 
     context 'with invalid match data' do
-      before do
-        allow_any_instance_of(Match).to receive(:save).and_return(false)
-      end
-
       it 'does not save the match' do
-        expect { subject }.not_to change(Match, :count)
+        # Passing nil for season will make it invalid
+        expect { service.create(Season.new, opponent) }.not_to change(Match, :count)
       end
 
-      it 'returns false' do
-        expect(subject).to be false
-      end
-
-      it 'exposes the unsaved match' do
-        subject
-        expect(service.match).to be_a(Match)
-        expect(service.match).not_to be_persisted
+      it 'returns failure result' do
+        expect(service.create(Season.new, opponent)).to be_failure
       end
     end
   end
@@ -130,8 +121,8 @@ RSpec.describe MatchService do
         expect(match.place_id).to eq(place.id)
       end
 
-      it 'returns true' do
-        expect(subject).to be true
+      it 'returns success result' do
+        expect(subject).to be_success
       end
 
       context 'with another player who commented' do
@@ -214,23 +205,23 @@ RSpec.describe MatchService do
       subject
     end
 
-    it 'returns true' do
-      expect(subject).to be true
+    it 'returns success result' do
+      expect(subject).to be_success
     end
 
     context 'when update fails' do
       before do
-        allow(match).to receive(:update).and_return(false)
-        allow(match).to receive_message_chain(:errors, :full_messages).and_return(["Error message"])
+        allow_any_instance_of(Match).to receive(:update).and_return(false)
+        allow_any_instance_of(ActiveModel::Errors).to receive(:full_messages).and_return(["Error message"])
       end
 
-      it 'returns false' do
-        expect(subject).to be false
+      it 'returns failure result' do
+        expect(subject).to be_failure
       end
 
       it 'populates errors' do
-        subject
-        expect(service.errors).to include("Error message")
+        result = subject
+        expect(result.errors).to include("Error message")
       end
     end
   end
@@ -265,8 +256,8 @@ RSpec.describe MatchService do
       subject
     end
 
-    it 'returns true' do
-      expect(subject).to be true
+    it 'returns success result' do
+      expect(subject).to be_success
     end
   end
 
@@ -293,8 +284,8 @@ RSpec.describe MatchService do
         subject
       end
 
-      it 'returns true' do
-        expect(subject).to be true
+      it 'returns success result' do
+        expect(subject).to be_success
       end
     end
 
@@ -305,13 +296,13 @@ RSpec.describe MatchService do
         expect { subject }.not_to change { match.reload.finished_at }
       end
 
-      it 'returns false' do
-        expect(subject).to be false
+      it 'returns failure result' do
+        expect(subject).to be_failure
       end
 
       it 'populates errors' do
-        subject
-        expect(service.errors).not_to be_empty
+        result = subject
+        expect(result.errors).not_to be_empty
       end
     end
   end
@@ -325,10 +316,6 @@ RSpec.describe MatchService do
     end
 
     subject { service.cancel(match) }
-
-    before do
-      allow(match).to receive(:notification_recipients_for).and_return([opponent])
-    end
 
     it 'sets the canceled_at timestamp' do
       expect { subject }.to change { match.reload.canceled_at }.from(nil)
@@ -344,8 +331,8 @@ RSpec.describe MatchService do
       subject
     end
 
-    it 'returns true' do
-      expect(subject).to be true
+    it 'returns success result' do
+      expect(subject).to be_success
     end
   end
 

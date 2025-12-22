@@ -44,13 +44,17 @@ RSpec.describe "Player::Notifications", type: :request do
 
       let!(:match) { create(:match) }
 
-      it "calls NotificationService#mark_all_as_read" do
-        service_double = instance_double(NotificationService, mark_all_as_read: true)
-        expect(NotificationService).to receive(:new).with(player).and_return(service_double)
+      it "marks all as read" do
+        # Create a notification for the player
+        Noticed::Notification.create!(
+          recipient: player,
+          type: "MatchUpdatedNotifier::Notification",
+          event: Noticed::Event.create!(record: match, type: "MatchUpdatedNotifier")
+        )
 
-        subject
-
-        expect(service_double).to have_received(:mark_all_as_read)
+        expect {
+          subject
+        }.to change { player.notifications.unread.count }.from(1).to(0)
         expect(response).to have_http_status(:success)
       end
     end

@@ -1,17 +1,13 @@
-class MatchService
-  attr_reader :errors, :match
-
+class MatchService < ApplicationService
   def initialize(current_player)
     raise ArgumentError, "current_player is required" if current_player.nil?
 
     @current_player = current_player
-    @errors = []
-    @match = nil
   end
 
   def create(season, requested_player)
     now = Time.current
-    @match = season.matches.new(
+    match = season.matches.new(
       requested_at: now,
       published_at: now,
       ranking_counted: true,
@@ -21,15 +17,15 @@ class MatchService
       ]
     )
 
-    return false unless @match.save
+    return failure(match.errors.full_messages, value: match) unless match.save
 
     @current_player.update(cant_play_since: nil)
-    NewMatchNotifier.with(record: @match).deliver(requested_player)
-    true
+    NewMatchNotifier.with(record: match).deliver(requested_player)
+    success(match)
   end
 
   def update(match, params)
-    return false unless match.update(params)
+    return failure(match.errors.full_messages, value: match) unless match.update(params)
 
     broadcast_match_update(match)
 
@@ -37,23 +33,22 @@ class MatchService
     recipients = recipients.reject { |recipient| recipient.id == @current_player.id }
     MatchUpdatedNotifier.with(record: match).deliver(recipients)
 
-    true
+    success(match)
   end
 
   def accept(match)
-    success = false
+    errors = []
 
     ActiveRecord::Base.transaction do
       unless match.update(accepted_at: Time.current)
-        @errors += match.errors.full_messages
+        errors += match.errors.full_messages
         raise ActiveRecord::Rollback
       end
 
       match.players.update_all(open_to_play_since: nil)
-      success = true
     end
 
-    return false unless success
+    return failure(errors, value: match) if errors.any?
 
     players_open_to_play = Player.where.not(open_to_play_since: nil)
                                  .order(open_to_play_since: :desc)
@@ -64,18 +59,18 @@ class MatchService
     challenger = match.assignments.find { |a| a.side == 1 }.player
     MatchAcceptedNotifier.with(record: match).deliver(challenger)
 
-    true
+    success(match)
   end
 
   def reject(match)
-    return false unless match.update(rejected_at: Time.current)
+    return failure(match.errors.full_messages, value: match) unless match.update(rejected_at: Time.current)
 
     broadcast_match_update(match)
 
     challenger = match.assignments.find { |a| a.side == 1 }.player
     MatchRejectedNotifier.with(record: match).deliver(challenger)
 
-    true
+    success(match)
   end
 
   def finish(match, params)
@@ -88,15 +83,14 @@ class MatchService
       opponent = match.assignments.find { |a| a.player_id != @current_player.id }.player
       MatchFinishedNotifier.with(record: match, finished_by: @current_player).deliver(opponent)
 
-      true
+      success(match)
     else
-      @errors += match.errors.full_messages
-      false
+      failure(match.errors.full_messages, value: match)
     end
   end
 
   def cancel(match)
-    return false unless match.update(canceled_at: Time.current, canceled_by: @current_player)
+    return failure(match.errors.full_messages, value: match) unless match.update(canceled_at: Time.current, canceled_by: @current_player)
 
     broadcast_match_update(match)
 
@@ -104,7 +98,7 @@ class MatchService
     recipients = recipients.reject { |recipient| recipient.id == @current_player.id }
     MatchCanceledNotifier.with(record: match).deliver(recipients)
 
-    true
+    success(match)
   end
 
   def toggle_reaction(match)
@@ -116,7 +110,7 @@ class MatchService
       Reaction.create!(reactionable: match, player: @current_player)
     end
 
-    match.reload
+    success(match.reload)
   end
 
   def switch_prediction(match, side)
@@ -132,7 +126,7 @@ class MatchService
       match.predictions.create!(player: @current_player, side: side)
     end
 
-    match.reload
+    success(match.reload)
   end
 
   def mark_notifications_read(match)
@@ -140,6 +134,7 @@ class MatchService
     match.notifications.where(recipient: @current_player)
          .where(read_at: nil)
          .update_all(seen_at: now, read_at: now)
+    success
   end
 
   private

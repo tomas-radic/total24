@@ -41,7 +41,8 @@ class Player::PlayersController < Player::BaseController
   def broadcast_players_open_to_play
     return unless selected_season.present?
 
-    players_open_to_play = player_service.get_players_open_to_play(selected_season)
+    result = player_service.get_players_open_to_play(selected_season)
+    players_open_to_play = result.value
 
     Turbo::StreamsChannel.broadcast_update_to(
       "players_open_to_play",

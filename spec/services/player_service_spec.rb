@@ -96,12 +96,12 @@ RSpec.describe PlayerService do
     end
 
     it 'returns only players who are open to play' do
-      expect(subject.count).to eq(3)
-      expect(subject.pluck(:id)).to match_array(open_players.pluck(:id))
+      expect(subject.value.count).to eq(3)
+      expect(subject.value.pluck(:id)).to match_array(open_players.pluck(:id))
     end
 
     it 'orders players by open_to_play_since desc' do
-      expect(subject.first.open_to_play_since).to be > subject.last.open_to_play_since
+      expect(subject.value.first.open_to_play_since).to be > subject.value.last.open_to_play_since
     end
   end
 end

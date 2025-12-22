@@ -10,8 +10,9 @@ class Player::MatchesController < Player::BaseController
     end
 
     service = MatchService.new(current_player)
-    if service.create(selected_season, @requested_player)
-      redirect_with_message match_path(service.match), 'Výzva bola vytvorená.'
+    result = service.create(selected_season, @requested_player)
+    if result.success?
+      redirect_with_message match_path(result.value), 'Výzva bola vytvorená.'
     else
       redirect_with_message player_path(@requested_player), 'Výzvu sa nepodarilo vytvoriť.', :alert
     end
@@ -22,7 +23,8 @@ class Player::MatchesController < Player::BaseController
 
   def update
     service = MatchService.new(current_player)
-    if service.update(@match, whitelisted_params)
+    result = service.update(@match, whitelisted_params)
+    if result.success?
       redirect_with_message match_path(@match)
     else
       render_with_message :edit
@@ -36,19 +38,21 @@ class Player::MatchesController < Player::BaseController
 
   def accept
     service = MatchService.new(current_player)
-    if service.accept(@match)
+    result = service.accept(@match)
+    if result.success?
       redirect_to match_path(@match)
     else
-      redirect_to match_path(@match), alert: service.errors.join(", ")
+      redirect_to match_path(@match), alert: result.errors.join(", ")
     end
   end
 
   def reject
     service = MatchService.new(current_player)
-    if service.reject(@match)
+    result = service.reject(@match)
+    if result.success?
       redirect_to match_path(@match)
     else
-      redirect_to match_path(@match), alert: service.errors.join(", ")
+      redirect_to match_path(@match), alert: result.errors.join(", ")
     end
   end
 
@@ -59,7 +63,8 @@ class Player::MatchesController < Player::BaseController
     service = MatchService.new(current_player)
     params_to_finish = params.slice("score", "retired_player_id", "play_date", "place_id", "notes")
 
-    if service.finish(@match, params_to_finish)
+    result = service.finish(@match, params_to_finish)
+    if result.success?
       redirect_with_message match_path(@match), 'Zápas bol zapísaný, rebríček sa aktualizuje časom.'
     else
       render_with_message :finish_init, 'Zápas sa nepodarilo zapísať.'
@@ -68,7 +73,8 @@ class Player::MatchesController < Player::BaseController
 
   def cancel
     service = MatchService.new(current_player)
-    if service.cancel(@match)
+    result = service.cancel(@match)
+    if result.success?
       redirect_with_message match_path(@match), 'Zápas bol zrušený.'
     else
       redirect_with_message match_path(@match), 'Zápas sa nepodarilo zrušiť.', :alert
