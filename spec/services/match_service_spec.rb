@@ -272,10 +272,37 @@ RSpec.describe MatchService do
     end
 
     context 'with valid score' do
-      subject { service.finish(match, { "score" => "64" }) }
+      let(:play_date) { Date.yesterday }
+      let(:place) { create(:place) }
+      let(:notes) { "Great match." }
+      let(:params) do
+        {
+          "score" => "641663",
+          "play_date" => play_date.to_s,
+          "place_id" => place.id,
+          "notes" => notes
+        }
+      end
 
-      it 'finishes the match' do
-        expect { subject }.to change { match.reload.finished_at }.from(nil)
+      subject { service.finish(match, params) }
+
+      it 'finishes the match and sets attributes correctly' do
+        result = subject
+        expect(result).to be_success
+        match.reload
+        expect(match).to have_attributes(
+          set1_side1_score: 6,
+          set1_side2_score: 4,
+          set2_side1_score: 1,
+          set2_side2_score: 6,
+          set3_side1_score: 6,
+          set3_side2_score: 3,
+          winner_side: 1,
+          play_date: play_date,
+          notes: notes
+        )
+        expect(match.finished_at).to be_present
+        expect(match.reviewed_at).to be_present
       end
 
       it 'sends notification to opponent' do
@@ -283,9 +310,45 @@ RSpec.describe MatchService do
         expect_any_instance_of(MatchFinishedNotifier).to receive(:deliver).with(opponent)
         subject
       end
+    end
 
-      it 'returns success result' do
-        expect(subject).to be_success
+    context 'with retirement' do
+      let(:params) do
+        {
+          "score" => "6416",
+          "retired_player_id" => current_player.id,
+          "play_date" => Date.today.to_s
+        }
+      end
+
+      subject { service.finish(match, params) }
+
+      it 'marks player as retired and sets winner correctly' do
+        result = subject
+        expect(result).to be_success
+        match.reload
+        expect(match.winner_side).to eq(2)
+        expect(match.assignments.find_by(player: current_player).is_retired).to be true
+      end
+    end
+
+    context 'with retirement' do
+      let(:params) do
+        {
+          "score" => "",
+          "retired_player_id" => opponent.id,
+          "play_date" => Date.today.to_s
+        }
+      end
+
+      subject { service.finish(match, params) }
+
+      it 'marks player as retired and sets winner correctly' do
+        result = subject
+        expect(result).to be_success
+        match.reload
+        expect(match.winner_side).to eq(1)
+        expect(match.assignments.find_by(player: opponent).is_retired).to be true
       end
     end
 
@@ -302,7 +365,7 @@ RSpec.describe MatchService do
 
       it 'populates errors' do
         result = subject
-        expect(result.errors).not_to be_empty
+        expect(result.errors).to include("Neplatný výsledok zápasu.")
       end
     end
   end
