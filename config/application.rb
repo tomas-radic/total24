@@ -27,7 +27,6 @@ module Total24
 
     config.i18n.default_locale = :sk
     config.time_zone = "Bratislava"
-    config.minutes_refinish_match = 5
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
   end
 end

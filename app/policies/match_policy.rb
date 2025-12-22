@@ -84,8 +84,7 @@ class MatchPolicy < ApplicationPolicy
         return false if record.rejected?
         return false unless record.accepted?
 
-        record.finished_at.blank? ||
-          (record.finished_at >= Rails.configuration.minutes_refinish_match.minutes.ago)
+        record.finished_at.blank? || (record.finished_at >= Config.refinish_match_minutes_limit.minutes.ago)
       else
         return false
       end
