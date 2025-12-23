@@ -74,18 +74,6 @@ class Match < ApplicationRecord
   scope :doubles, -> { where(kind: "double") }
   #endregion Scopes
 
-  def played_3rd_set?
-    set3_side1_score.present? || set3_side2_score.present?
-  end
-
-  def winner_name(privacy: false)
-    return nil unless reviewed?
-
-    assignments.select do |a|
-      a.side == winner_side
-    end.map { |a| a.player.display_name(privacy:) }.join(", ")
-  end
-
   def looser_name(privacy: false)
     return nil unless reviewed?
 

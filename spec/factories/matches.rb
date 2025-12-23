@@ -49,6 +49,10 @@ FactoryBot.define do
       winner_side { 1 }
       set1_side1_score { 6 }
       set1_side2_score { 4 }
+      set2_side1_score { 2 }
+      set2_side2_score { 6 }
+      set3_side1_score { 6 }
+      set3_side2_score { 3 }
     end
   end
 end

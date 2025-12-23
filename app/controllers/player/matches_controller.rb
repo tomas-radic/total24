@@ -60,10 +60,10 @@ class Player::MatchesController < Player::BaseController
   end
 
   def finish
-    service = MatchService.new(current_player)
+    service = Matches::FinishService.new(current_player)
     params_to_finish = params.slice("score", "retired_player_id", "play_date", "place_id", "notes")
 
-    result = service.finish(@match, params_to_finish)
+    result = service.call(@match, params_to_finish)
     if result.success?
       redirect_with_message match_path(@match), 'Zápas bol zapísaný, rebríček sa aktualizuje časom.'
     else
