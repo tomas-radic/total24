@@ -14,16 +14,6 @@ RSpec.describe NotificationService do
     allow(Config).to receive(:notifications_max_age_days).and_return(30)
   end
   
-  describe '#mark_as_read' do
-    subject { service.mark_as_read(notification) }
-
-    it 'updates seen_at and read_at timestamps' do
-      expect {
-        subject
-      }.to change { notification.reload.seen_at }.from(nil).and change { notification.reload.read_at }.from(nil)
-    end
-  end
-  
   describe '#mark_all_as_seen' do
     subject { service.mark_all_as_seen }
 
@@ -54,7 +44,12 @@ RSpec.describe NotificationService do
                                     type: "MatchUpdatedNotifier::Notification",
                                     event: Noticed::Event.new(created_at: 10.days.ago, record: match, type: "MatchUpdatedNotifier"))
     end
-    
+    let!(:overaged_notification) do
+      Noticed::Notification.create!(recipient: create(:player), seen_at: nil, read_at: nil,
+                                    type: "MatchUpdatedNotifier::Notification",
+                                    event: Noticed::Event.new(created_at: 50.days.ago, record: match, type: "MatchUpdatedNotifier"))
+    end
+
     it 'marks all player notifications as seen and read' do
       expect {
         subject
@@ -62,9 +57,10 @@ RSpec.describe NotificationService do
        .and change { player.notifications.where(read_at: nil).count }.from(1).to(0)
     end
     
-    it 'calls destroy_over_aged' do
-      expect(service).to receive(:destroy_over_aged)
+    it 'destroys overaged notifications' do
       subject
+
+      expect(Noticed::Notification.find_by(id: overaged_notification.id)).to be_nil
     end
 
     it 'does not mark other player notifications as seen or read' do

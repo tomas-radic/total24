@@ -1,14 +1,10 @@
+# TODO: player is not needed in some methods - refactor
+
 class NotificationService < ApplicationService
   def initialize(player)
     raise ArgumentError, "player is required" if player.nil?
 
     @player = player
-  end
-
-  def mark_as_read(notification)
-    now = Time.current
-    notification.update(seen_at: now, read_at: now)
-    success(notification)
   end
 
   def mark_all_as_seen
