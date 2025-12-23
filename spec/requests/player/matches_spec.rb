@@ -21,15 +21,15 @@ RSpec.describe "Player::Matches", type: :request do
       end
 
       context "when authorized" do
-        it "calls MatchService#create and redirects on success" do
+        it "creates new match and redirects" do
           expect { subject }.to change(Match, :count).by(1)
           expect(response).to redirect_to(match_path(Match.last))
         end
 
-        it "calls MatchService#create and redirects on failure" do
+        it "redirects to requested player when not saved" do
           # To cause failure, we can try to create a match with a player that doesn't exist or similar,
           # but here it's easier to just use a non-existent player_id or something that fails validation.
-          # MatchService#create takes a requested_player object.
+          # Matches::CreateService takes a requested_player object.
           # In the controller: @requested_player = Player.find(params[:player_id])
           # If we want it to reach service but fail, Match.save must be false.
           
@@ -119,14 +119,14 @@ RSpec.describe "Player::Matches", type: :request do
     context "when player is logged in and authorized" do
       before { sign_in player }
 
-      it "calls MatchService#update and redirects on success" do
+      it "updates match and redirects" do
         subject
 
         expect(match.reload.notes).to eq("A note about this match.")
         expect(response).to redirect_to(match_path(match))
       end
 
-      it "calls MatchService#update and renders edit on failure" do
+      it "renders edit template when not saved" do
         allow_any_instance_of(Match).to receive(:update).and_return(false)
 
         subject
@@ -140,7 +140,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in other_player }
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::UpdateService).not_to receive(:new)
         subject
       end
     end
@@ -202,14 +202,14 @@ RSpec.describe "Player::Matches", type: :request do
     context "when logged in player is authorized (side 2)" do
       before { sign_in player2 }
 
-      it "calls MatchService#accept and redirects on success" do
+      it "accepts the match and redirects" do
         subject
 
         expect(match.reload.accepted_at).to be_present
         expect(response).to redirect_to(match_path(match))
       end
 
-      it "calls MatchService#accept and redirects with alert on failure" do
+      it "redirects to match show page with alert on failure" do
         allow_any_instance_of(Match).to receive(:update).and_return(false)
         allow_any_instance_of(ActiveModel::Errors).to receive(:full_messages).and_return(["Error message"])
 
@@ -224,7 +224,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player1 }
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::AcceptService).not_to receive(:new)
         subject
       end
     end
@@ -248,7 +248,7 @@ RSpec.describe "Player::Matches", type: :request do
     context "when logged in player is authorized (side 2)" do
       before { sign_in player2 }
 
-      it "calls MatchService#reject and redirects" do
+      it "rejects the match and redirects" do
         subject
 
         expect(match.reload.rejected_at).to be_present
@@ -261,7 +261,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in other_player }
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::RejectService).not_to receive(:new)
         subject
       end
     end
@@ -319,15 +319,18 @@ RSpec.describe "Player::Matches", type: :request do
     context "when player is logged in and authorized" do
       before { sign_in player }
 
-      it "calls MatchService#finish and redirects on success" do
+      it "finishes the match and redirects" do
         subject
 
-        expect(match.reload.finished_at).to be_present
+        match.reload
+        expect(match.finished_at).to be_present
+        expect(match.set1_side1_score).to eq(6)
+        expect(match.set1_side2_score).to eq(4)
         expect(response).to redirect_to(match_path(match))
       end
 
-      it "calls MatchService#finish and renders finish_init on failure" do
-        params[:score] = "invalid"
+      it "renders finish_init template when score is invalid" do
+        params[:score] = "060"
 
         subject
 
@@ -340,7 +343,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in other_player }
 
       it "raises authorization error without calling service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::FinishService).not_to receive(:new)
         subject
       end
     end
@@ -364,7 +367,7 @@ RSpec.describe "Player::Matches", type: :request do
     context "when logged in player is authorized" do
       before { sign_in player2 }
 
-      it "calls MatchService#cancel and redirects" do
+      it "cancels the match and redirects" do
         subject
 
         expect(match.reload.canceled_at).to be_present
@@ -377,7 +380,7 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in other_player }
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::CancelService).not_to receive(:new)
         subject
       end
     end
@@ -393,8 +396,8 @@ RSpec.describe "Player::Matches", type: :request do
     context "when player is logged in" do
       before { sign_in player }
 
-      it "calls MatchService#toggle_reaction and responds with turbo stream" do
-        expect { subject }.to change(Reaction, :count).by(1)
+      it "creates reaction for the match" do
+        expect { subject }.to change(match.reactions, :count).by(1)
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       end
     end
@@ -411,8 +414,8 @@ RSpec.describe "Player::Matches", type: :request do
     context "when player is logged in and authorized" do
       before { sign_in player }
 
-      it "calls MatchService#switch_prediction and responds with turbo stream" do
-        expect { subject }.to change(Prediction, :count).by(1)
+      it "creates prediction for the match" do
+        expect { subject }.to change(match.predictions, :count).by(1)
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
       end
     end
@@ -424,7 +427,7 @@ RSpec.describe "Player::Matches", type: :request do
       end
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::SwitchPredictionService).not_to receive(:new)
         subject
       end
     end
@@ -436,7 +439,7 @@ RSpec.describe "Player::Matches", type: :request do
       end
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::SwitchPredictionService).not_to receive(:new)
         subject
       end
     end
@@ -448,7 +451,7 @@ RSpec.describe "Player::Matches", type: :request do
       end
 
       it "does not call service" do
-        expect(MatchService).not_to receive(:new)
+        expect(Matches::SwitchPredictionService).not_to receive(:new)
         subject
       end
     end

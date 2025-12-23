@@ -9,8 +9,8 @@ class Player::MatchesController < Player::BaseController
       raise Pundit::NotAuthorizedError, "nie je možné vyzvať hráča #{@requested_player.name}"
     end
 
-    service = MatchService.new(current_player)
-    result = service.create(selected_season, @requested_player)
+    service = Matches::CreateService.new(current_player)
+    result = service.call(selected_season, @requested_player)
     if result.success?
       redirect_with_message match_path(result.value), 'Výzva bola vytvorená.'
     else
@@ -22,8 +22,8 @@ class Player::MatchesController < Player::BaseController
   end
 
   def update
-    service = MatchService.new(current_player)
-    result = service.update(@match, whitelisted_params)
+    service = Matches::UpdateService.new(current_player)
+    result = service.call(@match, whitelisted_params)
     if result.success?
       redirect_with_message match_path(@match)
     else
@@ -37,8 +37,8 @@ class Player::MatchesController < Player::BaseController
   end
 
   def accept
-    service = MatchService.new(current_player)
-    result = service.accept(@match)
+    service = Matches::AcceptService.new(current_player)
+    result = service.call(@match)
     if result.success?
       redirect_to match_path(@match)
     else
@@ -47,8 +47,8 @@ class Player::MatchesController < Player::BaseController
   end
 
   def reject
-    service = MatchService.new(current_player)
-    result = service.reject(@match)
+    service = Matches::RejectService.new
+    result = service.call(@match)
     if result.success?
       redirect_to match_path(@match)
     else
@@ -72,8 +72,8 @@ class Player::MatchesController < Player::BaseController
   end
 
   def cancel
-    service = MatchService.new(current_player)
-    result = service.cancel(@match)
+    service = Matches::CancelService.new(current_player)
+    result = service.call(@match)
     if result.success?
       redirect_with_message match_path(@match), 'Zápas bol zrušený.'
     else
@@ -83,8 +83,8 @@ class Player::MatchesController < Player::BaseController
 
   def toggle_reaction
     @match = Match.published.find(params[:id])
-    service = MatchService.new(current_player)
-    service.toggle_reaction(@match)
+    service = Matches::ToggleReactionService.new(current_player)
+    service.call(@match)
 
     render turbo_stream: [
       turbo_stream.replace("match_#{@match.id}_reactions",
@@ -105,8 +105,8 @@ class Player::MatchesController < Player::BaseController
     @match = Match.published.find(params[:id])
     authorize @match
 
-    service = MatchService.new(current_player)
-    service.switch_prediction(@match, params[:side])
+    service = Matches::SwitchPredictionService.new(current_player)
+    service.call(@match, params[:side])
 
     render turbo_stream: [
       turbo_stream.update("match_#{@match.id}_predictions",
@@ -116,8 +116,8 @@ class Player::MatchesController < Player::BaseController
   end
 
   def mark_notifications_read
-    service = MatchService.new(current_player)
-    service.mark_notifications_read(@match)
+    service = Matches::MarkNotificationsReadService.new(current_player)
+    service.call(@match)
 
     respond_to do |format|
       format.turbo_stream do
