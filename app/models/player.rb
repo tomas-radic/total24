@@ -29,6 +29,7 @@ class Player < ApplicationRecord
 
   # Scopes -----
   scope :sorted, -> { order(created_at: :desc) }
+  scope :open_to_play, -> { where.not(open_to_play_since: nil).order(open_to_play_since: :desc) }
 
 
   has_stripped :email, :name, :phone_nr

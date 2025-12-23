@@ -74,34 +74,4 @@ RSpec.describe PlayerService do
       end
     end
   end
-
-  describe '#get_players_open_to_play' do
-    subject { service.get_players_open_to_play(season) }
-
-    let!(:open_players) do
-      players = create_list(:player, 3)
-      players.each_with_index do |p, i|
-        p.update(open_to_play_since: (i + 1).days.ago)
-        create(:enrollment, season: season, player: p)
-      end
-      players
-    end
-
-    let!(:closed_players) do
-      players = create_list(:player, 2, open_to_play_since: nil)
-      players.each do |p|
-        create(:enrollment, season: season, player: p)
-      end
-      players
-    end
-
-    it 'returns only players who are open to play' do
-      expect(subject.value.count).to eq(3)
-      expect(subject.value.pluck(:id)).to match_array(open_players.pluck(:id))
-    end
-
-    it 'orders players by open_to_play_since desc' do
-      expect(subject.value.first.open_to_play_since).to be > subject.value.last.open_to_play_since
-    end
-  end
 end

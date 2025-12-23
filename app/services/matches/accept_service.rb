@@ -17,10 +17,7 @@ class Matches::AcceptService < ApplicationService
 
     return failure(errors, value: match) if errors.any?
 
-    players_open_to_play = Player.where.not(open_to_play_since: nil)
-                                 .order(open_to_play_since: :desc)
-
-    broadcast_players_open_to_play(players_open_to_play)
+    broadcast_players_open_to_play(Player.open_to_play)
     broadcast_match_update(match)
 
     challenger = match.assignments.find { |a| a.side == 1 }.player

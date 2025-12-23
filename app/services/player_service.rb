@@ -16,11 +16,4 @@ class PlayerService < ApplicationService
     end
     success(player)
   end
-
-  def get_players_open_to_play(season)
-    players = season.players
-          .where.not(open_to_play_since: nil)
-          .order(open_to_play_since: :desc)
-    success(players)
-  end
 end
