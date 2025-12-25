@@ -15,10 +15,13 @@ class Matches::CreateService < ApplicationService
       ]
     )
 
-    return failure(match.errors.full_messages, value: match) unless match.save
+    ActiveRecord::Base.transaction do
+      return failure(match.errors.full_messages, value: match) unless match.save
+      @current_player.update!(cant_play_since: nil)
+    end
 
-    @current_player.update(cant_play_since: nil)
-    NewMatchNotifier.with(record: match).deliver(requested_player)
     success(match)
+  rescue ActiveRecord::Rollback
+    failure(match.errors.full_messages, value: match)
   end
 end

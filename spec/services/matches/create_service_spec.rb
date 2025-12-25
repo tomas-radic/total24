@@ -43,15 +43,9 @@ RSpec.describe Matches::CreateService do
       end
 
       it 'clears cant_play_since for the current player' do
-        current_player.update(cant_play_since: Time.current)
+        current_player.update!(cant_play_since: Time.current)
         subject
         expect(current_player.reload.cant_play_since).to be_nil
-      end
-
-      it 'sends a notification to the opponent' do
-        expect(NewMatchNotifier).to receive(:with).with(hash_including(:record)).and_call_original
-        expect_any_instance_of(NewMatchNotifier).to receive(:deliver).with(opponent)
-        subject
       end
 
       it 'returns success result' do
@@ -69,6 +63,12 @@ RSpec.describe Matches::CreateService do
       it 'does not save the match' do
         # Passing nil for season will make it invalid
         expect { service.call(Season.new, opponent) }.not_to change(Match, :count)
+      end
+
+      it 'does not clear cant_play_since for the current player' do
+        current_player.update!(cant_play_since: Time.current)
+        service.call(Season.new, opponent)
+        expect(current_player.reload.cant_play_since).not_to be_nil
       end
 
       it 'returns failure result' do

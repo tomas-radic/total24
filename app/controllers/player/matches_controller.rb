@@ -12,6 +12,7 @@ class Player::MatchesController < Player::BaseController
     service = Matches::CreateService.new(current_player)
     result = service.call(selected_season, @requested_player)
     if result.success?
+      NewMatchNotifier.with(record: result.value).deliver(@requested_player)
       redirect_with_message match_path(result.value), 'Výzva bola vytvorená.'
     else
       redirect_with_message player_path(@requested_player), 'Výzvu sa nepodarilo vytvoriť.', :alert
@@ -22,7 +23,7 @@ class Player::MatchesController < Player::BaseController
   end
 
   def update
-    service = Matches::UpdateService.new(current_player)
+    service = Matches::UpdateService.new
     result = service.call(@match, whitelisted_params)
     if result.success?
       broadcast_match_update(@match)
@@ -42,8 +43,9 @@ class Player::MatchesController < Player::BaseController
   end
 
   def accept
-    service = Matches::AcceptService.new(current_player)
+    service = Matches::AcceptService.new
     result = service.call(@match)
+
     if result.success?
       broadcast_players_open_to_play
       broadcast_match_update(@match)

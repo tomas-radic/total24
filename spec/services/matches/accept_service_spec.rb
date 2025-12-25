@@ -4,7 +4,7 @@ RSpec.describe Matches::AcceptService do
   let!(:current_player) { create(:player) }
   let!(:opponent) { create(:player) }
   let!(:season) { create(:season) }
-  let(:service) { Matches::AcceptService.new(current_player) }
+  let(:service) { Matches::AcceptService.new }
 
   before do
     season.players << current_player
@@ -42,7 +42,7 @@ RSpec.describe Matches::AcceptService do
 
     context 'when update fails' do
       before do
-        allow_any_instance_of(Match).to receive(:update).and_return(false)
+        allow_any_instance_of(Match).to receive(:update!).and_return(false)
         allow_any_instance_of(ActiveModel::Errors).to receive(:full_messages).and_return(["Error message"])
       end
 

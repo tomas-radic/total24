@@ -8,9 +8,9 @@ class Matches::SwitchPredictionService < ApplicationService
 
     if prediction.present?
       if side.to_i == prediction.side
-        prediction.destroy
+        prediction.destroy!
       else
-        prediction.update(side: side)
+        prediction.update!(side: side)
       end
     else
       match.predictions.create!(player: @current_player, side: side)

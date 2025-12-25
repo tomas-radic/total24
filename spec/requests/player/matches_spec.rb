@@ -24,7 +24,13 @@ RSpec.describe "Player::Matches", type: :request do
       context "when authorized" do
         it "creates new match and redirects" do
           expect { subject }.to change(Match, :count).by(1)
-          expect(response).to redirect_to(match_path(Match.last))
+          expect(response).to redirect_to(match_path(Match.order(:created_at).last))
+        end
+
+        it 'sends a notification to the opponent' do
+          expect(NewMatchNotifier).to receive(:with).with(hash_including(:record)).and_call_original
+          expect_any_instance_of(NewMatchNotifier).to receive(:deliver).with(requested_player)
+          subject
         end
 
         it "redirects to requested player when not saved" do
@@ -242,7 +248,7 @@ RSpec.describe "Player::Matches", type: :request do
       end
 
       it "redirects to match show page with alert on failure" do
-        allow_any_instance_of(Match).to receive(:update).and_return(false)
+        allow_any_instance_of(Match).to receive(:update!).and_return(false)
         allow_any_instance_of(ActiveModel::Errors).to receive(:full_messages).and_return(["Error message"])
 
         subject

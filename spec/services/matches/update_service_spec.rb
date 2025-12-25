@@ -4,7 +4,7 @@ RSpec.describe Matches::UpdateService do
   let!(:current_player) { create(:player) }
   let!(:opponent) { create(:player) }
   let!(:season) { create(:season) }
-  let(:service) { Matches::UpdateService.new(current_player) }
+  let(:service) { Matches::UpdateService.new }
 
   before do
     season.players << current_player

@@ -18,7 +18,7 @@ RSpec.describe Matches::UnfinishService do
            ])
   end
 
-  let(:service) { Matches::UnfinishService.new(current_player) }
+  let(:service) { Matches::UnfinishService.new }
 
   describe '#call' do
     subject { service.call(match) }

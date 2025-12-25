@@ -8,7 +8,7 @@ class Matches::FinishService < ApplicationService
     params = params.merge("score_side" => score_side)
 
     ActiveRecord::Base.transaction do
-      Matches::UnfinishService.new(@current_player).call(match)
+      Matches::UnfinishService.new.call(match)
 
       score = params["score"].to_s.strip.split(//)
       unless score.length.in?([0, 2, 4, 6])
@@ -30,8 +30,8 @@ class Matches::FinishService < ApplicationService
       match.play_date = params["play_date"]
       match.place_id = params["place_id"]
       match.notes = params["notes"]
-      match.finished_at ||= Time.current
-      match.reviewed_at ||= Time.current
+      match.finished_at = Time.current
+      match.reviewed_at = Time.current
 
       unless match.save
         return failure(match.errors.full_messages, value: match)
@@ -58,7 +58,7 @@ class Matches::FinishService < ApplicationService
 
   def handle_retirement(match, retired_player_id)
     retired_assignment = match.assignments.find { |a| a.player_id == retired_player_id }
-    retired_assignment.update(is_retired: true)
+    retired_assignment.update!(is_retired: true)
     match.winner_side = retired_assignment.side + 1
     match.winner_side = 1 if match.winner_side > 2
   end

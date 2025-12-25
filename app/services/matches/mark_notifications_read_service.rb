@@ -5,9 +5,11 @@ class Matches::MarkNotificationsReadService < ApplicationService
 
   def call(match)
     now = Time.current
-    match.notifications.where(recipient: @current_player)
-         .where(read_at: nil)
-         .update_all(seen_at: now, read_at: now)
+    notifications = match.notifications.where(recipient: @current_player).where(read_at: nil)
+    notifications.each do |n|
+      n.update!(seen_at: now, read_at: now)
+    end
+
     success
   end
 end
