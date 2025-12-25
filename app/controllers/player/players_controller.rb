@@ -37,24 +37,4 @@ class Player::PlayersController < Player::BaseController
   def player_service
     @player_service ||= PlayerService.new
   end
-
-  def broadcast_players_open_to_play
-    return unless selected_season.present?
-
-    players_open_to_play = selected_season.players.open_to_play
-
-    Turbo::StreamsChannel.broadcast_update_to(
-      "players_open_to_play",
-      target: "players_open_to_play",
-      partial: "shared/players_open_to_play",
-      locals: { players: players_open_to_play, signed_in_player: current_player }
-    )
-
-    Turbo::StreamsChannel.broadcast_update_to(
-      "players_open_to_play",
-      target: "players_open_to_play_top",
-      partial: "shared/players_open_to_play",
-      locals: { players: players_open_to_play, signed_in_player: current_player }
-    )
-  end
 end

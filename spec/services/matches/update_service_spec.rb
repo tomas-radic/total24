@@ -48,53 +48,6 @@ RSpec.describe Matches::UpdateService do
       it 'returns success result' do
         expect(subject).to be_success
       end
-
-      context 'with another player who commented' do
-        let!(:other_player) { create(:player) }
-        let!(:comment) { create(:comment, commentable: match, player: other_player) }
-
-        subject { service.call(match, { notes: "Updated" }) }
-
-        it 'sends notification to interested players except current player' do
-          expect(MatchUpdatedNotifier).to receive(:with).with(hash_including(:record)).and_call_original
-          expect_any_instance_of(MatchUpdatedNotifier).to receive(:deliver)
-          subject
-        end
-
-        context 'when player already has unseen notification for the match' do
-          before do
-            Noticed::Notification.create!(
-              recipient: other_player,
-              seen_at: nil,
-              read_at: nil,
-              type: "MatchUpdatedNotifier::Notification",
-              event: Noticed::Event.create!(record: match, type: "MatchUpdatedNotifier")
-            )
-          end
-
-          it 'does not send duplicate notification' do
-            notifications_count = other_player.notifications.count
-            subject
-            expect(other_player.notifications.count).to eq(notifications_count)
-          end
-        end
-
-        context 'when player has seen notification for the match' do
-          before do
-            Noticed::Notification.create!(
-              recipient: other_player,
-              seen_at: 1.hour.ago,
-              read_at: nil,
-              type: "MatchUpdatedNotifier::Notification",
-              event: Noticed::Event.create!(record: match, type: "MatchUpdatedNotifier")
-            )
-          end
-
-          it 'sends new notification' do
-            expect { subject }.to change { other_player.notifications.count }.by(1)
-          end
-        end
-      end
     end
   end
 end

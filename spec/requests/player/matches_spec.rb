@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe "Player::Matches", type: :request do
   before do
     get new_player_session_path
+    allow(Turbo::StreamsChannel).to receive(:broadcast_update_to)
   end
 
   let!(:season) { create(:season) }
@@ -120,6 +121,18 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       it "updates match and redirects" do
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{opponent.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect_any_instance_of(Match).to receive(:notification_recipients_for).with(MatchUpdatedNotifier).and_return([opponent])
+        expect(MatchUpdatedNotifier).to receive(:with).with(hash_including(record: match)).and_call_original
+        expect_any_instance_of(MatchUpdatedNotifier).to receive(:deliver).with([opponent])
+
         subject
 
         expect(match.reload.notes).to eq("A note about this match.")
@@ -203,6 +216,25 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player2 }
 
       it "accepts the match and redirects" do
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "players_open_to_play",
+          hash_including(target: "players_open_to_play")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "players_open_to_play",
+          hash_including(target: "players_open_to_play_top")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player1.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player2.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(MatchAcceptedNotifier).to receive(:with).with(hash_including(record: match)).and_call_original
+        expect_any_instance_of(MatchAcceptedNotifier).to receive(:deliver).with(player1)
+
         subject
 
         expect(match.reload.accepted_at).to be_present
@@ -249,6 +281,17 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player2 }
 
       it "rejects the match and redirects" do
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player1.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player2.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(MatchRejectedNotifier).to receive(:with).with(hash_including(record: match)).and_call_original
+        expect_any_instance_of(MatchRejectedNotifier).to receive(:deliver).with(player1)
+
         subject
 
         expect(match.reload.rejected_at).to be_present
@@ -320,6 +363,17 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player }
 
       it "finishes the match and redirects" do
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{opponent.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(MatchFinishedNotifier).to receive(:with).with(hash_including(record: match, finished_by: player)).and_call_original
+        expect_any_instance_of(MatchFinishedNotifier).to receive(:deliver).with(opponent)
+
         subject
 
         match.reload
@@ -368,6 +422,18 @@ RSpec.describe "Player::Matches", type: :request do
       before { sign_in player2 }
 
       it "cancels the match and redirects" do
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player1.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).with(
+          "match_#{match.id}_for_player_#{player2.id}",
+          hash_including(target: "match_#{match.id}")
+        )
+        expect_any_instance_of(Match).to receive(:notification_recipients_for).with(MatchCanceledNotifier).and_return([player1])
+        expect(MatchCanceledNotifier).to receive(:with).with(hash_including(record: match)).and_call_original
+        expect_any_instance_of(MatchCanceledNotifier).to receive(:deliver).with([player1])
+
         subject
 
         expect(match.reload.canceled_at).to be_present

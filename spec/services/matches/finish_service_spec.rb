@@ -55,11 +55,6 @@ RSpec.describe Matches::FinishService do
         expect(match.reviewed_at).to be_present
       end
 
-      it 'sends notification to opponent' do
-        expect(MatchFinishedNotifier).to receive(:with).with(hash_including(:record, :finished_by)).and_call_original
-        expect_any_instance_of(MatchFinishedNotifier).to receive(:deliver).with(opponent)
-        subject
-      end
     end
 
     context 'with retirement' do

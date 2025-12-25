@@ -35,12 +35,6 @@ RSpec.describe Matches::RejectService do
       expect(opponent.reload.open_to_play_since).not_to be_nil
     end
 
-    it 'sends a notification to the challenger' do
-      expect(MatchRejectedNotifier).to receive(:with).with(hash_including(:record)).and_call_original
-      expect_any_instance_of(MatchRejectedNotifier).to receive(:deliver).with(current_player)
-      subject
-    end
-
     it 'returns success result' do
       expect(subject).to be_success
     end

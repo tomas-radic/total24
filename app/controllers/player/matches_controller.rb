@@ -25,6 +25,11 @@ class Player::MatchesController < Player::BaseController
     service = Matches::UpdateService.new(current_player)
     result = service.call(@match, whitelisted_params)
     if result.success?
+      broadcast_match_update(@match)
+      recipients = @match.notification_recipients_for(MatchUpdatedNotifier)
+      recipients = recipients.reject { |recipient| recipient.id == @current_player.id }
+      MatchUpdatedNotifier.with(record: @match).deliver(recipients)
+
       redirect_with_message match_path(@match)
     else
       render_with_message :edit
@@ -40,6 +45,11 @@ class Player::MatchesController < Player::BaseController
     service = Matches::AcceptService.new(current_player)
     result = service.call(@match)
     if result.success?
+      broadcast_players_open_to_play
+      broadcast_match_update(@match)
+      challenger = @match.assignments.find { |a| a.side == 1 }.player
+      MatchAcceptedNotifier.with(record: @match).deliver(challenger)
+
       redirect_to match_path(@match)
     else
       redirect_to match_path(@match), alert: result.errors.join(", ")
@@ -50,6 +60,10 @@ class Player::MatchesController < Player::BaseController
     service = Matches::RejectService.new
     result = service.call(@match)
     if result.success?
+      broadcast_match_update(@match)
+      challenger = @match.assignments.find { |a| a.side == 1 }.player
+      MatchRejectedNotifier.with(record: @match).deliver(challenger)
+
       redirect_to match_path(@match)
     else
       redirect_to match_path(@match), alert: result.errors.join(", ")
@@ -65,6 +79,10 @@ class Player::MatchesController < Player::BaseController
 
     result = service.call(@match, params_to_finish)
     if result.success?
+      broadcast_match_update(@match)
+      opponent = @match.assignments.find { |a| a.player_id != @current_player.id }.player
+      MatchFinishedNotifier.with(record: @match, finished_by: @current_player).deliver(opponent)
+
       redirect_with_message match_path(@match), 'Zápas bol zapísaný, rebríček sa aktualizuje časom.'
     else
       render_with_message :finish_init, 'Zápas sa nepodarilo zapísať.'
@@ -75,6 +93,11 @@ class Player::MatchesController < Player::BaseController
     service = Matches::CancelService.new(current_player)
     result = service.call(@match)
     if result.success?
+      broadcast_match_update(@match)
+      recipients = @match.notification_recipients_for(MatchCanceledNotifier)
+      recipients = recipients.reject { |recipient| recipient.id == @current_player.id }
+      MatchCanceledNotifier.with(record: @match).deliver(recipients)
+
       redirect_with_message match_path(@match), 'Zápas bol zrušený.'
     else
       redirect_with_message match_path(@match), 'Zápas sa nepodarilo zrušiť.', :alert

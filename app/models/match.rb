@@ -178,15 +178,6 @@ class Match < ApplicationRecord
     canceled_at.present? && canceled_at > 30.hours.ago
   end
 
-
-  def self.singles_with_players(player1, player2, competitable: nil)
-    result = singles.published
-    result = result.where(competitable:) if competitable.present?
-    result.joins("join assignments side1 on side1.match_id = matches.id and side1.side = 1 join assignments side2 on side2.match_id = matches.id and side2.side = 2")
-          .where("(side1.player_id = ? and side2.player_id = ?) or (side1.player_id = ? and side2.player_id = ?)", player1.id, player2.id, player2.id, player1.id)
-  end
-
-
   def interested_players
     player_ids = assignments.map(&:player_id)
     player_ids += Comment.where(commentable: self).distinct.pluck(:player_id)

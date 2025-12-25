@@ -29,12 +29,6 @@ RSpec.describe Matches::CancelService do
       expect { subject }.to change { match.reload.canceled_by }.to(current_player)
     end
 
-    it 'sends a notification to match participants except the current player' do
-      expect(MatchCanceledNotifier).to receive(:with).with(hash_including(:record)).and_call_original
-      expect_any_instance_of(MatchCanceledNotifier).to receive(:deliver).with([opponent])
-      subject
-    end
-
     it 'returns success result' do
       expect(subject).to be_success
     end

@@ -56,4 +56,35 @@ class Player::BaseController < ApplicationController
     )
   end
 
+  def broadcast_players_open_to_play
+    return unless selected_season.present?
+
+    players_open_to_play = selected_season.players.open_to_play
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "players_open_to_play",
+      target: "players_open_to_play",
+      partial: "shared/players_open_to_play",
+      locals: { players: players_open_to_play, signed_in_player: current_player }
+    )
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "players_open_to_play",
+      target: "players_open_to_play_top",
+      partial: "shared/players_open_to_play",
+      locals: { players: players_open_to_play, signed_in_player: current_player }
+    )
+  end
+
+  def broadcast_match_update(match)
+    match.assignments.each do |assignment|
+      Turbo::StreamsChannel.broadcast_update_to(
+        "match_#{match.id}_for_player_#{assignment.player.id}",
+        partial: "matches/match",
+        locals: { match: match, player: assignment.player, privacy: false },
+        target: "match_#{match.id}"
+      )
+    end
+  end
+
 end

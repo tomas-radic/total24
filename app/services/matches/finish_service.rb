@@ -37,11 +37,6 @@ class Matches::FinishService < ApplicationService
         return failure(match.errors.full_messages, value: match)
       end
 
-      broadcast_match_update(match)
-
-      opponent = match.assignments.find { |a| a.player_id != @current_player.id }.player
-      MatchFinishedNotifier.with(record: match, finished_by: @current_player).deliver(opponent)
-
       success(match)
     end
   rescue ActiveRecord::Rollback
@@ -49,17 +44,6 @@ class Matches::FinishService < ApplicationService
   end
 
   private
-
-  def broadcast_match_update(match)
-    match.assignments.each do |assignment|
-      Turbo::StreamsChannel.broadcast_update_to(
-        "match_#{match.id}_for_player_#{assignment.player.id}",
-        partial: "matches/match",
-        locals: { match: match, player: assignment.player, privacy: false },
-        target: "match_#{match.id}"
-      )
-    end
-  end
 
   def set_scores(match, score, side)
     set_nr = 0
