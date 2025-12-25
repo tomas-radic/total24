@@ -8,8 +8,7 @@ class Season < ApplicationRecord
   has_many :matches, as: :competitable, dependent: :restrict_with_error
   has_many :articles, dependent: :destroy
   # endregion Relations
-
-
+  
   # region Validations
   validates :name, uniqueness: true
   validates :name, :performance_player_tag_label, :performance_play_off_size,

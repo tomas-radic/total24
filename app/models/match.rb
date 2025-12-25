@@ -12,6 +12,8 @@ class Match < ApplicationRecord
   belongs_to :canceled_by, class_name: "Player", optional: true
   has_many :assignments, dependent: :destroy
   has_many :players, through: :assignments
+  has_many :challenger_players, -> { where(assignments: { side: 1 }) }, through: :assignments, source: :player
+  has_many :challenged_players, -> { where(assignments: { side: 2 }) }, through: :assignments, source: :player
   has_many :predictions, dependent: :destroy
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
   has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
@@ -73,6 +75,12 @@ class Match < ApplicationRecord
   scope :singles, -> { where(kind: "single") }
   scope :doubles, -> { where(kind: "double") }
   #endregion Scopes
+
+  def opponents_of(player)
+    opponents_side = assignments.find { |a| a.player_id == player.id }&.side
+    return nil if opponents_side.nil?
+    players.where.not(assignments: { side: opponents_side })
+  end
 
   def looser_name(privacy: false)
     return nil unless reviewed?

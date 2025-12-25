@@ -49,8 +49,7 @@ class Player::MatchesController < Player::BaseController
     if result.success?
       broadcast_players_open_to_play
       broadcast_match_update(@match)
-      challenger = @match.assignments.find { |a| a.side == 1 }.player
-      MatchAcceptedNotifier.with(record: @match).deliver(challenger)
+      MatchAcceptedNotifier.with(record: @match).deliver(@match.challenger_players.first)
 
       redirect_to match_path(@match)
     else
@@ -63,8 +62,7 @@ class Player::MatchesController < Player::BaseController
     result = service.call(@match)
     if result.success?
       broadcast_match_update(@match)
-      challenger = @match.assignments.find { |a| a.side == 1 }.player
-      MatchRejectedNotifier.with(record: @match).deliver(challenger)
+      MatchRejectedNotifier.with(record: @match).deliver(@match.challenger_players.first)
 
       redirect_to match_path(@match)
     else
@@ -82,7 +80,7 @@ class Player::MatchesController < Player::BaseController
     result = service.call(@match, params_to_finish)
     if result.success?
       broadcast_match_update(@match)
-      opponent = @match.assignments.find { |a| a.player_id != @current_player.id }.player
+      opponent = @match.opponents_of(@current_player).first
       MatchFinishedNotifier.with(record: @match, finished_by: @current_player).deliver(opponent)
 
       redirect_with_message match_path(@match), 'Zápas bol zapísaný, rebríček sa aktualizuje časom.'
