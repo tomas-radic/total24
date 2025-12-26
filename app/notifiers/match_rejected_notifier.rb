@@ -1,7 +1,7 @@
 class MatchRejectedNotifier < TurboStreamNotifier
   notification_methods do
     def message
-      "#{record.side_name(2)} odmietol/la výzvu"
+      "#{MatchPresenter.new(record).side_names(2)} odmietol/la výzvu"
     end
 
     def url

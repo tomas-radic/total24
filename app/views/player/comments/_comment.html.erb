@@ -42,7 +42,7 @@
     <% if comment.deleted_at.blank? %>
       <p>
         <small>
-          <%= comment.player.display_name(privacy: player.blank?) %>
+          <%= PlayerPresenter.new(comment.player, privacy: player.blank?).name %>
           <% if comment.motive_id.blank? %>
             napísal<small>/a</small>:
           <% else %>

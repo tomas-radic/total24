@@ -10,7 +10,7 @@ module Reactions
 
 
   def reacted_player_names(max_count: nil, privacy: false)
-    result = reacted_players.map { |p| p.display_name(privacy:) }
+    result = reacted_players.map { |p| PlayerPresenter.new(p, privacy:).name }
     result = result[0...max_count] if max_count.present?
     result = result.join(", ")
     result += " ..." if max_count.present? && (reactions_count > max_count)

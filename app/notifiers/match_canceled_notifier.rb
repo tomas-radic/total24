@@ -1,7 +1,7 @@
 class MatchCanceledNotifier < TurboStreamNotifier
   notification_methods do
     def message
-      "Zápas #{record.name} sa zrušil"
+      "Zápas #{MatchPresenter.new(record).label} sa zrušil"
     end
 
     def url

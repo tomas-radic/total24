@@ -49,19 +49,20 @@
   <hr>
 
   <% if match.reviewed? || (!match.ranking_counted && match.finished?) %>
-    <p class="u-fs-giant py-4 text-center"><%= match.result %></p>
+    <p class="u-fs-giant py-4 text-center"><%= MatchPresenter.new(match).result_from_side %></p>
     <p class="text-center">
-      <%= match.side_name(match.winner_side, privacy:) %>
+      <%= MatchPresenter.new(match, privacy:).side_names(match.winner_side) %>
       zvíťazil<small>/a</small> v tomto zápase.
     </p>
     <% if match.retired? %>
       <p class="text-center">
-        <%= match.looser_name(privacy:) %> zápas skrečoval<small>/a</small>.
+        <%= MatchPresenter.new(match, privacy:).looser_names %>
+        zápas skrečoval<small>/a</small>.
       </p>
     <% end %>
   <% elsif match.requested? && !match.accepted? && !match.rejected? %>
     <p class="text-center">
-      Na túto výzvu <%= match.side_name(2, privacy:) %> zatiaľ nereagoval<small>/a</small>.
+      Na túto výzvu <%= MatchPresenter.new(match, privacy:).side_names(2) %> zatiaľ nereagoval<small>/a</small>.
     </p>
   <% elsif match.canceled_at %>
     <p class="text-center text-danger">
@@ -69,11 +70,11 @@
     </p>
   <% elsif match.accepted_at %>
     <p class="text-center">
-      <%= match.side_name(2, privacy:) %> akceptoval<small>/a</small> výzvu <%= app_date match.accepted_at %>.
+      <%= MatchPresenter.new(match, privacy:).side_names(2) %> akceptoval<small>/a</small> výzvu <%= app_date match.accepted_at %>.
     </p>
   <% elsif match.rejected_at %>
     <p class="text-center">
-      <%= match.side_name(2, privacy:) %> odmietol<small>/la</small> túto výzvu <%= app_date match.rejected_at %>.
+      <%= MatchPresenter.new(match, privacy:).side_names(2) %> odmietol<small>/la</small> túto výzvu <%= app_date match.rejected_at %>.
     </p>
   <% end %>
 

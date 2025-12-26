@@ -2,6 +2,7 @@ class TodayController < ApplicationController
 
   def index
     if selected_season.present?
+      @privacy = current_player.blank?
       load_matches
       load_tournaments
       load_articles

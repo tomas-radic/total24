@@ -1,7 +1,7 @@
 class NewMatchNotifier < TurboStreamNotifier
   notification_methods do
     def message
-      "#{record.side_name(1)} ťa vyzval/a na zápas"
+      "#{MatchPresenter.new(record).side_names(1)} ťa vyzval/a na zápas"
     end
 
     def url

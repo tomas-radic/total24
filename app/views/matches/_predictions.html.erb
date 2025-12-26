@@ -30,7 +30,7 @@
         <% predictions_enabled = MatchPolicy.new(player, match).switch_prediction? %>
         <div class="text-center">
           <% if player_prediction.present? %>
-            <p>Tvoj tip na víťaza je <%= match.side_name(player_prediction.side) %>.</p>
+            <p>Tvoj tip na víťaza je <%= MatchPresenter.new(match).side_names(player_prediction.side) %>.</p>
           <% elsif predictions_enabled && !match.players.include?(player) %>
             <p>Kliknutím na hráča tipni víťaza aj ty a uvidíš prognózy tohto zápasu!</p>
           <% end %>
@@ -44,7 +44,7 @@
             <%= link_to switch_prediction_player_match_path(match, side: 1),
                         class: "predictions__btn btn btn-block btn-success #{'disabled' unless predictions_enabled}",
                         data: { turbo_method: :post } do %>
-              <span><%= match.side_name(1, privacy: player.blank?) %></span>
+              <span><%= MatchPresenter.new(match, privacy: player.blank?).side_names(1) %></span>
               <% if player_prediction&.side == 1 %>
                 <%= image_tag("star.png", class: "icon d-block mx-auto") %>
               <% end %>
@@ -57,7 +57,7 @@
             <%= link_to switch_prediction_player_match_path(match, side: 2),
                         class: "predictions__btn btn btn-block btn-success #{'disabled' unless predictions_enabled}",
                         data: { turbo_method: :post } do %>
-              <span><%= match.side_name(2, privacy: player.blank?) %></span>
+              <span><%= MatchPresenter.new(match, privacy: player.blank?).side_names(2) %></span>
               <% if player_prediction&.side == 2 %>
                 <%= image_tag("star.png", class: "icon d-block mx-auto") %>
               <% end %>

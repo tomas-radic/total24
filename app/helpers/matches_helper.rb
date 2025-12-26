@@ -12,9 +12,9 @@ module MatchesHelper
   def match_player_link(match, side:, break_whitespace: false, privacy: false, options: {})
     match.assignments.select { |a| a.side == side }.map do |a|
       name = if break_whitespace
-               a.player.display_name(privacy:).gsub(/\s+/, "<br>").html_safe
+               PlayerPresenter.new(a.player, privacy:).name.gsub(/\s+/, "<br>").html_safe
              else
-               a.player.display_name(privacy:)
+               PlayerPresenter.new(a.player, privacy:).name
              end
       link_to name, player_path(a.player), options
     end.join(", ").html_safe
@@ -26,9 +26,9 @@ module MatchesHelper
 
     match.assignments.select { |a| a.side == match.winner_side }.map do |a|
       name = if break_whitespace
-               a.player.display_name(privacy:).gsub(/\s+/, "<br>").html_safe
+               PlayerPresenter.new(a.player, privacy:).name.gsub(/\s+/, "<br>").html_safe
              else
-               a.player.display_name(privacy:)
+               PlayerPresenter.new(a.player, privacy:).name
              end
       link_to name, player_path(a.player), options
     end.join(", ").html_safe
@@ -40,9 +40,9 @@ module MatchesHelper
 
     match.assignments.select { |a| a.side != match.winner_side }.map do |a|
       name = if break_whitespace
-               a.player.display_name(privacy:).gsub(/\s+/, "<br>").html_safe
+               PlayerPresenter.new(a.player, privacy:).name.gsub(/\s+/, "<br>").html_safe
              else
-               a.player.display_name(privacy:)
+               PlayerPresenter.new(a.player, privacy:).name
              end
       link_to name, player_path(a.player), options
     end.join(", ").html_safe

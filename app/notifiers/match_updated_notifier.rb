@@ -1,7 +1,7 @@
 class MatchUpdatedNotifier < TurboStreamNotifier
   notification_methods do
     def message
-      "Zmena zápasu #{record.name}"
+      "Zmena zápasu #{MatchPresenter.new(record).label}"
     end
 
     def url

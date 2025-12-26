@@ -7,6 +7,6 @@
   <%= match_player_link(match, side: opponent_assignment.side, privacy: current_player.blank?) %>
   <br>
   <%= content_tag(:span, class: player_assignment.side == match.winner_side ? 'u-nav-green' : 'u-red') do %>
-    <%= match.result(side: player_assignment.side) %>
+    <%= MatchPresenter.new(match).result_from_side(player_assignment.side) %>
   <% end %>
 </p>

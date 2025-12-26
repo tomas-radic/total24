@@ -82,53 +82,8 @@ class Match < ApplicationRecord
     players.where.not(assignments: { side: opponents_side })
   end
 
-  def looser_name(privacy: false)
-    return nil unless reviewed?
 
-    assignments.select do |a|
-      a.side != winner_side
-    end.map { |a| a.player.display_name(privacy:) }.join(", ")
-  end
 
-  def result(side: 1)
-    return nil if finished_at.blank?
-
-    side = 1 if (side < 1) || (side > 2)
-    other_side = side - 1
-    other_side = 2 if other_side < 1
-
-    sets = (1..3).map do |set|
-      [
-        send("set#{set}_side#{side}_score"),
-        send("set#{set}_side#{other_side}_score")
-      ].reject(&:blank?).join(':')
-    end
-
-    if retired?
-      sets << "(skreč)"
-    end
-
-    sets.reject(&:blank?).join(", ")
-  end
-
-  def side_name(side, privacy: false)
-    assignments.select do |a|
-      a.side == side
-    end.map { |a| a.player.display_name(privacy:) }.join(", ")
-  end
-
-  def name(privacy: false)
-    "#{side_name(1, privacy: privacy)} vs. #{side_name(2, privacy: privacy)}"
-  end
-
-  def predictions_text
-    pc = predictions.count
-
-    if pc > 0
-      predictions_side1 = predictions.count { |p| p.side == 1 }
-      "#{predictions_side1}/#{pc - predictions_side1}"
-    end
-  end
 
   def date
     play_date.presence || finished_at.presence

@@ -3,7 +3,7 @@ class NewCommentNotifier < TurboStreamNotifier
     def message
       case record.class.to_s
       when "Match"
-        "Nový komentár k zápasu #{record.name}"
+        "Nový komentár k zápasu #{MatchPresenter.new(record).label}"
       when "Tournament"
         "Nový komentár k turnaju #{record.name}"
       end
