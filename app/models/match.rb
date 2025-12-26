@@ -82,9 +82,6 @@ class Match < ApplicationRecord
     players.where.not(assignments: { side: opponents_side })
   end
 
-
-
-
   def date
     play_date.presence || finished_at.presence
   end

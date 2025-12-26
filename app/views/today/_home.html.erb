@@ -87,7 +87,7 @@
                      locals: {
                        link_path: tournament_path(tournament),
                        heading: tournament.name,
-                       bottom_text: tournament.date,
+                       bottom_text: TournamentPresenter.new(tournament).date,
                        color_base: tournament.color_base_css
                      } %>
         <% end %>

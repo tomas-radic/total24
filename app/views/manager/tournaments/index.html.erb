@@ -18,7 +18,7 @@
         <% @tournaments.each do |tournament| %>
           <tr class="<%= tournament_date_css_class(tournament) %>">
             <td><%= link_to tournament.name, edit_manager_tournament_path(tournament) %></td>
-            <td><%= tournament.date %></td>
+            <td><%= TournamentPresenter.new(tournament).date %></td>
           </tr>
         <% end %>
       </tbody>
