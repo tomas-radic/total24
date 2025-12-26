@@ -17,7 +17,7 @@ class Tournament < ApplicationRecord
             presence: true
   validates :begin_date, :end_date,
             presence: true, if: Proc.new { |t| t.published? }
-  validates :end_date, comparison: { greater_than_or_equal_to: :begin_date }
+  validates :end_date, comparison: { greater_than_or_equal_to: :begin_date }, allow_blank: true
 
   # Scopes --------
   scope :published, -> { where.not(published_at: nil) }
