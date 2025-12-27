@@ -41,9 +41,9 @@ class Match < ApplicationRecord
   validates :set2_side2_score, presence: true, if: Proc.new { |m| m.set2_side1_score.present? }
   validates :set3_side1_score, presence: true, if: Proc.new { |m| m.set3_side2_score.present? }
   validates :set3_side2_score, presence: true, if: Proc.new { |m| m.set3_side1_score.present? }
-  validate :result_state, if: Proc.new { |m| m.finished_at }
-  validate :player_assignments
-  validate :existing_matches, if: Proc.new { |m| m.single? && m.finished_at.blank? && m.competitable_type == "Season" }
+
+  validates_with PendingChallengeValidator
+  validates_with PlayerAssignmentsValidator
   #endregion Validations
 
   #region Enums
@@ -159,88 +159,6 @@ class Match < ApplicationRecord
 
 
   private
-
-  def player_assignments
-    nr_assignments = assignments.length
-    nr_side1_assignments = assignments.select { |a| a.side == 1 }.length
-    nr_side2_assignments = assignments.select { |a| a.side == 2 }.length
-
-    if nr_assignments > 0
-      if (single? && (nr_assignments != 2 || nr_side1_assignments != 1 || nr_side2_assignments != 1)) ||
-        (double? && (nr_assignments != 4 || nr_side1_assignments != 2 || nr_side2_assignments != 2))
-        errors.add(:base, "Nesprávny počet hráčov.")
-      end
-    end
-
-    assignments.each do |a|
-      if competitable.is_a? Season
-        unless competitable.enrollments.find { |e| e.player_id == a.player_id }
-          errors.add(:base, "Hráč/ka nie je prihlásený/á do sezóny.")
-        end
-      end
-    end
-
-  end
-
-  def existing_matches
-    matches = competitable.matches.published.singles.where(finished_at: nil, rejected_at: nil, canceled_at: nil)
-                          .where.not(id: id)
-                          .joins(:assignments)
-                          .where(
-                            "assignments.player_id in (?)",
-                            assignments.map(&:player_id))
-                          .includes(:assignments).distinct
-
-    existing_match = matches.find do |m|
-      m.assignments.find { |a| a.player_id == assignments[0].player_id } &&
-        m.assignments.find { |a| a.player_id == assignments[1].player_id }
-    end
-
-    if existing_match
-      errors.add(:base, "Takáto výzva už existuje.")
-    end
-  end
-
-  def result_state
-    unless assignments.find { |a| a.is_retired? }
-      if (set1_side1_score.present? || set1_side2_score.present?) && (set1_side1_score == set1_side2_score)
-        errors.add(:set1_side2_score, "Skóre v sete nemôže byť pre obe strany rovnaké.")
-      end
-
-      if (set2_side1_score.present? || set2_side2_score.present?) && (set2_side1_score == set2_side2_score)
-        errors.add(:set2_side2_score, "Skóre v sete nemôže byť pre obe strany rovnaké.")
-      end
-
-      if (set3_side1_score.present? || set3_side2_score.present?) && (set3_side1_score == set3_side2_score)
-        errors.add(:set3_side2_score, "Skóre v sete nemôže byť pre obe strany rovnaké.")
-      end
-
-      side1 = 0
-
-      if set1_side1_score.present? || set1_side2_score.present?
-        s1 = set1_side1_score.to_i
-        s2 = set1_side2_score.to_i
-        errors.add(:set1_side2_score, "Skóre v sete nemôže byť pre obe strany rovnaké.") if s1 == s2
-        side1 += (s1 - s2 > 0) ? 1 : -1
-      end
-
-      if set2_side1_score.present? || set2_side2_score.present?
-        s1 = set2_side1_score.to_i
-        s2 = set2_side2_score.to_i
-        errors.add(:set2_side2_score, "Skóre v sete nemôže byť pre obe strany rovnaké.") if s1 == s2
-        side1 += (s1 - s2 > 0) ? 1 : -1
-      end
-
-      if set3_side1_score.present? || set3_side2_score.present?
-        s1 = set3_side1_score.to_i
-        s2 = set3_side2_score.to_i
-        errors.add(:set3_side2_score, "Skóre v sete nemôže byť pre obe strany rovnaké.") if s1 == s2
-        side1 += (s1 - s2 > 0) ? 1 : -1
-      end
-
-      errors.add(:base, "Neplatné skóre.") if side1 == 0 && !retired?
-    end
-  end
 
   def set_defaults
     case assignments.length

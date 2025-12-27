@@ -123,6 +123,19 @@ RSpec.describe Match, type: :model do
     end
 
 
+    describe "Validators" do
+      it "is validated with PendingChallengeValidator" do
+        expect_any_instance_of(PendingChallengeValidator).to receive(:validate).with(kind_of(Match))
+        build(:match).valid?
+      end
+
+      it "is validated with PlayerAssignmentsValidator" do
+        expect_any_instance_of(PlayerAssignmentsValidator).to receive(:validate).with(kind_of(Match))
+        build(:match).valid?
+      end
+    end
+
+
     describe "player_assignments" do
       subject { build(:match,
                       competitable: competitable,
@@ -219,94 +232,6 @@ RSpec.describe Match, type: :model do
         end
       end
     end
-
-
-    describe "result_state" do
-      subject { build(:match,
-                      competitable: season,
-                      requested_at: Time.now,
-                      accepted_at: Time.now,
-                      rejected_at: nil,
-                      finished_at: Time.now,
-                      winner_side: 2,
-                      assignments: [
-                        build(:assignment, side: 1, player: player1),
-                        build(:assignment, side: 2, player: player2)
-                      ]) }
-
-      let!(:player1) { create(:player, seasons: [season]) }
-      let!(:player2) { create(:player, seasons: [season]) }
-
-
-      context "When none of the players retired the match" do
-
-        context "With sets score 1:2" do
-          before do
-            subject.set1_side1_score = 6
-            subject.set1_side2_score = 3
-            subject.set2_side1_score = 4
-            subject.set2_side2_score = 6
-            subject.set3_side1_score = 1
-            subject.set3_side2_score = 6
-          end
-
-          it "Is valid" do
-            expect(subject).to be_valid
-          end
-        end
-
-        context "With sets score 1:1" do
-          before do
-            subject.set1_side1_score = 6
-            subject.set1_side2_score = 3
-            subject.set2_side1_score = 4
-            subject.set2_side2_score = 6
-          end
-
-          it "Is not valid" do
-            expect(subject).not_to be_valid
-          end
-        end
-      end
-
-      context "When any of the players retired the match" do
-
-        before do
-          subject.assignments.sample.tap do |a|
-            a.is_retired = true
-          end
-        end
-
-        context "With sets score 1:2" do
-          before do
-            subject.set1_side1_score = 6
-            subject.set1_side2_score = 3
-            subject.set2_side1_score = 4
-            subject.set2_side2_score = 6
-            subject.set3_side1_score = 1
-            subject.set3_side2_score = 6
-          end
-
-          it "Is valid" do
-            expect(subject).to be_valid
-          end
-        end
-
-        context "With sets score 1:1" do
-          before do
-            subject.set1_side1_score = 6
-            subject.set1_side2_score = 3
-            subject.set2_side1_score = 4
-            subject.set2_side2_score = 6
-          end
-
-          it "Is valid" do
-            expect(subject).to be_valid
-          end
-        end
-      end
-    end
-
   end
 
 

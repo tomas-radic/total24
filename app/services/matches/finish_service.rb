@@ -8,8 +8,6 @@ class Matches::FinishService < ApplicationService
     params = params.merge("score_side" => score_side)
 
     ActiveRecord::Base.transaction do
-      Matches::UnfinishService.new.call(match)
-
       score = params["score"].to_s.strip.split(//)
       unless score.length.in?([0, 2, 4, 6])
         return failure(["Neplatný výsledok zápasu."], value: match)
@@ -33,10 +31,7 @@ class Matches::FinishService < ApplicationService
       match.finished_at = Time.current
       match.reviewed_at = Time.current
 
-      unless match.save
-        return failure(match.errors.full_messages, value: match)
-      end
-
+      match.save!
       success(match)
     end
   rescue ActiveRecord::Rollback
