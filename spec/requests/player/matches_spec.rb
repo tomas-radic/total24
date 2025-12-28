@@ -135,7 +135,7 @@ RSpec.describe "Player::Matches", type: :request do
           "match_#{match.id}_for_player_#{opponent.id}",
           hash_including(target: "match_#{match.id}")
         )
-        expect_any_instance_of(Match).to receive(:notification_recipients_for).with(MatchUpdatedNotifier).and_return([opponent])
+
         expect(MatchUpdatedNotifier).to receive(:with).with(hash_including(record: match)).and_call_original
         expect_any_instance_of(MatchUpdatedNotifier).to receive(:deliver).with([opponent])
 
@@ -436,7 +436,7 @@ RSpec.describe "Player::Matches", type: :request do
           "match_#{match.id}_for_player_#{player2.id}",
           hash_including(target: "match_#{match.id}")
         )
-        expect_any_instance_of(Match).to receive(:notification_recipients_for).with(MatchCanceledNotifier).and_return([player1])
+
         expect(MatchCanceledNotifier).to receive(:with).with(hash_including(record: match)).and_call_original
         expect_any_instance_of(MatchCanceledNotifier).to receive(:deliver).with([player1])
 

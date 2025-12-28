@@ -8,11 +8,7 @@ class Player::CommentsController < Player::BaseController
     @comment.player = current_player
 
     if @comment.save
-
-      # TODO: zriadit nejake include Commentable, kde budu notification_recipients_for
-      #
-      recipients =  @comment.commentable.notification_recipients_for(NewCommentNotifier)
-      recipients = recipients.reject { |recipient| recipient.id == current_player.id }
+      recipients = NotificationRecipientsQuery.call(@comment.commentable, NewCommentNotifier, exclude: [current_player.id])
       NewCommentNotifier.with(record: @comment.commentable).deliver(recipients)
       redirect_back(fallback_location: root_path)
     else

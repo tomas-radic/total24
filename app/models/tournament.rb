@@ -29,18 +29,4 @@ class Tournament < ApplicationRecord
   def published?
     published_at.present?
   end
-
-
-  def notification_recipients_for(notifier_class)
-    commenter_ids = Comment.where(commentable: self).distinct.pluck(:player_id)
-    commenters = Player.where(id: commenter_ids.uniq)
-    commenters.where.not(
-      id: Noticed::Notification
-            .where(type: "#{notifier_class}::Notification")
-            .where(seen_at: nil)
-            .joins(:event)
-            .where(noticed_events: { record: self })
-            .select(:recipient_id)
-    )
-  end
 end

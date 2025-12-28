@@ -6,7 +6,7 @@ class Player < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :rememberable, :validatable, :trackable, :confirmable
 
-  # Relations -----
+  # region Relations
   has_many :enrollments, dependent: :destroy
   has_many :seasons, through: :enrollments
   has_many :assignments, dependent: :destroy
@@ -19,17 +19,21 @@ class Player < ApplicationRecord
   has_many :notifications, dependent: :destroy, as: :recipient, class_name: "Noticed::Notification"
   has_many :recent_unread_notifications, -> { unread.newest_first.limit(Config.notifications_dropdown_size) },
            as: :recipient, class_name: "Noticed::Notification"
+  # endregion Relations
 
-  # Validations -----
+  # region Validations
   validates :cant_play_since, absence: true, if: -> { open_to_play_since.present? }
   validates :open_to_play_since, absence: true, if: -> { cant_play_since.present? }
   validates :phone_nr, uniqueness: true
   validates :name,
             presence: true, uniqueness: true
+  # endregion Validations
 
-  # Scopes -----
+  # region Scopes
   scope :sorted, -> { order(created_at: :desc) }
+  scope :active, -> { where(anonymized_at: nil).where.not(confirmed_at: nil) }
   scope :open_to_play, -> { where.not(open_to_play_since: nil).order(open_to_play_since: :desc) }
+  # endregion Scopes
 
 
   has_stripped :email, :name, :phone_nr

@@ -138,25 +138,6 @@ class Match < ApplicationRecord
     canceled_at.present? && canceled_at > 30.hours.ago
   end
 
-  def interested_players
-    player_ids = assignments.map(&:player_id)
-    player_ids += Comment.where(commentable: self).distinct.pluck(:player_id)
-    Player.where(id: player_ids.uniq)
-  end
-
-
-  def notification_recipients_for(notifier_class)
-    interested_players
-      .where.not(
-      id: Noticed::Notification
-            .where(type: "#{notifier_class}::Notification")
-            .where(seen_at: nil)
-            .joins(:event)
-            .where(noticed_events: { record: self })
-            .select(:recipient_id)
-    )
-  end
-
 
   private
 

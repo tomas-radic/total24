@@ -27,8 +27,7 @@ class Player::MatchesController < Player::BaseController
     result = service.call(@match, whitelisted_params)
     if result.success?
       broadcast_match_update(@match)
-      recipients = @match.notification_recipients_for(MatchUpdatedNotifier)
-      recipients = recipients.reject { |recipient| recipient.id == @current_player.id }
+      recipients = NotificationRecipientsQuery.call(@match, MatchUpdatedNotifier, exclude: [@current_player.id])
       MatchUpdatedNotifier.with(record: @match).deliver(recipients)
 
       redirect_with_message match_path(@match)
@@ -94,8 +93,7 @@ class Player::MatchesController < Player::BaseController
     result = service.call(@match)
     if result.success?
       broadcast_match_update(@match)
-      recipients = @match.notification_recipients_for(MatchCanceledNotifier)
-      recipients = recipients.reject { |recipient| recipient.id == @current_player.id }
+      recipients = NotificationRecipientsQuery.call(@match, MatchCanceledNotifier, exclude: [@current_player.id])
       MatchCanceledNotifier.with(record: @match).deliver(recipients)
 
       redirect_with_message match_path(@match), 'Zápas bol zrušený.'
