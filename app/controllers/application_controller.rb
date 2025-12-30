@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
   rescue_from(ActiveRecord::RecordNotFound) { redirect_to not_found_path }
   rescue_from(Pundit::NotAuthorizedError) { redirect_to root_path }
 
+  def reload
+    redirect_back(fallback_location: root_path)
+  end
+
 
   private
 

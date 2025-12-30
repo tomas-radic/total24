@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get "/reservations", to: "pages#reservations", as: "reservations"
   get "/help", to: "pages#help", as: "help"
   get "/not_found", to: "pages#not_found", as: "not_found"
+  get "/reload", to: "application#reload", as: "reload"
 
   resources :tournaments, only: [:index, :show]
   resources :matches, only: [:index, :show]

@@ -1,7 +1,7 @@
 <%= turbo_stream_from "matches" %>
 <%= turbo_stream_from "players_open_to_play" %>
 
-<div id="today_index_reload_notice"></div>
+<div id="reload_notice"></div>
 
 <%= render "today/home",
            requested_matches: @requested_matches,

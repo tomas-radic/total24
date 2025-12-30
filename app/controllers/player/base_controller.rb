@@ -87,4 +87,10 @@ class Player::BaseController < ApplicationController
     end
   end
 
+  def broadcast_matches_have_changed
+    Turbo::StreamsChannel.broadcast_update_to "matches",
+                        target: "reload_notice",
+                        partial: "matches/reload_notice"
+  end
+
 end

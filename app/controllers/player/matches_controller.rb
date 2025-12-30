@@ -12,6 +12,7 @@ class Player::MatchesController < Player::BaseController
     service = Matches::CreateService.new(current_player)
     result = service.call(selected_season, @requested_player)
     if result.success?
+      broadcast_matches_have_changed
       NewMatchNotifier.with(record: result.value).deliver(@requested_player)
       redirect_with_message match_path(result.value), 'Výzva bola vytvorená.'
     else
@@ -26,6 +27,7 @@ class Player::MatchesController < Player::BaseController
     service = Matches::UpdateService.new
     result = service.call(@match, whitelisted_params)
     if result.success?
+      broadcast_matches_have_changed
       broadcast_match_update(@match)
       recipients = NotificationRecipientsQuery.call(@match, MatchUpdatedNotifier, exclude: [@current_player.id])
       MatchUpdatedNotifier.with(record: @match).deliver(recipients)
@@ -78,6 +80,7 @@ class Player::MatchesController < Player::BaseController
 
     result = service.call(@match, params_to_finish)
     if result.success?
+      broadcast_matches_have_changed
       broadcast_match_update(@match)
       opponent = @match.opponents_of(@current_player).first
       MatchFinishedNotifier.with(record: @match, finished_by: @current_player).deliver(opponent)
