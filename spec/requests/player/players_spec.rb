@@ -23,9 +23,12 @@ RSpec.describe "Player::Players", type: :request do
         end
 
         it "Anonymizes player's attributes and redirects to root path" do
-          expect_any_instance_of(Player).to(receive(:anonymize!))
+          subject
 
-          expect(subject).to redirect_to(root_path)
+          player.reload
+          expect(player.name).not_to eq("Player")
+          expect(player.email).not_to eq("player@somewhere.com")
+          expect(response).to redirect_to(root_path)
         end
       end
 

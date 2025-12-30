@@ -24,9 +24,9 @@ class Player < ApplicationRecord
   # region Validations
   validates :cant_play_since, absence: true, if: -> { open_to_play_since.present? }
   validates :open_to_play_since, absence: true, if: -> { cant_play_since.present? }
-  validates :phone_nr, uniqueness: true
+  validates :phone_nr, uniqueness: true, if: -> { anonymized_at.blank? }
   validates :name,
-            presence: true, uniqueness: true
+            presence: true, uniqueness: true, if: -> { anonymized_at.blank? }
   # endregion Validations
 
   # region Scopes
@@ -66,16 +66,17 @@ class Player < ApplicationRecord
 
   def anonymize!
     ActiveRecord::Base.transaction do
-      matches.where(finished_at: nil).destroy_all
+      matches.where(finished_at: nil).each do |match|
+        match.destroy!
+      end
 
-      update!(
-        anonymized_at: Time.now,
-        confirmed_at: nil,
-        email: "#{SecureRandom.hex}@anonymized.player",
-        name: "(zmazaný hráč)",
-        phone_nr: nil,
-        birth_year: nil
-      )
+      self.anonymized_at = Time.current
+      self.phone_nr = nil
+      self.birth_year = nil
+      self.name = "(zmazaný hráč)"
+      self.unconfirmed_email = "#{SecureRandom.hex}@anonymized.player"
+      confirm
+      update!(confirmed_at: nil)
     end
 
     self

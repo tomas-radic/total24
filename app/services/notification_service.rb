@@ -1,5 +1,3 @@
-# TODO: player is not needed in some methods - refactor
-
 class NotificationService < ApplicationService
   def initialize(player)
     raise ArgumentError, "player is required" if player.nil?
@@ -26,6 +24,7 @@ class NotificationService < ApplicationService
     success
   end
 
+  # TODO: make this method private, test it within mark_all_as_read
   def destroy_over_aged
     over_aged = Noticed::Event.where(
       "created_at < ?", Config.notifications_max_age_days.days.ago
