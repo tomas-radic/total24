@@ -57,13 +57,6 @@ class Player < ApplicationRecord
     @won_matches || 0
   end
 
-  def season_matches(season)
-    matches.published.reviewed.sorted
-           .joins('join seasons on matches.competitable_type = \'Season\'')
-           .where(matches: { competitable_id: season.id })
-  end
-
-
   def anonymize!
     ActiveRecord::Base.transaction do
       matches.where(finished_at: nil).each do |match|
