@@ -13,7 +13,7 @@ class TodayController < ApplicationController
   private
 
   def load_matches
-    season_matches = selected_season.matches.published.ranking_counted
+    season_matches = selected_season.matches.published
                                     .order(play_date: :asc, play_time: :asc, updated_at: :desc)
                                     .includes(:reactions, :comments, :players,
                                               :predictions, assignments: :player)

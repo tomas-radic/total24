@@ -37,11 +37,6 @@ RSpec.describe Matches::CreateService do
         expect(result.value.published_at).to be_present
       end
 
-      it 'sets ranking_counted to true' do
-        result = subject
-        expect(result.value.ranking_counted).to be true
-      end
-
       it 'clears cant_play_since for the current player' do
         current_player.update!(cant_play_since: Time.current)
         subject

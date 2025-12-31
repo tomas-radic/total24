@@ -43,7 +43,7 @@
 
   <hr>
 
-  <% if match.reviewed? || (!match.ranking_counted && match.finished?) %>
+  <% if match.reviewed? %>
     <p class="u-fs-giant py-4 text-center"><%= MatchPresenter.new(match).result_from_side %></p>
     <p class="text-center">
       <%= MatchPresenter.new(match, privacy:).side_names(match.winner_side) %>

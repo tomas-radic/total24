@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_31_090253) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_31_153347) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -100,7 +100,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_31_090253) do
     t.integer "play_time"
     t.datetime "predictions_disabled_since"
     t.datetime "published_at"
-    t.boolean "ranking_counted", default: true, null: false
     t.integer "reactions_count", default: 0, null: false
     t.datetime "rejected_at"
     t.datetime "requested_at"

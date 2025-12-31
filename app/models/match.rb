@@ -69,7 +69,6 @@ class Match < ApplicationRecord
   scope :finished, -> { where.not(finished_at: nil) }
   scope :reviewed, -> { where.not(reviewed_at: nil) }
   scope :canceled, -> { where.not(canceled_at: nil) }
-  scope :ranking_counted, -> { where(ranking_counted: true) }
   scope :singles, -> { where(kind: "single") }
   scope :doubles, -> { where(kind: "double") }
   #endregion Scopes

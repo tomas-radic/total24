@@ -11,7 +11,6 @@ describe MatchPolicy do
   permissions :edit?, :update? do
     before do
       match.season.update_column(:ended_at, nil)
-      match.update_column(:ranking_counted, true)
       match.update_column(:accepted_at, 1.hour.ago)
       match.assignments = [
         build(:assignment, player: player, side: 1),
@@ -27,14 +26,6 @@ describe MatchPolicy do
 
     context "When season has ended" do
       before { match.season.update_column(:ended_at, 2.days.ago) }
-
-      it "Does not permit" do
-        expect(subject).not_to permit(player, match)
-      end
-    end
-
-    context "When match is not ranking counted" do
-      before { match.update_column(:ranking_counted, false) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -67,7 +58,6 @@ describe MatchPolicy do
   permissions :destroy? do
     before do
       match.season.update_column(:ended_at, nil)
-      match.update_column(:ranking_counted, true)
       match.update_column(:reviewed_at, nil)
       match.update_column(:accepted_at, nil)
       match.update_column(:rejected_at, nil)
@@ -85,14 +75,6 @@ describe MatchPolicy do
 
     context "When season has ended" do
       before { match.season.update_column(:ended_at, 2.days.ago) }
-
-      it "Does not permit" do
-        expect(subject).not_to permit(player, match)
-      end
-    end
-
-    context "When match is not ranking counted" do
-      before { match.update_column(:ranking_counted, false) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -154,7 +136,6 @@ describe MatchPolicy do
   permissions :accept?, :reject? do
     before do
       match.season.update_column(:ended_at, nil)
-      match.update_column(:ranking_counted, true)
       match.update_column(:reviewed_at, nil)
       match.assignments = [
         build(:assignment, player: create(:player), side: 1),
@@ -170,14 +151,6 @@ describe MatchPolicy do
 
     context "When season has ended" do
       before { match.season.update_column(:ended_at, 2.days.ago) }
-
-      it "Does not permit" do
-        expect(subject).not_to permit(player, match)
-      end
-    end
-
-    context "When match is not ranking counted" do
-      before { match.update_column(:ranking_counted, false) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -223,7 +196,6 @@ describe MatchPolicy do
   permissions :finish_init?, :finish? do
     before do
       match.season.update_column(:ended_at, nil)
-      match.update_column(:ranking_counted, true)
       match.update_column(:accepted_at, 1.hour.ago)
       match.update_column(:rejected_at, nil)
       match.update_column(:reviewed_at, nil)
@@ -241,14 +213,6 @@ describe MatchPolicy do
 
     context "When season has ended" do
       before { match.season.update_column(:ended_at, 2.days.ago) }
-
-      it "Does not permit" do
-        expect(subject).not_to permit(player, match)
-      end
-    end
-
-    context "When match is not ranking counted" do
-      before { match.update_column(:ranking_counted, false) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)

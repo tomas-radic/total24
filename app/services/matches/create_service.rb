@@ -8,7 +8,6 @@ class Matches::CreateService < ApplicationService
     match = season.matches.new(
       requested_at: now,
       published_at: now,
-      ranking_counted: true,
       assignments: [
         Assignment.new(player: @current_player, side: 1),
         Assignment.new(player: requested_player, side: 2)

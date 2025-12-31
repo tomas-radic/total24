@@ -37,7 +37,6 @@ class MatchPolicy < ApplicationPolicy
 
   def update?
     return false if season_ended?(record)
-    return false unless record.ranking_counted?
     return false unless record.accepted_at.present?
 
     record.assignments.find { |a| a.player_id == user.id }
@@ -46,7 +45,6 @@ class MatchPolicy < ApplicationPolicy
 
   def destroy?
     return false if season_ended?(record)
-    return false unless record.ranking_counted?
     return false if record.accepted? || record.rejected? || record.reviewed?
 
     record.assignments.where(side: 1)
@@ -56,7 +54,6 @@ class MatchPolicy < ApplicationPolicy
 
   def accept?
     return false if season_ended?(record)
-    return false unless record.ranking_counted?
     return false if record.reviewed?
     return false if record.canceled?
 
