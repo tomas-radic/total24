@@ -8,7 +8,6 @@ class Tournament < ApplicationRecord
   # region Relations
   belongs_to :season
   belongs_to :place, optional: true
-  has_many :matches, as: :competitable
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
   has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
   # endregion Relations

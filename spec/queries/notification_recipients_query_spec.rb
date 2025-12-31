@@ -5,7 +5,7 @@ RSpec.describe NotificationRecipientsQuery do
   let(:player1) { create(:player, name: 'Player 1', confirmed_at: Time.now) }
   let(:player2) { create(:player, name: 'Player 2', confirmed_at: Time.now) }
   let(:player3) { create(:player, name: 'Player 3', confirmed_at: Time.now) }
-  let(:match) { create(:match, competitable: season) }
+  let(:match) { create(:match, season: season) }
   let(:notifier_class) { MatchUpdatedNotifier }
 
   before do

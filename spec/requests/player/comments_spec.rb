@@ -6,7 +6,7 @@ RSpec.describe "Player::Comments", type: :request do
   end
 
   let!(:season) { create(:season) }
-  let!(:match) { create(:match, competitable: season) }
+  let!(:match) { create(:match, season: season) }
   let!(:player) { create(:player, seasons: [season]) }
   let(:attributes) do
     {

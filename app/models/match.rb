@@ -6,7 +6,7 @@ class Match < ApplicationRecord
   #endregion Callbacks
 
   #region Relations
-  belongs_to :competitable, polymorphic: true
+  belongs_to :season
   belongs_to :place, optional: true
   belongs_to :canceled_by, class_name: "Player", optional: true
   has_many :assignments, dependent: :destroy
@@ -25,13 +25,12 @@ class Match < ApplicationRecord
   validates :accepted_at, absence: true, if: Proc.new { |m| m.rejected_at }
   validates :requested_at, presence: true, if: Proc.new { |m| m.accepted_at || m.rejected_at }
   validates :finished_at, presence: true, if: Proc.new { |m| m.reviewed_at }
-  validates :finished_at, absence: true, if: Proc.new { |m| m.competitable_type == "Season" && m.accepted_at.nil? }
   validates :canceled_at, absence: true, if: Proc.new { |m| m.finished_at || m.rejected_at }
   validates :canceled_at, absence: true, if: Proc.new { |m| m.accepted_at.nil? && m.rejected_at.nil? }
   validates :canceled_at, presence: true, if: Proc.new { |m| m.canceled_by_id.present? }
   validates :canceled_by_id, presence: true, if: Proc.new { |m| m.canceled_at }
   validates :play_date, :play_time, :place_id,
-            absence: true, if: Proc.new { |m| m.competitable_type == "Season" && m.requested_at && m.accepted_at.blank? }
+            absence: true, if: Proc.new { |m| m.requested_at && m.accepted_at.blank? }
   validates :winner_side,
             presence: true, if: Proc.new { |m| m.finished_at }
   validates :set1_side1_score, presence: true, if: Proc.new { |m| m.set1_side2_score.present? }
@@ -66,7 +65,7 @@ class Match < ApplicationRecord
   scope :accepted, -> { where.not(accepted_at: nil) }
   scope :rejected, -> { where.not(rejected_at: nil) }
   scope :pending, -> { where(rejected_at: nil, finished_at: nil, canceled_at: nil) }
-  scope :in_season, ->(season) { where(competitable_type: "Season", competitable_id: season.id) }
+  scope :in_season, ->(season) { where(season_id: season.id) }
   scope :finished, -> { where.not(finished_at: nil) }
   scope :reviewed, -> { where.not(reviewed_at: nil) }
   scope :canceled, -> { where.not(canceled_at: nil) }
@@ -115,14 +114,6 @@ class Match < ApplicationRecord
 
   def retired?
     assignments.any? { |a| a.is_retired? }
-  end
-
-  def season
-    if competitable.is_a?(Season)
-      competitable
-    elsif competitable.is_a?(Tournament)
-      competitable.season
-    end
   end
 
   def recently_finished?

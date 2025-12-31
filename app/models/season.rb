@@ -5,7 +5,7 @@ class Season < ApplicationRecord
   has_many :tournaments, dependent: :restrict_with_error
   has_many :enrollments, dependent: :restrict_with_error
   has_many :players, through: :enrollments
-  has_many :matches, as: :competitable, dependent: :restrict_with_error
+  has_many :matches, dependent: :restrict_with_error
   has_many :articles, dependent: :destroy
   # endregion Relations
 

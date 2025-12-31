@@ -13,7 +13,7 @@ RSpec.describe Matches::UpdateService do
 
   describe '#call' do
     let!(:match) do
-      create(:match, :requested, :accepted, competitable: season,
+      create(:match, :requested, :accepted, season: season,
              assignments: [
                build(:assignment, player: current_player, side: 1),
                build(:assignment, player: opponent, side: 2)

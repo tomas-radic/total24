@@ -8,7 +8,7 @@ RSpec.describe Matches::MarkNotificationsReadService do
   describe '#call' do
     subject { service.call(match) }
 
-    let!(:match) { create(:match, competitable: season, requested_at: 2.days.ago, accepted_at: 1.day.ago) }
+    let!(:match) { create(:match, season: season, requested_at: 2.days.ago, accepted_at: 1.day.ago) }
     let!(:notification) do
       Noticed::Notification.create!(recipient: current_player, seen_at: nil, read_at: nil,
                                     type: "MatchUpdatedNotifier::Notification",
@@ -17,7 +17,7 @@ RSpec.describe Matches::MarkNotificationsReadService do
     let!(:other_notification) do
       Noticed::Notification.create!(recipient: current_player, seen_at: nil, read_at: nil,
                                     type: "MatchUpdatedNotifier::Notification",
-                                    event: Noticed::Event.new(created_at: 50.days.ago, record: build(:match, competitable: season), type: "MatchUpdatedNotifier"))
+                                    event: Noticed::Event.new(created_at: 50.days.ago, record: build(:match, season: season), type: "MatchUpdatedNotifier"))
     end
 
     it 'marks all match notifications for the player as read' do

@@ -31,10 +31,8 @@ class PlayerAssignmentsValidator < ActiveModel::Validator
   end
 
   def all_players_enrolled?
-    return true unless @record.competitable.is_a?(Season)
-
     @record.assignments.each do |a|
-      return false unless @record.competitable.enrollments.find { |e| e.player_id == a.player_id }
+      return false unless @record.season.enrollments.find { |e| e.player_id == a.player_id }
     end
 
     true

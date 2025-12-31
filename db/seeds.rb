@@ -120,7 +120,7 @@ ActiveRecord::Base.transaction do
       winner_side: 1,
       finished_at: match_time,
       reviewed_at: match_time,
-      competitable: season,
+      season: season,
       place: (rand(0..2) > 0) ? Place.all.sample : nil,
       set1_side1_score: 6,
       set1_side2_score: rand(0..4),
@@ -161,7 +161,7 @@ ActiveRecord::Base.transaction do
       accepted_at: Time.now,
       play_date: match_time,
       play_time: Match.play_times.values.sample,
-      competitable: season,
+      season: season,
       assignments: [
         Assignment.new(side: 1, player: player1),
         Assignment.new(side: 2, player: player2)
@@ -176,7 +176,7 @@ ActiveRecord::Base.transaction do
     requested_at: rand(3.days).seconds.ago.to_datetime,
     accepted_at: Time.now,
     published_at: Time.now,
-    competitable: season,
+    season: season,
     assignments: [
       Assignment.new(side: 1, player: player1),
       Assignment.new(side: 2, player: player2)
@@ -191,7 +191,7 @@ ActiveRecord::Base.transaction do
     Match.create!(
       requested_at: rand(3.days).seconds.ago.to_datetime,
       published_at: Time.now,
-      competitable: season,
+      season: season,
       assignments: [
         Assignment.new(side: 1, player: player1),
         Assignment.new(side: 2, player: player2)
@@ -208,7 +208,7 @@ ActiveRecord::Base.transaction do
     requested_at: rand(3.days).seconds.ago.to_datetime,
     rejected_at: Time.now,
     published_at: Time.now,
-    competitable: season,
+    season: season,
     assignments: [
       Assignment.new(side: 1, player: player1),
       Assignment.new(side: 2, player: player2)

@@ -68,7 +68,7 @@ RSpec.describe "Player::Matches", type: :request do
 
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :accepted, ranking_counted: true, competitable: season,
+      create(:match, :accepted, ranking_counted: true, season: season,
              assignments: [
                build(:assignment, side: 1, player: player),
                build(:assignment, side: 2, player: opponent)
@@ -104,7 +104,7 @@ RSpec.describe "Player::Matches", type: :request do
     
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :requested, :accepted, competitable: season, ranking_counted: true,
+      create(:match, :requested, :accepted, season: season, ranking_counted: true,
              assignments: [
                build(:assignment, side: 1, player: player),
                build(:assignment, side: 2, player: opponent)
@@ -170,7 +170,7 @@ RSpec.describe "Player::Matches", type: :request do
     
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :requested, competitable: season, ranking_counted: true,
+      create(:match, :requested, season: season, ranking_counted: true,
              assignments: [
                build(:assignment, side: 1, player: player),
                build(:assignment, side: 2, player: opponent)
@@ -209,7 +209,7 @@ RSpec.describe "Player::Matches", type: :request do
     let!(:player1) { create(:player, seasons: [season]) }
     let!(:player2) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :requested, competitable: season, ranking_counted: true,
+      create(:match, :requested, season: season, ranking_counted: true,
              assignments: [
                build(:assignment, side: 1, player: player1),
                build(:assignment, side: 2, player: player2)
@@ -272,7 +272,7 @@ RSpec.describe "Player::Matches", type: :request do
     subject { post reject_player_match_path(match) }
     
     let!(:match) do
-      create(:match, :requested, competitable: season, ranking_counted: true,
+      create(:match, :requested, season: season, ranking_counted: true,
              assignments: [
                build(:assignment, side: 1, player: player1),
                build(:assignment, side: 2, player: player2)
@@ -321,7 +321,7 @@ RSpec.describe "Player::Matches", type: :request do
     
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :accepted, ranking_counted: true, competitable: season,
+      create(:match, :accepted, ranking_counted: true, season: season,
              assignments: [
                build(:assignment, player: player, side: 1),
                build(:assignment, player: opponent, side: 2)
@@ -355,7 +355,7 @@ RSpec.describe "Player::Matches", type: :request do
 
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :accepted, ranking_counted: true, competitable: season,
+      create(:match, :accepted, ranking_counted: true, season: season,
              assignments: [
                build(:assignment, player: player, side: 1),
                build(:assignment, player: opponent, side: 2)
@@ -413,7 +413,7 @@ RSpec.describe "Player::Matches", type: :request do
     subject { post cancel_player_match_path(match) }
 
     let!(:match) do
-      create(:match, :accepted, competitable: season, ranking_counted: true,
+      create(:match, :accepted, season: season, ranking_counted: true,
              assignments: [
                build(:assignment, side: 1, player: player1),
                build(:assignment, side: 2, player: player2)
@@ -461,7 +461,7 @@ RSpec.describe "Player::Matches", type: :request do
   describe "POST /player/matches/:id/toggle_reaction" do
     subject { post toggle_reaction_player_match_path(match) }
 
-    let!(:match) { create(:match, :accepted, competitable: season, ranking_counted: true) }
+    let!(:match) { create(:match, :accepted, season: season, ranking_counted: true) }
 
     it_behaves_like "player_request"
 
@@ -478,7 +478,7 @@ RSpec.describe "Player::Matches", type: :request do
   describe "POST /player/matches/:id/switch_prediction" do
     subject { post switch_prediction_player_match_path(match), params: attributes }
 
-    let!(:match) { create(:match, :accepted, competitable: season, ranking_counted: true) }
+    let!(:match) { create(:match, :accepted, season: season, ranking_counted: true) }
     let(:attributes) { { side: 2 } }
 
     it_behaves_like "player_request"

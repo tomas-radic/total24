@@ -5,12 +5,12 @@ describe MatchPolicy do
   subject { described_class }
 
   let!(:player) { create(:player) }
-  let!(:match) { create(:match, competitable: build(:season)) }
+  let!(:match) { create(:match, season: build(:season)) }
 
   
   permissions :edit?, :update? do
     before do
-      match.competitable.update_column(:ended_at, nil)
+      match.season.update_column(:ended_at, nil)
       match.update_column(:ranking_counted, true)
       match.update_column(:accepted_at, 1.hour.ago)
       match.assignments = [
@@ -26,7 +26,7 @@ describe MatchPolicy do
     end
 
     context "When season has ended" do
-      before { match.competitable.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update_column(:ended_at, 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -66,7 +66,7 @@ describe MatchPolicy do
 
   permissions :destroy? do
     before do
-      match.competitable.update_column(:ended_at, nil)
+      match.season.update_column(:ended_at, nil)
       match.update_column(:ranking_counted, true)
       match.update_column(:reviewed_at, nil)
       match.update_column(:accepted_at, nil)
@@ -84,7 +84,7 @@ describe MatchPolicy do
     end
 
     context "When season has ended" do
-      before { match.competitable.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update_column(:ended_at, 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -153,7 +153,7 @@ describe MatchPolicy do
 
   permissions :accept?, :reject? do
     before do
-      match.competitable.update_column(:ended_at, nil)
+      match.season.update_column(:ended_at, nil)
       match.update_column(:ranking_counted, true)
       match.update_column(:reviewed_at, nil)
       match.assignments = [
@@ -169,7 +169,7 @@ describe MatchPolicy do
     end
 
     context "When season has ended" do
-      before { match.competitable.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update_column(:ended_at, 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -222,7 +222,7 @@ describe MatchPolicy do
 
   permissions :finish_init?, :finish? do
     before do
-      match.competitable.update_column(:ended_at, nil)
+      match.season.update_column(:ended_at, nil)
       match.update_column(:ranking_counted, true)
       match.update_column(:accepted_at, 1.hour.ago)
       match.update_column(:rejected_at, nil)
@@ -240,7 +240,7 @@ describe MatchPolicy do
     end
 
     context "When season has ended" do
-      before { match.competitable.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update_column(:ended_at, 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)

@@ -2,12 +2,10 @@ class PendingChallengeValidator < ActiveModel::Validator
   ERROR_MESSAGE = "Takáto výzva už existuje."
 
   def validate(record)
-    return unless record.competitable.is_a?(Season)
-
     record_player_ids = match_player_ids(record)
     return if record_player_ids.any?(&:empty?)
 
-    existing_challenges = record.competitable.matches.published.pending.where.not(id: record.id)
+    existing_challenges = record.season.matches.published.pending.where.not(id: record.id)
     existing_challenges.each do |challenge|
       challenge_player_ids = match_player_ids(challenge)
       if challenge_player_ids == record_player_ids

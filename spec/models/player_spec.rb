@@ -19,7 +19,7 @@ RSpec.describe Player, type: :model do
       let(:birth_year) { Date.today.year }
       let!(:another_player) { create(:player, name: 'another player') }
       let!(:finished_match) do
-        create(:match, :finished, competitable: season,
+        create(:match, :finished, season: season,
                assignments: [
                  build(:assignment, side: 1, player: player),
                  build(:assignment, side: 2, player: another_player)
@@ -27,7 +27,7 @@ RSpec.describe Player, type: :model do
       end
 
       let!(:unfinished_match) do
-        create(:match, :requested, competitable: season,
+        create(:match, :requested, season: season,
                assignments: [
                  build(:assignment, side: 2, player: player),
                  build(:assignment, side: 1, player: another_player)

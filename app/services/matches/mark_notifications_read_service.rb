@@ -3,9 +3,9 @@ class Matches::MarkNotificationsReadService < ApplicationService
     @current_player = current_player
   end
 
-  def call(match)
+  def call(notifications_subject)
     now = Time.current
-    notifications = match.notifications.where(recipient: @current_player).where(read_at: nil)
+    notifications = notifications_subject.notifications.where(recipient: @current_player).where(read_at: nil)
     notifications.each do |n|
       n.update!(seen_at: now, read_at: now)
     end

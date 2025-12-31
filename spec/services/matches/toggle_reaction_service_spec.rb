@@ -6,7 +6,7 @@ RSpec.describe Matches::ToggleReactionService do
   let(:service) { Matches::ToggleReactionService.new(current_player) }
 
   describe '#call' do
-    let!(:match) { create(:match, competitable: season) }
+    let!(:match) { create(:match, season: season) }
 
     subject { service.call(match) }
 

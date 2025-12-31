@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_30_205653) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_31_090253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -91,8 +91,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_205653) do
     t.uuid "canceled_by_id"
     t.integer "comments_count", default: 0, null: false
     t.datetime "comments_disabled_since"
-    t.uuid "competitable_id", null: false
-    t.string "competitable_type", null: false
     t.datetime "created_at", null: false
     t.datetime "finished_at"
     t.integer "kind", default: 0, null: false
@@ -107,6 +105,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_205653) do
     t.datetime "rejected_at"
     t.datetime "requested_at"
     t.datetime "reviewed_at"
+    t.uuid "season_id", null: false
     t.integer "set1_side1_score"
     t.integer "set1_side2_score"
     t.integer "set2_side1_score"
@@ -116,8 +115,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_205653) do
     t.datetime "updated_at", null: false
     t.integer "winner_side"
     t.index ["canceled_by_id"], name: "index_matches_on_canceled_by_id"
-    t.index ["competitable_type", "competitable_id"], name: "index_matches_on_competitable"
     t.index ["place_id"], name: "index_matches_on_place_id"
+    t.index ["season_id"], name: "index_matches_on_season_id"
   end
 
   create_table "noticed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -273,6 +272,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_205653) do
   add_foreign_key "enrollments", "players"
   add_foreign_key "enrollments", "seasons"
   add_foreign_key "matches", "places"
+  add_foreign_key "matches", "seasons"
   add_foreign_key "player_tags", "players"
   add_foreign_key "player_tags", "tags"
   add_foreign_key "predictions", "matches"

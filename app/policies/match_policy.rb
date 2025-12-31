@@ -77,19 +77,13 @@ class MatchPolicy < ApplicationPolicy
 
   def finish?
     if user.is_a?(Player)
-      if record.competitable.is_a?(Season)
-        return false if season_ended?(record)
-        return false unless update?
-        return false if record.canceled?
-        return false if record.rejected?
-        return false unless record.accepted?
+      return false if season_ended?(record)
+      return false unless update?
+      return false if record.canceled?
+      return false if record.rejected?
+      return false unless record.accepted?
 
-        record.finished_at.blank? || (record.finished_at >= Config.refinish_match_minutes_limit.minutes.ago)
-      else
-        return false
-      end
-
-
+      record.finished_at.blank? || (record.finished_at >= Config.refinish_match_minutes_limit.minutes.ago)
     elsif user.is_a?(Manager)
       # TODO
       false
@@ -101,15 +95,11 @@ class MatchPolicy < ApplicationPolicy
 
 
   def cancel?
-    if record.competitable.is_a?(Season)
-      return false unless record.assignments.find { |a| a.player_id == user.id }
-      return false if record.canceled?
-      return false if record.rejected?
-      return false if record.finished?
-      true
-    else
-      false
-    end
+    return false unless record.assignments.find { |a| a.player_id == user.id }
+    return false if record.canceled?
+    return false if record.rejected?
+    return false if record.finished?
+    true
   end
 
 

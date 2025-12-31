@@ -11,7 +11,7 @@ RSpec.describe Matches::UnfinishService do
   end
 
   let!(:match) do
-    create(:match, :reviewed, competitable: season,
+    create(:match, :reviewed, season: season,
            assignments: [
              build(:assignment, player: current_player, side: 1, is_retired: false),
              build(:assignment, player: opponent, side: 2, is_retired: true)

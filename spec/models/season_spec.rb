@@ -14,37 +14,37 @@ RSpec.describe Season, type: :model do
       let!(:playerD) { create(:player, name: 'D', enrollments: [build(:enrollment, season:, created_at: 4.days.ago), build(:enrollment, season: other_season)]) }
       let!(:playerE) { create(:player, name: 'E', enrollments: [build(:enrollment, season:, created_at: 5.days.ago)]) }
       let!(:playerF) { create(:player, name: 'F', enrollments: [build(:enrollment, season: other_season)]) }
-      let!(:match1) { create(:match, :finished, competitable: season, winner_side: 1,
+      let!(:match1) { create(:match, :finished, season: season, winner_side: 1,
                              assignments: [
                                build(:assignment, side: 1, player: playerA),
                                build(:assignment, side: 2, player: playerB)
                              ]) }
-      let!(:match2) { create(:match, :finished, competitable: season, winner_side: 2,
+      let!(:match2) { create(:match, :finished, season: season, winner_side: 2,
                              assignments: [
                                build(:assignment, side: 1, player: playerC),
                                build(:assignment, side: 2, player: playerA)
                              ]) }
-      let!(:match3) { create(:match, :finished, competitable: season, winner_side: 1,
+      let!(:match3) { create(:match, :finished, season: season, winner_side: 1,
                              assignments: [
                                build(:assignment, side: 1, player: playerB),
                                build(:assignment, side: 2, player: playerC)
                              ]) }
-      let!(:match4) { create(:match, :finished, competitable: season, winner_side: 2,
+      let!(:match4) { create(:match, :finished, season: season, winner_side: 2,
                              assignments: [
                                build(:assignment, side: 1, player: playerD),
                                build(:assignment, side: 2, player: playerA)
                              ]) }
-      let!(:match5) { create(:match, :finished, competitable: season, winner_side: 1,
+      let!(:match5) { create(:match, :finished, season: season, winner_side: 1,
                              assignments: [
                                build(:assignment, side: 1, player: playerD),
                                build(:assignment, side: 2, player: playerB)
                              ]) }
-      let!(:unreviewed_match) { create(:match, :finished, competitable: season, winner_side: 2,
+      let!(:unreviewed_match) { create(:match, :finished, season: season, winner_side: 2,
                                        assignments: [
                                          build(:assignment, side: 1, player: playerA),
                                          build(:assignment, side: 2, player: playerE)
                                        ]) }
-      let!(:other_season_match) { create(:match, :reviewed, competitable: other_season, winner_side: 1,
+      let!(:other_season_match) { create(:match, :reviewed, season: other_season, winner_side: 1,
                                          assignments: [
                                            build(:assignment, side: 1, player: playerA),
                                            build(:assignment, side: 2, player: playerD)

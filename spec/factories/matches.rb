@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :match do
-    association :competitable, factory: :season
+    association :season
 
     published_at { Time.now }
 

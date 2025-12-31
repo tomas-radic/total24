@@ -6,7 +6,7 @@ RSpec.describe Matches::SwitchPredictionService do
   let(:service) { Matches::SwitchPredictionService.new(current_player) }
 
   describe '#call' do
-    let!(:match) { create(:match, competitable: season) }
+    let!(:match) { create(:match, season: season) }
 
     context 'when no prediction exists' do
       subject { service.call(match, 1) }

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PendingChallengeValidator do
-  subject { Match.new(competitable: season, assignments: assignments, kind: assignments.length == 2 ? :single : :double) }
+  subject { Match.new(season: season, assignments: assignments, kind: assignments.length == 2 ? :single : :double) }
 
   let(:season) { create(:season) }
   let!(:player1) { create(:player, name: "Player 1", seasons: [season]) }
@@ -22,7 +22,7 @@ RSpec.describe PendingChallengeValidator do
   context "when similar pending challenge exists in the same season" do
     let!(:existing_challenge) do
       create(:match,
-             competitable: season,
+             season: season,
              published_at: Time.now,
              assignments: [
                build(:assignment, side: 1, player: player2),
@@ -43,7 +43,7 @@ RSpec.describe PendingChallengeValidator do
       p1 = create(:player, name: "Player A #{SecureRandom.hex}", seasons: [another_season])
       p2 = create(:player, name: "Player B #{SecureRandom.hex}", seasons: [another_season])
       create(:match,
-             competitable: another_season,
+             season: another_season,
              published_at: Time.now,
              assignments: [
                build(:assignment, side: 1, player: p1),
@@ -57,7 +57,7 @@ RSpec.describe PendingChallengeValidator do
   context "when similar challenge exists but it is not pending (finished)" do
     let!(:existing_challenge) do
       create(:match, :finished,
-             competitable: season,
+             season: season,
              assignments: [
                build(:assignment, side: 1, player: player2),
                build(:assignment, side: 2, player: player1)
@@ -72,7 +72,7 @@ RSpec.describe PendingChallengeValidator do
   context "when similar challenge exists but it is not published" do
     let!(:existing_challenge) do
       create(:match,
-             competitable: season,
+             season: season,
              published_at: nil,
              assignments: [
                build(:assignment, side: 1, player: player2),
@@ -100,7 +100,7 @@ RSpec.describe PendingChallengeValidator do
     context "when exact same players are in another pending challenge" do
       let!(:existing_challenge) do
         create(:match,
-               competitable: season,
+               season: season,
                published_at: Time.now,
                assignments: [
                  build(:assignment, side: 1, player: player4),
@@ -119,7 +119,7 @@ RSpec.describe PendingChallengeValidator do
     context "when exact same players but combined differently are in another pending challenge" do
       let!(:existing_challenge) do
         create(:match,
-               competitable: season,
+               season: season,
                published_at: Time.now,
                assignments: [
                  build(:assignment, side: 1, player: player4),
@@ -147,7 +147,7 @@ RSpec.describe PendingChallengeValidator do
 
       let!(:existing_challenge) do
         create(:match,
-               competitable: season,
+               season: season,
                published_at: Time.now,
                assignments: [
                  build(:assignment, side: 1, player: player1),

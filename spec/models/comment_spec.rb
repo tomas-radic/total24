@@ -8,12 +8,12 @@ RSpec.describe Comment, type: :model do
   describe "Validations" do
 
     context "Refers different commentable than its motive" do
-      let!(:match) { create(:match, competitable: season) }
+      let!(:match) { create(:match, season: season) }
       let!(:match_comment) { create(:comment, commentable: match) }
 
       before do
         subject.motive = match_comment
-        subject.commentable = create(:match, competitable: season)
+        subject.commentable = create(:match, season: season)
       end
 
       it "Is invalid" do
