@@ -506,7 +506,7 @@ RSpec.describe "Player::Matches", type: :request do
 
     context "when predictions are disabled (not authorized)" do
       before do
-        match.update!(predictions_disabled_since: Time.now)
+        match.update!(predictions_disabled_since: Time.current)
         sign_in player
       end
 

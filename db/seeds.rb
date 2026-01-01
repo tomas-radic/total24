@@ -53,7 +53,7 @@ ActiveRecord::Base.transaction do
       end_date: date + rand(0..1).day,
       main_info: main_info,
       side_info: side_info,
-      published_at: Time.now,
+      published_at: Time.current,
       place: (rand(0..2) > 0) ? Place.all.sample : nil
     )
   end
@@ -156,7 +156,7 @@ ActiveRecord::Base.transaction do
 
     Match.create!(
       published_at: match_time,
-      accepted_at: Time.now,
+      accepted_at: Time.current,
       play_date: match_time,
       play_time: Match.play_times.values.sample,
       season: season,
@@ -171,8 +171,8 @@ ActiveRecord::Base.transaction do
   player2 = players.delete(players.sample)
 
   Match.create!(
-    accepted_at: Time.now,
-    published_at: Time.now,
+    accepted_at: Time.current,
+    published_at: Time.current,
     season: season,
     assignments: [
       Assignment.new(side: 1, player: player1),
@@ -186,7 +186,7 @@ ActiveRecord::Base.transaction do
     player2 = players.delete(players.sample)
 
     Match.create!(
-      published_at: Time.now,
+      published_at: Time.current,
       season: season,
       assignments: [
         Assignment.new(side: 1, player: player1),
@@ -201,8 +201,8 @@ ActiveRecord::Base.transaction do
   player2 = players.delete(players.sample)
 
   Match.create!(
-    rejected_at: Time.now,
-    published_at: Time.now,
+    rejected_at: Time.current,
+    published_at: Time.current,
     season: season,
     assignments: [
       Assignment.new(side: 1, player: player1),
@@ -245,7 +245,7 @@ ActiveRecord::Base.transaction do
     content: Faker::Lorem.paragraph(sentence_count: 10, supplemental: true, random_sentences_to_add: 6),
     manager: Manager.all.sample,
     season: season,
-    published_at: Time.now
+    published_at: Time.current
   )
 end
 

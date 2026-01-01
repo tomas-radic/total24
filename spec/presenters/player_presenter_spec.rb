@@ -23,13 +23,13 @@ RSpec.describe PlayerPresenter do
       end
 
       it 'handles names with multiple parts' do
-        player.update(name: 'John Quincy Adams')
+        player.update!(name: 'John Quincy Adams')
         presenter = PlayerPresenter.new(player, privacy: true)
         expect(presenter.name).to eq('John Q. A.')
       end
 
       it 'handles single part names' do
-        player.update(name: 'John')
+        player.update!(name: 'John')
         presenter = PlayerPresenter.new(player, privacy: true)
         expect(presenter.name).to eq('John')
       end

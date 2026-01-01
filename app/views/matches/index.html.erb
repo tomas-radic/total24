@@ -35,7 +35,7 @@
         <p><%= paginate @matches %></p>
       <% else %>
         <p class="py-8 text-center">Žiadne zápasy.</p>
-        <% if selected_season && !selected_season.ended_at? %>
+        <% if selected_season && !selected_season.ended? %>
           <p class="py-2 text-center">
             <%= link_to "Zavolaj niekoho hrať!", rankings_path, class: "btn btn-success btn-lg" %>
           </p>

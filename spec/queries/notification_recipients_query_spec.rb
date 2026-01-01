@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe NotificationRecipientsQuery do
   let(:season) { create(:season) }
-  let(:player1) { create(:player, name: 'Player 1', confirmed_at: Time.now) }
-  let(:player2) { create(:player, name: 'Player 2', confirmed_at: Time.now) }
-  let(:player3) { create(:player, name: 'Player 3', confirmed_at: Time.now) }
+  let(:player1) { create(:player, name: 'Player 1', confirmed_at: Time.current) }
+  let(:player2) { create(:player, name: 'Player 2', confirmed_at: Time.current) }
+  let(:player3) { create(:player, name: 'Player 3', confirmed_at: Time.current) }
   let(:match) { create(:match, season: season) }
   let(:notifier_class) { MatchUpdatedNotifier }
 
@@ -46,7 +46,7 @@ RSpec.describe NotificationRecipientsQuery do
       end
 
       it 'only includes active players' do
-        player2.update(anonymized_at: Time.now)
+        player2.update!(anonymized_at: Time.current)
         result = described_class.call(match, notifier_class)
         expect(result).to include(player1)
         expect(result).not_to include(player2)

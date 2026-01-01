@@ -27,8 +27,8 @@ RSpec.describe Matches::AcceptService do
     end
 
     it 'clears open_to_play_since for all players in the match' do
-      current_player.update(open_to_play_since: Time.current)
-      opponent.update(open_to_play_since: Time.current)
+      current_player.update!(open_to_play_since: Time.current)
+      opponent.update!(open_to_play_since: Time.current)
 
       subject
 

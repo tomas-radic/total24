@@ -5,6 +5,6 @@ FactoryBot.define do
 
     title { "Title" }
     content { "Content" }
-    published_at { Time.now }
+    published_at { Time.current }
   end
 end

@@ -19,7 +19,7 @@ RSpec.describe PlayerService do
         subject { service.set_open_to_play(player, true) }
 
         before do
-          player.update(cant_play_since: Time.current)
+          player.update!(cant_play_since: Time.current)
         end
 
         it 'clears cant_play_since' do
@@ -32,7 +32,7 @@ RSpec.describe PlayerService do
       subject { service.set_open_to_play(player, false) }
 
       before do
-        player.update(open_to_play_since: Time.current)
+        player.update!(open_to_play_since: Time.current)
       end
 
       it 'clears open_to_play_since' do
@@ -53,7 +53,7 @@ RSpec.describe PlayerService do
         subject { service.set_cant_play(player, false) }
 
         before do
-          player.update(open_to_play_since: Time.current)
+          player.update!(open_to_play_since: Time.current)
         end
 
         it 'clears open_to_play_since' do
@@ -66,7 +66,7 @@ RSpec.describe PlayerService do
       subject { service.set_cant_play(player, true) }
 
       before do
-        player.update(cant_play_since: Time.current)
+        player.update!(cant_play_since: Time.current)
       end
 
       it 'clears cant_play_since' do

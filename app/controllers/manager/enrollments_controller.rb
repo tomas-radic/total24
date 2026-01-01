@@ -5,9 +5,9 @@ class Manager::EnrollmentsController < Manager::BaseController
     @enrollment = @managed_season.enrollments.find_by(player_id: player.id)
 
     if @enrollment.present?
-      @enrollment.update(canceled_at: @enrollment.canceled_at.present? ? nil : Time.now)
+      @enrollment.update!(canceled_at: @enrollment.canceled_at.present? ? nil : Time.current)
     else
-      Enrollment.create(
+      Enrollment.create!(
         player: player,
         season: @managed_season,
         canceled_at: nil)

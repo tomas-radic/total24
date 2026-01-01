@@ -85,7 +85,7 @@ RSpec.describe "Player::Players", type: :request do
 
       context "when player is currently open to play" do
         before do
-          player.update(open_to_play_since: 1.hour.ago)
+          player.update!(open_to_play_since: 1.hour.ago)
         end
 
         it "removes player from open to play" do
@@ -97,7 +97,7 @@ RSpec.describe "Player::Players", type: :request do
 
       context "when player has cant_play_since set" do
         before do
-          player.update(cant_play_since: 1.hour.ago)
+          player.update!(cant_play_since: 1.hour.ago)
         end
 
         it "clears cant_play_since when setting open to play" do
@@ -143,7 +143,7 @@ RSpec.describe "Player::Players", type: :request do
 
       context "when player currently cant play" do
         before do
-          player.update(cant_play_since: 1.hour.ago)
+          player.update!(cant_play_since: 1.hour.ago)
         end
 
         it "removes cant play flag" do
@@ -155,7 +155,7 @@ RSpec.describe "Player::Players", type: :request do
 
       context "when player has open_to_play_since set" do
         before do
-          player.update(open_to_play_since: 1.hour.ago)
+          player.update!(open_to_play_since: 1.hour.ago)
         end
 
         it "clears open_to_play_since when setting cant play" do

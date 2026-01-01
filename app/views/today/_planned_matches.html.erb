@@ -12,7 +12,7 @@
       <% matches.each do |match| %>
         <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
       <% end %>
-    <% elsif selected_season && !selected_season.ended_at? %>
+    <% elsif selected_season && !selected_season.ended? %>
       <p class="py-8 text-center">Nikto neplánuje hrať zápas.</p>
       <p class="py-2 text-center">
         <%= link_to "Vyzvi niekoho!", rankings_path, class: "btn btn-success btn-lg" %>

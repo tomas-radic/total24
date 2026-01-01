@@ -26,8 +26,8 @@ RSpec.describe Matches::RejectService do
     end
 
     it 'preserves open_to_play_since flags for players' do
-      current_player.update(open_to_play_since: Time.current)
-      opponent.update(open_to_play_since: Time.current)
+      current_player.update!(open_to_play_since: Time.current)
+      opponent.update!(open_to_play_since: Time.current)
 
       subject
 

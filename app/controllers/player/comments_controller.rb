@@ -43,7 +43,7 @@ class Player::CommentsController < Player::BaseController
   def delete
     @comment = current_player.comments.find(params[:id])
     authorize @comment
-    @comment.update!(deleted_at: Time.now)
+    @comment.update!(deleted_at: Time.current)
 
     redirect_back(fallback_location: root_path)
   end

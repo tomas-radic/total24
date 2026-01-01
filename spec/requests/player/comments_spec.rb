@@ -53,7 +53,7 @@ RSpec.describe "Player::Comments", type: :request do
       end
 
       context "When player is restricted to comment" do
-        before { player.update!(comments_disabled_since: Time.now) }
+        before { player.update!(comments_disabled_since: Time.current) }
 
         it "Does not create comment and redirects" do
           subject
@@ -64,7 +64,7 @@ RSpec.describe "Player::Comments", type: :request do
       end
 
       context "When it is not allowed to comment that match" do
-        before { match.update!(comments_disabled_since: Time.now) }
+        before { match.update!(comments_disabled_since: Time.current) }
 
         it "Does not create comment and redirects" do
           subject
@@ -112,7 +112,7 @@ RSpec.describe "Player::Comments", type: :request do
         end
 
         context "When player is restricted to comment" do
-          before { player.update!(comments_disabled_since: Time.now) }
+          before { player.update!(comments_disabled_since: Time.current) }
 
           it "Redirects to root" do
             subject
@@ -122,7 +122,7 @@ RSpec.describe "Player::Comments", type: :request do
         end
 
         context "When it is not allowed to comment that match" do
-          before { match.update!(comments_disabled_since: Time.now) }
+          before { match.update!(comments_disabled_since: Time.current) }
 
           it "Redirects to not found" do
             subject
@@ -177,7 +177,7 @@ RSpec.describe "Player::Comments", type: :request do
           end
 
           context "When player is restricted to comment" do
-            before { player.update!(comments_disabled_since: Time.now) }
+            before { player.update!(comments_disabled_since: Time.current) }
 
             it "Redirects to root" do
               subject
@@ -187,7 +187,7 @@ RSpec.describe "Player::Comments", type: :request do
           end
 
           context "When it is not allowed to comment that match" do
-            before { match.update!(comments_disabled_since: Time.now) }
+            before { match.update!(comments_disabled_since: Time.current) }
 
             it "Redirects to not found" do
               subject
@@ -253,7 +253,7 @@ RSpec.describe "Player::Comments", type: :request do
         end
 
         context "When player is restricted to comment" do
-          before { player.update!(comments_disabled_since: Time.now) }
+          before { player.update!(comments_disabled_since: Time.current) }
 
           it "Marks comment deleted and redirects" do
             subject
@@ -263,7 +263,7 @@ RSpec.describe "Player::Comments", type: :request do
         end
 
         context "When it is not allowed to comment that match" do
-          before { match.update!(comments_disabled_since: Time.now) }
+          before { match.update!(comments_disabled_since: Time.current) }
 
           it "Does not mark comment deleted" do
             subject
