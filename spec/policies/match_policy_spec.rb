@@ -4,28 +4,29 @@ require "pundit/rspec"
 describe MatchPolicy do
   subject { described_class }
 
-  let!(:player) { create(:player) }
-  let!(:match) { create(:match, season: build(:season)) }
+  let!(:season) { create(:season) }
+  let!(:player) { create(:player, seasons: [season]) }
+  let!(:match) { create(:match, season:) }
 
   
   permissions :edit?, :update? do
     before do
-      match.season.update_column(:ended_at, nil)
-      match.update_column(:accepted_at, 1.hour.ago)
       match.assignments = [
         build(:assignment, player: player, side: 1),
-        build(:assignment, player: create(:player), side: 2)
+        build(:assignment, player: create(:player, seasons: [season]), side: 2)
       ]
     end
 
     context "With conditions met" do
+      before { match.update!(accepted_at: Time.current) }
+
       it "Permits" do
         expect(subject).to permit(player, match)
       end
     end
 
     context "When season has ended" do
-      before { match.season.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update!(ended_at: 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -33,7 +34,7 @@ describe MatchPolicy do
     end
 
     context "When match has not been accepted" do
-      before { match.update_column(:accepted_at, nil) }
+      before { match.update!(accepted_at: nil) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -43,8 +44,8 @@ describe MatchPolicy do
     context "When player is not assigned to the match" do
       before do
         match.assignments = [
-          build(:assignment, player: create(:player), side: 1),
-          build(:assignment, player: create(:player), side: 2)
+          build(:assignment, player: create(:player, seasons: [season]), side: 1),
+          build(:assignment, player: create(:player, seasons: [season]), side: 2)
         ]
       end
 
@@ -57,13 +58,9 @@ describe MatchPolicy do
 
   permissions :destroy? do
     before do
-      match.season.update_column(:ended_at, nil)
-      match.update_column(:reviewed_at, nil)
-      match.update_column(:accepted_at, nil)
-      match.update_column(:rejected_at, nil)
       match.assignments = [
         build(:assignment, player: player, side: 1),
-        build(:assignment, player: create(:player), side: 2)
+        build(:assignment, player: create(:player, seasons: [season]), side: 2)
       ]
     end
 
@@ -74,7 +71,7 @@ describe MatchPolicy do
     end
 
     context "When season has ended" do
-      before { match.season.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update!(ended_at: 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -82,7 +79,8 @@ describe MatchPolicy do
     end
 
     context "When match has been reviewed" do
-      before { match.update_columns(accepted_at: 1.minute.ago, finished_at: 1.minute.ago, reviewed_at: 1.minute.ago) }
+      before { match.update!(accepted_at: 1.minute.ago, finished_at: 1.minute.ago, reviewed_at: 1.minute.ago,
+                             winner_side: 1, set1_side1_score: 6, set1_side2_score: 3) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -90,7 +88,7 @@ describe MatchPolicy do
     end
 
     context "When match has been accepted" do
-      before { match.update_column(:accepted_at, 1.minute.ago) }
+      before { match.update!(accepted_at: 1.minute.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -98,7 +96,7 @@ describe MatchPolicy do
     end
 
     context "When match has been rejected" do
-      before { match.update_column(:rejected_at, 1.minute.ago) }
+      before { match.update!(rejected_at: 1.minute.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -108,7 +106,7 @@ describe MatchPolicy do
     context "When player is assigned as a side 2" do
       before do
         match.assignments = [
-          build(:assignment, player: create(:player), side: 1),
+          build(:assignment, player: create(:player, seasons: [season]), side: 1),
           build(:assignment, player: player, side: 2)
         ]
       end
@@ -121,8 +119,8 @@ describe MatchPolicy do
     context "When player is not assigned to the match" do
       before do
         match.assignments = [
-          build(:assignment, player: create(:player), side: 1),
-          build(:assignment, player: create(:player), side: 2)
+          build(:assignment, player: create(:player, seasons: [season]), side: 1),
+          build(:assignment, player: create(:player, seasons: [season]), side: 2)
         ]
       end
 
@@ -135,10 +133,8 @@ describe MatchPolicy do
 
   permissions :accept?, :reject? do
     before do
-      match.season.update_column(:ended_at, nil)
-      match.update_column(:reviewed_at, nil)
       match.assignments = [
-        build(:assignment, player: create(:player), side: 1),
+        build(:assignment, player: create(:player, seasons: [season]), side: 1),
         build(:assignment, player: player, side: 2)
       ]
     end
@@ -150,7 +146,7 @@ describe MatchPolicy do
     end
 
     context "When season has ended" do
-      before { match.season.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update!(ended_at: 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -158,7 +154,8 @@ describe MatchPolicy do
     end
 
     context "When match has been reviewed" do
-      before { match.update_columns(accepted_at: 1.minute.ago, finished_at: 1.minute.ago, reviewed_at: 1.minute.ago) }
+      before { match.update!(accepted_at: 1.minute.ago, finished_at: 1.minute.ago, reviewed_at: 1.minute.ago,
+                             winner_side: 1, set1_side1_score: 6, set1_side2_score: 3) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -169,7 +166,7 @@ describe MatchPolicy do
       before do
         match.assignments = [
           build(:assignment, player: player, side: 1),
-          build(:assignment, player: create(:player), side: 2)
+          build(:assignment, player: create(:player, seasons: [season]), side: 2)
         ]
       end
 
@@ -181,8 +178,8 @@ describe MatchPolicy do
     context "When player is not assigned to the match" do
       before do
         match.assignments = [
-          build(:assignment, player: create(:player), side: 1),
-          build(:assignment, player: create(:player), side: 2)
+          build(:assignment, player: create(:player, seasons: [season]), side: 1),
+          build(:assignment, player: create(:player, seasons: [season]), side: 2)
         ]
       end
 
@@ -195,24 +192,22 @@ describe MatchPolicy do
 
   permissions :finish_init?, :finish? do
     before do
-      match.season.update_column(:ended_at, nil)
-      match.update_column(:accepted_at, 1.hour.ago)
-      match.update_column(:rejected_at, nil)
-      match.update_column(:reviewed_at, nil)
       match.assignments = [
         build(:assignment, player: player, side: 1),
-        build(:assignment, player: create(:player), side: 2)
+        build(:assignment, player: create(:player, seasons: [season]), side: 2)
       ]
     end
 
     context "With conditions met" do
+      before { match.update!(accepted_at: 1.hour.ago) }
+
       it "Permits" do
         expect(subject).to permit(player, match)
       end
     end
 
     context "When season has ended" do
-      before { match.season.update_column(:ended_at, 2.days.ago) }
+      before { match.season.update!(ended_at: 2.days.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -220,7 +215,7 @@ describe MatchPolicy do
     end
 
     context "When match has not been accepted" do
-      before { match.update_column(:accepted_at, nil) }
+      before { match.update!(accepted_at: nil) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -228,7 +223,7 @@ describe MatchPolicy do
     end
 
     context "When match has been rejected" do
-      before { match.update_column(:rejected_at, 1.hour.ago) }
+      before { match.update!(rejected_at: 1.hour.ago) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -236,7 +231,8 @@ describe MatchPolicy do
     end
 
     context "When match has been reviewed" do
-      before { match.update_columns(accepted_at: 1.hour.ago, finished_at: 1.hour.ago, reviewed_at: 1.hour.ago) }
+      before { match.update!(accepted_at: 1.hour.ago, finished_at: 1.hour.ago, reviewed_at: 1.hour.ago,
+                             winner_side: 1, set1_side1_score: 6, set1_side2_score: 3) }
 
       it "Does not permit" do
         expect(subject).not_to permit(player, match)
@@ -246,8 +242,8 @@ describe MatchPolicy do
     context "When player is not assigned to the match" do
       before do
         match.assignments = [
-          build(:assignment, player: create(:player), side: 1),
-          build(:assignment, player: create(:player), side: 2)
+          build(:assignment, player: create(:player, seasons: [season]), side: 1),
+          build(:assignment, player: create(:player, seasons: [season]), side: 2)
         ]
       end
 
@@ -256,5 +252,4 @@ describe MatchPolicy do
       end
     end
   end
-
 end

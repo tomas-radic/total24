@@ -4,11 +4,11 @@ class MatchPolicy < ApplicationPolicy
     requesting_player = user
     return false if requested_player.cant_play_since.present?
     return false if requesting_player.id == requested_player.id
-    return false if season.ended_at.present?
-    return false unless requested_player.confirmed?
-    return false if requesting_player.anonymized_at.present? || requested_player.anonymized_at.present?
-    return false if season.enrollments.active.find { |e| e.player_id == requesting_player.id }.blank?
-    return false if season.enrollments.active.find { |e| e.player_id == requested_player.id }.blank?
+    return false if requesting_player.anonymized? || requested_player.anonymized?
+
+    return false if season.ended?
+    return false unless active_enrollment?(requesting_player, season)
+    return false unless active_enrollment?(requested_player, season)
 
     requested_player_pending_matches = requested_player.matches.in_season(season).published.pending
     requesting_player_pending_matches = requesting_player.matches.in_season(season).published.pending
@@ -36,29 +36,29 @@ class MatchPolicy < ApplicationPolicy
 
 
   def update?
-    return false if season_ended?(record)
-    return false unless record.accepted_at.present?
+    return false unless record.published?
+    return false if record.season.ended?
+    return false if record.requested?
 
-    record.assignments.find { |a| a.player_id == user.id }
+    assigned?(user, record)
   end
 
 
   def destroy?
-    return false if season_ended?(record)
-    return false if record.accepted? || record.rejected? || record.reviewed?
+    return false unless record.published?
+    return false if record.season.ended?
+    return false unless record.requested?
 
-    record.assignments.where(side: 1)
-          .find { |a| a.player_id == user.id }
+    assigned?(user, record, side: 1)
   end
 
 
   def accept?
-    return false if season_ended?(record)
-    return false if record.reviewed?
-    return false if record.canceled?
+    return false unless record.published?
+    return false if record.season.ended?
+    return false unless record.requested?
 
-    record.assignments.where(side: 2)
-          .find { |a| a.player_id == user.id }
+    assigned?(user, record, side: 2)
   end
 
 
@@ -73,37 +73,28 @@ class MatchPolicy < ApplicationPolicy
 
 
   def finish?
-    if user.is_a?(Player)
-      return false if season_ended?(record)
-      return false unless update?
-      return false if record.canceled?
-      return false if record.rejected?
-      return false unless record.accepted?
+    return false unless record.published?
+    return false if record.season.ended?
+    return false unless record.accepted?
+    return false unless assigned?(user, record)
 
-      record.finished_at.blank? || (record.finished_at >= Config.refinish_match_minutes_limit.minutes.ago)
-    elsif user.is_a?(Manager)
-      # TODO
-      false
-    else
-      false
-    end
-    # update? && !record.rejected? && !record.reviewed?
+    record.finished_at.blank? || (record.finished_at >= Config.refinish_match_minutes_limit.minutes.ago)
   end
 
 
   def cancel?
-    return false unless record.assignments.find { |a| a.player_id == user.id }
-    return false if record.canceled?
-    return false if record.rejected?
-    return false if record.finished?
-    true
+    return false unless record.published?
+    return false if record.season.ended?
+    return false unless record.accepted?
+
+    assigned?(user, record)
   end
 
 
   def switch_prediction?
     return false unless record.published?
-    return false if record.finished?
-    return false if record.canceled?
+    return false if record.season.ended?
+    return false unless record.pending?
     return false if record.predictions_disabled_since.present?
 
     true
@@ -117,13 +108,13 @@ class MatchPolicy < ApplicationPolicy
 
   private
 
-  def player_enrolled?(player, match)
-    player.enrollments.active.where(season_id: match.season&.id).exists?
+  def active_enrollment?(player, season)
+    season.enrollments.active.exists?(player_id: player.id)
   end
 
-
-  def season_ended?(record)
-    record.season&.ended_at.present?
+  def assigned?(player, match, side: nil)
+    assignments = match.assignments
+    assignments = assignments.where(side:) if side.present?
+    assignments.exists?(player_id: player.id)
   end
-
 end

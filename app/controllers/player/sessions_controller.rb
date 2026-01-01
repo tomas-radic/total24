@@ -9,17 +9,9 @@ class Player::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  def create
-    player = Player.find_by(email: params[:player][:email])
-
-    if player&.anonymized_at.present?
-      flash[:alert] = "Tento email už nie je platný."
-      redirect_to new_player_session_path
-    else
-      super
-    end
-
-  end
+  # def create
+  #   super
+  # end
 
   # DELETE /resource/sign_out
   # def destroy

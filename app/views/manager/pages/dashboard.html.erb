@@ -91,7 +91,7 @@ Reloaded at <%= Time.now.in_time_zone.to_s %>
         Turnaje:
         <%= @managed_season.tournaments.published.count %>
       </li>
-      <% if @managed_season.ended_at.present? %>
+      <% if @managed_season.ended? %>
         <li>
           Sezóna skončila
           <%= app_date @managed_season.ended_at %>

@@ -27,7 +27,7 @@ RSpec.describe Player, type: :model do
       end
 
       let!(:unfinished_match) do
-        create(:match, :requested, season: season,
+        create(:match, season: season,
                assignments: [
                  build(:assignment, side: 2, player: player),
                  build(:assignment, side: 1, player: another_player)

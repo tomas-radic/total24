@@ -104,7 +104,7 @@ RSpec.describe "Player::Matches", type: :request do
     
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :requested, :accepted, season: season,
+      create(:match, :accepted, season: season,
              assignments: [
                build(:assignment, side: 1, player: player),
                build(:assignment, side: 2, player: opponent)
@@ -170,7 +170,7 @@ RSpec.describe "Player::Matches", type: :request do
     
     let!(:opponent) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :requested, season: season,
+      create(:match, season: season,
              assignments: [
                build(:assignment, side: 1, player: player),
                build(:assignment, side: 2, player: opponent)
@@ -209,7 +209,7 @@ RSpec.describe "Player::Matches", type: :request do
     let!(:player1) { create(:player, seasons: [season]) }
     let!(:player2) { create(:player, seasons: [season]) }
     let!(:match) do
-      create(:match, :requested, season: season,
+      create(:match, season: season,
              assignments: [
                build(:assignment, side: 1, player: player1),
                build(:assignment, side: 2, player: player2)
@@ -272,7 +272,7 @@ RSpec.describe "Player::Matches", type: :request do
     subject { post reject_player_match_path(match) }
     
     let!(:match) do
-      create(:match, :requested, season: season,
+      create(:match, season: season,
              assignments: [
                build(:assignment, side: 1, player: player1),
                build(:assignment, side: 2, player: player2)
@@ -340,8 +340,7 @@ RSpec.describe "Player::Matches", type: :request do
     end
 
     context "when player is not authorized" do
-      let!(:other_player) { create(:player) }
-      before { sign_in other_player }
+      before { sign_in create(:player) }
 
       it "redirects to root" do
         subject

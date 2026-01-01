@@ -31,9 +31,8 @@ RSpec.describe Matches::CreateService do
         expect(challenged_assignment.player).to eq(opponent)
       end
 
-      it 'sets requested_at and published_at' do
+      it 'sets published_at' do
         result = subject
-        expect(result.value.requested_at).to be_present
         expect(result.value.published_at).to be_present
       end
 

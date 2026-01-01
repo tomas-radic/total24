@@ -75,7 +75,15 @@ class Player < ApplicationRecord
     self
   end
 
+  def anonymized?
+    anonymized_at.present?
+  end
+
   def send_confirmation_notification?
     false
+  end
+
+  def active_for_authentication?
+    super && !anonymized?
   end
 end

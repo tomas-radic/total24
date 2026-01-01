@@ -12,4 +12,8 @@ module Config
   def refinish_match_minutes_limit
     (ENV["REFINISH_MATCH_MINUTES_LIMIT"] || 10).to_i
   end
+
+  def registrations_enabled?
+    ENV["REGISTRATIONS_ENABLED"] == "1"
+  end
 end

@@ -23,14 +23,13 @@ class Match < ApplicationRecord
   validates :winner_side, inclusion: { in: [1, 2] }, if: Proc.new { |m| m.finished_at }
   validates :rejected_at, absence: true, if: Proc.new { |m| m.accepted_at }
   validates :accepted_at, absence: true, if: Proc.new { |m| m.rejected_at }
-  validates :requested_at, presence: true, if: Proc.new { |m| m.accepted_at || m.rejected_at }
   validates :finished_at, presence: true, if: Proc.new { |m| m.reviewed_at }
   validates :canceled_at, absence: true, if: Proc.new { |m| m.finished_at || m.rejected_at }
   validates :canceled_at, absence: true, if: Proc.new { |m| m.accepted_at.nil? && m.rejected_at.nil? }
   validates :canceled_at, presence: true, if: Proc.new { |m| m.canceled_by_id.present? }
   validates :canceled_by_id, presence: true, if: Proc.new { |m| m.canceled_at }
   validates :play_date, :play_time, :place_id,
-            absence: true, if: Proc.new { |m| m.requested_at && m.accepted_at.blank? }
+            absence: true, if: Proc.new { |m| m.accepted_at.blank? }
   validates :winner_side,
             presence: true, if: Proc.new { |m| m.finished_at }
   validates :set1_side1_score, presence: true, if: Proc.new { |m| m.set1_side2_score.present? }
@@ -61,10 +60,10 @@ class Match < ApplicationRecord
   #region Scopes
   scope :sorted, -> { order(finished_at: :desc) }
   scope :published, -> { where.not(published_at: nil) }
-  scope :requested, -> { where.not(requested_at: nil).where(accepted_at: nil, rejected_at: nil, canceled_at: nil) }
-  scope :accepted, -> { where.not(accepted_at: nil) }
-  scope :rejected, -> { where.not(rejected_at: nil) }
-  scope :pending, -> { where(rejected_at: nil, finished_at: nil, canceled_at: nil) }
+  scope :requested, -> { where(accepted_at: nil, rejected_at: nil, canceled_at: nil, finished_at: nil) }
+  scope :accepted, -> { where.not(accepted_at: nil).where(finished_at: nil, canceled_at: nil) }
+  scope :rejected, -> { where.not(rejected_at: nil).where(finished_at: nil, canceled_at: nil) }
+  scope :pending, -> { where.not(accepted_at: nil).where(rejected_at: nil, canceled_at: nil, finished_at: nil) }
   scope :in_season, ->(season) { where(season_id: season.id) }
   scope :finished, -> { where.not(finished_at: nil) }
   scope :reviewed, -> { where.not(reviewed_at: nil) }
@@ -88,15 +87,26 @@ class Match < ApplicationRecord
   end
 
   def requested?
-    requested_at.present?
+    accepted_at.nil? &&
+      rejected_at.nil? &&
+      canceled_at.nil? &&
+      finished_at.nil?
   end
 
   def accepted?
-    accepted_at.present?
+    accepted_at.present? &&
+      finished_at.nil? &&
+      canceled_at.nil?
   end
 
   def rejected?
-    rejected_at.present?
+    rejected_at.present? &&
+      finished_at.nil? &&
+      canceled_at.nil?
+  end
+
+  def pending?
+    requested? || accepted?
   end
 
   def finished?
@@ -116,7 +126,7 @@ class Match < ApplicationRecord
   end
 
   def recently_finished?
-    finished_at.present? && finished_at >= 3.days.ago.beginning_of_day
+    reviewed? && finished? && finished_at >= 3.days.ago.beginning_of_day
   end
 
   def recently_rejected?
@@ -124,7 +134,16 @@ class Match < ApplicationRecord
   end
 
   def recently_canceled?
-    canceled_at.present? && canceled_at > 30.hours.ago
+    canceled? && canceled_at > 30.hours.ago
+  end
+
+  def status
+    return :retired if retired? && reviewed?
+    return :finished if finished? && reviewed?
+    return :canceled if canceled?
+    return :rejected if rejected?
+    return :accepted if accepted?
+    :requested
   end
 
 

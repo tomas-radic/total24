@@ -6,10 +6,10 @@ shared_examples "player_request" do |parameter|
       player.update_column :anonymized_at, 1.minute.ago
     end
 
-    it "Redirects to root path" do
+    it "Redirects to sign in path" do
       subject
 
-      expect(response).to redirect_to root_path
+      expect(response).to redirect_to new_player_session_path
     end
   end
 

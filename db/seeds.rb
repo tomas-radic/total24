@@ -113,7 +113,6 @@ ActiveRecord::Base.transaction do
 
     match = Match.new(
       published_at: match_time,
-      requested_at: match_time,
       accepted_at: match_time,
       play_date: match_time,
       play_time: Match.play_times.values.sample,
@@ -157,7 +156,6 @@ ActiveRecord::Base.transaction do
 
     Match.create!(
       published_at: match_time,
-      requested_at: match_time,
       accepted_at: Time.now,
       play_date: match_time,
       play_time: Match.play_times.values.sample,
@@ -173,7 +171,6 @@ ActiveRecord::Base.transaction do
   player2 = players.delete(players.sample)
 
   Match.create!(
-    requested_at: rand(3.days).seconds.ago.to_datetime,
     accepted_at: Time.now,
     published_at: Time.now,
     season: season,
@@ -189,7 +186,6 @@ ActiveRecord::Base.transaction do
     player2 = players.delete(players.sample)
 
     Match.create!(
-      requested_at: rand(3.days).seconds.ago.to_datetime,
       published_at: Time.now,
       season: season,
       assignments: [
@@ -205,7 +201,6 @@ ActiveRecord::Base.transaction do
   player2 = players.delete(players.sample)
 
   Match.create!(
-    requested_at: rand(3.days).seconds.ago.to_datetime,
     rejected_at: Time.now,
     published_at: Time.now,
     season: season,

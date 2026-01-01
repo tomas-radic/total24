@@ -1,4 +1,4 @@
-<% if ENV['REGISTRATIONS_ENABLED'] == '1' %>
+<% if Config.registrations_enabled? %>
   <div class="page__content">
     <h2 class="text-center u-fs-giant">Registrácia</h2>
     <div class="vertical-form mt-4">
@@ -41,7 +41,6 @@
       </div>
     </div>
   </div>
-
 <% else %>
   <div class="page__content">
     <h2 class="text-center u-fs-giant">Registrácia</h2>

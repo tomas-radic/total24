@@ -163,7 +163,7 @@ RSpec.describe MatchPresenter do
     end
 
     context 'when match is not finished' do
-      let(:match) { create(:match, :requested) }
+      let(:match) { create(:match) }
 
       it 'returns nil' do
         expect(described_class.new(match).result_from_side).to be_nil

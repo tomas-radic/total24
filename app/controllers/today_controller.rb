@@ -19,20 +19,19 @@ class TodayController < ApplicationController
                                               :predictions, assignments: :player)
 
     @requested_matches = season_matches.select do |match|
-      match.requested? && !match.accepted? && !match.rejected? && !match.finished? && !match.canceled?
-    end.sort_by { |match| -match.requested_at.to_i }
+      match.requested?
+    end.sort_by { |match| -match.created_at.to_i }
 
     @rejected_matches = season_matches.select do |match|
       match.recently_rejected?
     end.sort_by { |match| -match.rejected_at.to_i }
 
     @recent_matches = season_matches.select do |match|
-      match.reviewed? && match.recently_finished?
+      match.recently_finished?
     end.sort_by { |match| -match.finished_at.to_i }
 
     @planned_matches = season_matches.select do |match|
-      match.accepted? && !match.finished? && !match.canceled? &&
-        (match.play_date.blank? || match.play_date >= Time.current.to_date)
+      match.accepted? && (match.play_date.blank? || match.play_date >= Time.current.to_date)
     end
 
     @canceled_matches = season_matches.select do |match|

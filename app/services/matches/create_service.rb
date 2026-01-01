@@ -6,7 +6,6 @@ class Matches::CreateService < ApplicationService
   def call(season, requested_player)
     now = Time.current
     match = season.matches.new(
-      requested_at: now,
       published_at: now,
       assignments: [
         Assignment.new(player: @current_player, side: 1),

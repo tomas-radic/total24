@@ -26,6 +26,10 @@ class Season < ApplicationRecord
   # endregion Scopes
 
 
+  def ended?
+    ended_at.present?
+  end
+
   def ranking
     result = players.includes(:tags, :enrollments)
 
@@ -59,7 +63,7 @@ class Season < ApplicationRecord
       winner.points += looser.percentage
     end
 
-    result = result.reject { |p| p.anonymized_at.present? || p.confirmed_at.blank? }
+    result = result.reject { |p| p.anonymized? || !p.confirmed? }
 
     result.sort_by do |player|
       [
