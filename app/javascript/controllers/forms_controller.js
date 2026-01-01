@@ -26,7 +26,21 @@ export default class extends Controller {
     }
   }
 
-  clearField() {
-    document.getElementById(event.currentTarget.dataset.targetId).value = ""
+  clearField(event) {
+    const targetId = event.params.targetId || event.currentTarget.dataset.targetId
+    const relatedFields = event.params.relatedFields || event.currentTarget.dataset.relatedFields
+
+    if (targetId) {
+      document.getElementById(targetId).value = ""
+    }
+
+    if (relatedFields) {
+      relatedFields.split("|").forEach((id) => {
+        const element = document.getElementById(id)
+        if (element) {
+          element.value = ""
+        }
+      })
+    }
   }
 }

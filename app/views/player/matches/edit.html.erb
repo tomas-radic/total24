@@ -2,11 +2,14 @@
   <%= render partial: "matches/header", locals: { match: @match, privacy: false } %>
 
   <div class="page__content">
-    <%= form_with model: [:player, @match], data: { turbo: false } do |f| %>
+    <%= form_with model: [:player, @match], data: { turbo: false, controller: "forms" } do |f| %>
       <div class="row">
-        <div class="col-7" data-controller="forms">
+        <div class="col-7">
           <%= f.label :play_date, "Dátum", class: "form-label" %>
-          <%= content_tag :span, class: "text-decoration-underline px-1 bg-warning", role: "button", data: { "action" => "click->forms#clearField", "target-id" => "match_play_date" } do %>
+          <%= content_tag :span, class: "text-decoration-underline px-1 bg-warning", role: "button",
+                          data: { "action" => "click->forms#clearField",
+                                  "target-id" => "match_play_date",
+                                  "forms-related-fields-param" => "match_play_time|match_place_id" } do %>
             zrušiť dátum
           <% end %>
           <%= f.date_field :play_date, class: "form-control" %>
