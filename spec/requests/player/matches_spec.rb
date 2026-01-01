@@ -493,7 +493,8 @@ RSpec.describe "Player::Matches", type: :request do
 
     context "when match is reviewed (not authorized)" do
       before do
-        match.update_columns(finished_at: 1.minute.ago, reviewed_at: 1.minute.ago)
+        match.update!(finished_at: 1.minute.ago, reviewed_at: 1.minute.ago,
+                      winner_side: 1, set1_side1_score: 6, set1_side2_score: 3)
         sign_in player
       end
 
@@ -505,7 +506,7 @@ RSpec.describe "Player::Matches", type: :request do
 
     context "when predictions are disabled (not authorized)" do
       before do
-        match.update_column(:predictions_disabled_since, Time.now)
+        match.update!(predictions_disabled_since: Time.now)
         sign_in player
       end
 
@@ -517,7 +518,7 @@ RSpec.describe "Player::Matches", type: :request do
 
     context "when match is not published" do
       before do
-        match.update_column(:published_at, nil)
+        match.update!(published_at: nil)
         sign_in player
       end
 
