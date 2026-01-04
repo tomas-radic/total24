@@ -24,7 +24,10 @@ export default class extends Controller {
 
   autoreload() {
     var now = Math.floor(Date.now() / 1000)
-    var loadTime = parseInt(document.querySelectorAll('[data-application-target="loadTime"]')[0].textContent)
+    var loadTime = parseInt(document.querySelectorAll('[data-application-target="loadTime"]')[0]?.textContent)
+    if (isNaN(loadTime)) {
+      return
+    }
 
     if ((now - loadTime) > 3600) { // if > 1 hour
       location.reload()
