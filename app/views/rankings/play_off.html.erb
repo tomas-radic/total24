@@ -1,8 +1,8 @@
 <section class="base-red">
   <div class="page__content">
     <h3 class="base-heading accent-color">Nominácie na Play Off.</h3>
-    <% if selected_season %>
-      <div clas="container">
+    <% if @play_offs.present? %>
+      <div class="container">
         <div class="row g-0">
           <div class="col-12 col-md-6 col-lg-4 mb-2">
             <%= render 'play_off_players', heading: 'Registrovaní', players: @play_offs[0] %>
@@ -19,7 +19,7 @@
         <% end %>
       </div>
     <% else %>
-      <p class="py-8 text-center default-color">Nie je tu nikto, pretože nie je sezóna.</p>
+      <%= render "shared/no_content" %>
     <% end %>
   </div>
 </section>

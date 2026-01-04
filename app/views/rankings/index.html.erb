@@ -1,47 +1,42 @@
 <section class="base-red">
   <div class="page__content">
     <h3 class="base-heading accent-color">Priebežné poradie.</h3>
-
-    <% if selected_season.present? %>
-      <% if selected_season.ranking.present? %>
-        <div class="table-container default-color">
-          <table class="centered-table default-color">
-            <thead>
-            <tr class="centered-table__heading-row">
-              <th class="text-center"></th>
-              <th></th>
-              <th>Body</th>
-              <th class="text-end">% výhier</th>
+    <% if @ranking.present? %>
+      <div class="table-container default-color">
+        <table class="centered-table default-color">
+          <thead>
+          <tr class="centered-table__heading-row">
+            <th class="text-center"></th>
+            <th></th>
+            <th>Body</th>
+            <th class="text-end">% výhier</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @ranking.each.with_index(1) do |player, position| %>
+            <tr>
+              <%= content_tag :td, class: "text-center" do %>
+                <%= "#{position}." %>
+              <% end %>
+              <%= content_tag :td do %>
+                <%= link_to PlayerPresenter.new(player, privacy: current_player.blank?).name, player_path(player) %>
+                <% player.tags.each do |tag| %>
+                  <%= render 'tags/tag', tag: %>
+                <% end %>
+              <% end %>
+              <%= content_tag :td do %>
+                <%= player.points if player.played_matches > 0 %>
+              <% end %>
+              <%= content_tag :td, class: "text-end text-nowrap" do %>
+                <%= "#{player.percentage}% / #{player.played_matches}" if player.played_matches > 0 %>
+              <% end %>
             </tr>
-            </thead>
-            <tbody>
-            <% selected_season.ranking.each.with_index(1) do |player, position| %>
-              <tr>
-                <%= content_tag :td, class: "text-center" do %>
-                  <%= "#{position}." %>
-                <% end %>
-                <%= content_tag :td do %>
-                  <%= link_to PlayerPresenter.new(player, privacy: current_player.blank?).name, player_path(player) %>
-                  <% player.tags.each do |tag| %>
-                    <%= render 'tags/tag', tag: %>
-                  <% end %>
-                <% end %>
-                <%= content_tag :td do %>
-                  <%= player.points if player.played_matches > 0 %>
-                <% end %>
-                <%= content_tag :td, class: "text-end text-nowrap" do %>
-                  <%= "#{player.percentage}% / #{player.played_matches}" if player.played_matches > 0 %>
-                <% end %>
-              </tr>
-            <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <p class="py-8 text-center default-color">V rebríčku nie je nikto.</p>
-      <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
     <% else %>
-      <p class="py-8 text-center default-color">V rebríčku nie je nikto, pretože nie je sezóna.</p>
+      <%= render "shared/no_content" %>
     <% end %>
   </div>
 </section>

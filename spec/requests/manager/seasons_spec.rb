@@ -43,7 +43,7 @@ RSpec.describe "Manager::Seasons", type: :request do
 
         it "does not update the season and renders edit" do
           expect { subject }.not_to change { season.reload.name }
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response).to render_template(:edit)
         end
       end
