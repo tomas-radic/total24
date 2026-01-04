@@ -11,7 +11,7 @@ class Season < ApplicationRecord
 
   # region Validations
   validates :name, uniqueness: true
-  validates :name, :performance_player_tag_label, :performance_play_off_size,
+  validates :name, :performance_play_off_size,
             :play_off_min_matches_count, :regular_a_play_off_size, :regular_b_play_off_size,
             presence: true
 
@@ -79,11 +79,11 @@ class Season < ApplicationRecord
     all_players = ranking
 
     perf_players = all_players.select do |p|
-      p.tags.find { |t| t.label == performance_player_tag_label }
+      p.tags.find { |t| t.label == Config.performance_player_tag_label }
     end
 
     rgl_players = all_players.select do |p|
-      p.tags.count { |t| t.label == performance_player_tag_label } == 0
+      p.tags.count { |t| t.label == Config.performance_player_tag_label } == 0
     end
 
     perf_players = nominate_play_off(perf_players, performance_play_off_size)

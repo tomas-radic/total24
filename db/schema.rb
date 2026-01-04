@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_01_183739) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_04_215833) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -216,7 +216,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_01_183739) do
     t.integer "max_pending_matches", default: 3, null: false
     t.string "name", null: false
     t.integer "performance_play_off_size", default: 4, null: false
-    t.string "performance_player_tag_label", default: "reg.", null: false
     t.text "play_off_conditions"
     t.integer "play_off_min_matches_count", default: 10, null: false
     t.integer "position", null: false

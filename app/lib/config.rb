@@ -16,4 +16,8 @@ module Config
   def registrations_enabled?
     ENV["REGISTRATIONS_ENABLED"] == "1"
   end
+
+  def performance_player_tag_label
+    ENV["PERFORMANCE_PLAYER_TAG_LABEL"] || "reg"
+  end
 end

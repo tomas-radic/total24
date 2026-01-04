@@ -170,16 +170,16 @@ RSpec.describe Season, type: :model do
       context "When all players meet condition for play off" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 6, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf1', id: 'perf1', played_matches: 6, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg1', id: 'reg1', played_matches: 8, tags: []),
             double('reg2', id: 'reg2', played_matches: 7, tags: []),
-            double('perf3', id: 'perf3', played_matches: 7, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf3', id: 'perf3', played_matches: 7, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg3', id: 'reg3', played_matches: 8, tags: []),
             double('reg4', id: 'reg4', played_matches: 8, tags: []),
             double('reg5', id: 'reg5', played_matches: 9, tags: []),
-            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg6', id: 'reg6', played_matches: 8, tags: []),
             double('reg7', id: 'reg7', played_matches: 9, tags: []),
             double('reg8', id: 'reg8', played_matches: 6, tags: []),
@@ -237,16 +237,16 @@ RSpec.describe Season, type: :model do
       context "When some players meet condition for play off and some don't" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 3, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf1', id: 'perf1', played_matches: 3, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg1', id: 'reg1', played_matches: 1, tags: []),
             double('reg2', id: 'reg2', played_matches: 7, tags: []),
-            double('perf3', id: 'perf3', played_matches: 4, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf3', id: 'perf3', played_matches: 4, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg3', id: 'reg3', played_matches: 8, tags: []),
             double('reg4', id: 'reg4', played_matches: 3, tags: []),
             double('reg5', id: 'reg5', played_matches: 4, tags: []),
-            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg6', id: 'reg6', played_matches: 1, tags: []),
             double('reg7', id: 'reg7', played_matches: 2, tags: []),
             double('reg8', id: 'reg8', played_matches: 4, tags: []),
@@ -304,16 +304,16 @@ RSpec.describe Season, type: :model do
       context "When some players meet condition for play off and some don't" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 7, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf1', id: 'perf1', played_matches: 7, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 9, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg1', id: 'reg1', played_matches: 1, tags: []),
             double('reg2', id: 'reg2', played_matches: 2, tags: []),
-            double('perf3', id: 'perf3', played_matches: 6, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf3', id: 'perf3', played_matches: 6, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 8, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg3', id: 'reg3', played_matches: 8, tags: []),
             double('reg4', id: 'reg4', played_matches: 3, tags: []),
             double('reg5', id: 'reg5', played_matches: 4, tags: []),
-            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf5', id: 'perf5', played_matches: 9, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg6', id: 'reg6', played_matches: 1, tags: []),
             double('reg7', id: 'reg7', played_matches: 8, tags: []),
             double('reg8', id: 'reg8', played_matches: 4, tags: []),
@@ -349,16 +349,16 @@ RSpec.describe Season, type: :model do
       context "When no players meet condition for play off" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 2, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf2', id: 'perf2', played_matches: 3, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf1', id: 'perf1', played_matches: 2, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf2', id: 'perf2', played_matches: 3, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg1', id: 'reg1', played_matches: 4, tags: []),
             double('reg2', id: 'reg2', played_matches: 2, tags: []),
-            double('perf3', id: 'perf3', played_matches: 3, tags: [double('tag', label: season.performance_player_tag_label)]),
-            double('perf4', id: 'perf4', played_matches: 2, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf3', id: 'perf3', played_matches: 3, tags: [double('tag', label: Config.performance_player_tag_label)]),
+            double('perf4', id: 'perf4', played_matches: 2, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg3', id: 'reg3', played_matches: 4, tags: []),
             double('reg4', id: 'reg4', played_matches: 5, tags: []),
             double('reg5', id: 'reg5', played_matches: 3, tags: []),
-            double('perf5', id: 'perf5', played_matches: 2, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf5', id: 'perf5', played_matches: 2, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg6', id: 'reg6', played_matches: 3, tags: []),
             double('reg7', id: 'reg7', played_matches: 4, tags: []),
             double('reg8', id: 'reg8', played_matches: 4, tags: []),
@@ -416,7 +416,7 @@ RSpec.describe Season, type: :model do
       context "With very few players" do
         let(:ranking) do
           [
-            double('perf1', id: 'perf1', played_matches: 1, tags: [double('tag', label: season.performance_player_tag_label)]),
+            double('perf1', id: 'perf1', played_matches: 1, tags: [double('tag', label: Config.performance_player_tag_label)]),
             double('reg1', id: 'reg1', played_matches: 8, tags: []),
             double('reg2', id: 'reg2', played_matches: 2, tags: []),
             double('reg3', id: 'reg3', played_matches: 8, tags: []),

@@ -42,7 +42,6 @@ class Manager::SeasonsController < Manager::BaseController
       :name,
       :ended_at,
       :performance_play_off_size, :regular_a_play_off_size, :regular_b_play_off_size,
-      :performance_player_tag_label,
       :play_off_conditions, :play_off_min_matches_count)
   end
 end

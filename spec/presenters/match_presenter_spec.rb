@@ -31,7 +31,7 @@ RSpec.describe MatchPresenter do
 
     context 'double match' do
       it 'returns side 1 names joined by comma' do
-        season = Season.new(name: 'Season 2025', performance_player_tag_label: 'P', performance_play_off_size: 8, play_off_min_matches_count: 5, regular_a_play_off_size: 8, regular_b_play_off_size: 8, ended_at: Time.current)
+        season = Season.new(name: 'Season 2025', performance_play_off_size: 8, play_off_min_matches_count: 5, regular_a_play_off_size: 8, regular_b_play_off_size: 8, ended_at: Time.current)
         season.save!
         double_match = build(:match, kind: :double, season: season)
         create(:enrollment, season: season, player: player1)
@@ -48,7 +48,7 @@ RSpec.describe MatchPresenter do
       end
 
       it 'returns side 2 names joined by comma' do
-        season = Season.new(name: 'Season 2025-2', performance_player_tag_label: 'P', performance_play_off_size: 8, play_off_min_matches_count: 5, regular_a_play_off_size: 8, regular_b_play_off_size: 8, ended_at: Time.current)
+        season = Season.new(name: 'Season 2025-2', performance_play_off_size: 8, play_off_min_matches_count: 5, regular_a_play_off_size: 8, regular_b_play_off_size: 8, ended_at: Time.current)
         season.save!
         double_match = build(:match, kind: :double, season: season)
         create(:enrollment, season: season, player: player1)
@@ -65,7 +65,7 @@ RSpec.describe MatchPresenter do
       end
 
       it 'respects privacy' do
-        season = Season.new(name: 'Season 2025-3', performance_player_tag_label: 'P', performance_play_off_size: 8, play_off_min_matches_count: 5, regular_a_play_off_size: 8, regular_b_play_off_size: 8, ended_at: Time.current)
+        season = Season.new(name: 'Season 2025-3', performance_play_off_size: 8, play_off_min_matches_count: 5, regular_a_play_off_size: 8, regular_b_play_off_size: 8, ended_at: Time.current)
         season.save!
         double_match = build(:match, kind: :double, season: season)
         create(:enrollment, season: season, player: player1)
