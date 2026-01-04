@@ -1,10 +1,14 @@
 <div class="page__content">
   <div>
-    <%= link_to "Nový článok", new_manager_article_path, class: "btn btn-success" %>
+    <% if managed_season.present? %>
+      <%= link_to "Nový článok", new_manager_article_path, class: "btn btn-success" %>
+    <% else %>
+      <%= link_to "Otvoriť sezónu", new_manager_season_path, class: "btn btn-success" %>
+    <% end %>
   </div>
-  <% if @articles.first %>
+  <% if @articles&.first %>
     <h2 class="text-center my-4">
-      Články <%= @managed_season.name %>
+      Články <%= managed_season.name %>
     </h2>
 
     <table class="centered-table">
@@ -16,7 +20,7 @@
       </thead>
       <tbody>
         <% @articles.each do |article| %>
-          <tr>
+          <tr class="<%= inactive_css_class(!article.published?) %>">
             <td><%= link_to article.title, edit_manager_article_path(article) %></td>
             <td><%= app_date(article.created_at) %></td>
           </tr>
@@ -24,8 +28,6 @@
       </tbody>
     </table>
   <% else %>
-    <p class="text-center my-4">
-      Nie sú tu žiadne články.
-    </p>
+    <%= render "shared/no_content" %>
   <% end %>
 </div>

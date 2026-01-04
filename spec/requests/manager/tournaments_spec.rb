@@ -4,7 +4,7 @@ require 'shared_examples/manager_examples'
 RSpec.describe "Manager::Tournaments", type: :request do
 
   let!(:manager) { create(:manager) }
-  let!(:player) { create(:player, email: manager.email) }
+  let!(:player) { create(:player, email: manager.email) } # used in shared examples
 
   describe "GET /manager/tournaments" do
     subject { get manager_tournaments_path }
@@ -14,21 +14,39 @@ RSpec.describe "Manager::Tournaments", type: :request do
     context "As a logged in manager" do
       before { sign_in manager }
 
-      context "Whit no existing season" do
-        it "Redirects" do
-          subject
+      it "Renders page" do
+        subject
 
-          expect(response).to redirect_to(manager_pages_dashboard_path)
-        end
+        expect(response).to render_template(:index)
+        expect(response).to have_http_status(:success)
+        expect(assigns(:tournaments)).to be_nil
+        expect(response.body).to include(new_manager_season_path)
+        expect(response.body).not_to include(new_manager_tournament_path)
       end
 
-      context "With existing seasons" do
+      context "With existing season" do
         let!(:season) { create(:season) }
 
         it "Renders page" do
           subject
 
           expect(response).to render_template(:index)
+          expect(response).to have_http_status(:success)
+          expect(assigns(:tournaments)).to be_empty
+          expect(response.body).to include(new_manager_tournament_path)
+          expect(response.body).not_to include(new_manager_season_path)
+        end
+
+        context "With tournaments" do
+          before { create_list(:tournament, 3, season: season) }
+
+          it "Renders page" do
+            subject
+
+            expect(assigns(:tournaments)).not_to be_empty
+            expect(response).to render_template(:index)
+            expect(response).to have_http_status(:success)
+          end
         end
       end
     end
@@ -38,27 +56,17 @@ RSpec.describe "Manager::Tournaments", type: :request do
   describe "GET /managers/tournaments/new" do
     subject { get new_manager_tournament_path }
 
+    let!(:season) { create(:season) }
+
     it_behaves_like "manager_request"
 
     context "As a logged in manager" do
       before { sign_in manager }
 
-      context "Whit no existing season" do
-        it "Redirects" do
-          subject
+      it "Renders page" do
+        subject
 
-          expect(response).to redirect_to(manager_pages_dashboard_path)
-        end
-      end
-
-      context "With existing season" do
-        let!(:season) { create(:season) }
-
-        it "Renders page" do
-          subject
-
-          expect(response).to render_template(:new)
-        end
+        expect(response).to render_template(:new)
       end
     end
   end
@@ -67,12 +75,13 @@ RSpec.describe "Manager::Tournaments", type: :request do
   describe "POST /manager/tournaments" do
     subject { post manager_tournaments_path(params: params) }
 
+    let!(:season) { create(:season) }
+
     let(:valid_params) do
       {
         tournament: {
-          name: "Wimbledon",
-          main_info: "main_info",
-          color_base: "base_green"
+          name: "Name",
+          main_info: "Main info."
         }
       }
     end
@@ -80,7 +89,7 @@ RSpec.describe "Manager::Tournaments", type: :request do
       {
         tournament: {
           name: "",
-          main_info: "main_info",
+          main_info: "Main info.",
         }
       }
     end
@@ -122,35 +131,19 @@ RSpec.describe "Manager::Tournaments", type: :request do
   describe "GET /manager/tournaments/:id" do
     subject { get edit_manager_tournament_path(tournament) }
 
+    let!(:season) { create(:season) }
+
     context "As a logged in manager" do
       before { sign_in manager }
 
-      context "With tournament within managed season" do
-        let!(:season) { create(:season) }
-        let!(:tournament) { create(:tournament, season: season) }
+      let!(:tournament) { create(:tournament, season: season) }
 
-        it_behaves_like "manager_request"
+      it_behaves_like "manager_request"
 
-        it "Renders page" do
-          subject
+      it "Renders page" do
+        subject
 
-          expect(response).to render_template(:edit)
-        end
-      end
-
-
-      context "Without tournament within managed season" do
-        let!(:ended_season) { create(:season, :ended) }
-        let!(:season) { create(:season) }
-        let!(:tournament) { create(:tournament, season: ended_season) }
-
-        it_behaves_like "manager_request"
-
-        it "Renders page" do
-          subject
-
-          expect(response).to redirect_to("/not_found")
-        end
+        expect(response).to render_template(:edit)
       end
     end
   end
@@ -159,61 +152,43 @@ RSpec.describe "Manager::Tournaments", type: :request do
   describe "PATCH /manager/tournaments/:id" do
     subject { patch manager_tournament_path(tournament, params: params) }
 
-    let(:valid_params) { { tournament: { name: "Wimbledon" } } }
+    let!(:season) { create(:season) }
+
+    let(:valid_params) { { tournament: { name: "Name" } } }
     let(:invalid_params) { { tournament: { name: "" } } }
 
     context "As a logged in manager" do
       before { sign_in manager }
 
-      context "With tournament within managed season" do
-        let!(:season) { create(:season) }
-        let!(:tournament) { create(:tournament, season: season) }
+      let!(:tournament) { create(:tournament, season: season) }
 
-        context "With valid params" do
-          let(:params) { valid_params }
-
-          it_behaves_like "manager_request"
-
-          it "Updates tournament and redirects" do
-            subject
-
-            tournament.reload
-            expect(tournament.name).to eq(valid_params[:tournament][:name])
-            expect(response).to redirect_to(manager_tournaments_path)
-          end
-        end
-
-        context "With invalid params" do
-          let(:params) { invalid_params }
-
-          it_behaves_like "manager_request"
-
-          it "Renders edit" do
-            subject
-
-            tournament.reload
-            expect(tournament.name).not_to eq(valid_params[:name])
-            expect(response).to render_template(:edit)
-          end
-        end
-      end
-
-
-      context "Without tournament within managed season" do
-        let!(:ended_season) { create(:season, :ended) }
-        let!(:season) { create(:season) }
-        let!(:tournament) { create(:tournament, season: ended_season) }
+      context "With valid params" do
         let(:params) { valid_params }
 
         it_behaves_like "manager_request"
 
-        it "Renders page" do
+        it "Updates tournament and redirects" do
           subject
 
-          expect(response).to redirect_to("/not_found")
+          tournament.reload
+          expect(tournament.name).to eq(valid_params[:tournament][:name])
+          expect(response).to redirect_to(manager_tournaments_path)
+        end
+      end
+
+      context "With invalid params" do
+        let(:params) { invalid_params }
+
+        it_behaves_like "manager_request"
+
+        it "Renders edit" do
+          subject
+
+          tournament.reload
+          expect(tournament.name).not_to eq(valid_params[:name])
+          expect(response).to render_template(:edit)
         end
       end
     end
   end
-
 end

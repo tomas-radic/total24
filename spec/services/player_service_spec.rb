@@ -74,4 +74,62 @@ RSpec.describe PlayerService do
       end
     end
   end
+
+  describe '#toggle_season_enrollment' do
+    context 'when enrollment does not exist' do
+      subject { service.toggle_season_enrollment(player, season) }
+
+      it 'creates a new enrollment' do
+        expect { subject }.to change { Enrollment.count }.by(1)
+      end
+
+      it 'returns success with the new enrollment' do
+        expect(subject.success?).to be true
+        expect(subject.value).to eq(Enrollment.order(:created_at).last)
+      end
+
+      it 'sets canceled_at to nil' do
+        subject
+        expect(Enrollment.order(:created_at).last.canceled_at).to be_nil
+      end
+    end
+
+    context 'when enrollment exists' do
+      let!(:enrollment) { create(:enrollment, player: player, season: season) }
+
+      context 'when it is active' do
+        subject { service.toggle_season_enrollment(player, season) }
+
+        before do
+          enrollment.update!(canceled_at: nil)
+        end
+
+        it 'sets canceled_at to current time' do
+          expect { subject }.to change { enrollment.reload.canceled_at }.from(nil)
+        end
+
+        it 'returns success with the enrollment' do
+          expect(subject.success?).to be true
+          expect(subject.value).to eq(enrollment)
+        end
+      end
+
+      context 'when it is canceled' do
+        subject { service.toggle_season_enrollment(player, season) }
+
+        before do
+          enrollment.update!(canceled_at: Time.current)
+        end
+
+        it 'sets canceled_at to nil' do
+          expect { subject }.to change { enrollment.reload.canceled_at }.to(nil)
+        end
+
+        it 'returns success with the enrollment' do
+          expect(subject.success?).to be true
+          expect(subject.value).to eq(enrollment)
+        end
+      end
+    end
+  end
 end

@@ -79,6 +79,10 @@ class Player < ApplicationRecord
     anonymized_at.present?
   end
 
+  def enrolled_to?(season)
+    enrollments.active.exists?(season_id: season.id)
+  end
+
   def send_confirmation_notification?
     false
   end

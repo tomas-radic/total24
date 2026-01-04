@@ -92,4 +92,9 @@ module ApplicationHelper
 
     link_to phone_nr, "tel:#{phone_nr.gsub(/[^0-9]/, "")}", class: classes.to_s
   end
+
+
+  def inactive_css_class(inactive = true)
+    inactive ? "u-grey" : ""
+  end
 end

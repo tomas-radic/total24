@@ -2,9 +2,6 @@ class Tournament < ApplicationRecord
   include ColorBase
   include Reactions
 
-  before_validation :set_random_color_base
-
-
   # region Relations
   belongs_to :season
   belongs_to :place, optional: true

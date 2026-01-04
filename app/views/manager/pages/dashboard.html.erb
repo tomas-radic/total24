@@ -1,14 +1,13 @@
 <%#= turbo_stream_from "dashboard_player" %>
 
 Reloaded at <%= app_time(Time.current) %>
-<% if @managed_season.present? %>
+<% if managed_season.present? %>
 
-  <% if @managed_season.ended? %>
-    <h2 class="base-heading text-center">Posledná sezóna</h2>
-  <% else %>
-    <h2 class="base-heading text-center">Prebieha sezóna</h2>
-  <% end %>
-  <h2 class="base-heading text-center"><%= @managed_season.name %></h2>
+  <h2 class="base-heading text-center">
+    <%= managed_season.ended? ? "Skončila" : "Prebieha" %>
+    sezóna
+  </h2>
+  <h2 class="base-heading text-center"><%= managed_season.name %></h2>
 
   <div class="page__content">
     <% if @players.first %>
@@ -20,7 +19,7 @@ Reloaded at <%= app_time(Time.current) %>
         <thead>
         <tr class="centered-table__heading-row">
           <th>Meno</th>
-          <th>Sezóna <%= @managed_season.name %></th>
+          <th>Sezóna <%= managed_season.name %></th>
           <th>Prístup</th>
         </tr>
         </thead>
@@ -32,27 +31,27 @@ Reloaded at <%= app_time(Time.current) %>
             </td>
             <td>
               <%= turbo_frame_tag "player_enrollment_#{player.id}" do %>
-                <% if player.enrollments.find { |e| (e.season_id == @managed_season.id) && e.canceled_at.blank? } %>
-                  <%= form_with url: manager_toggle_enrollment_path(player_id: player.id) do |f| %>
-                    <%= f.submit "prihlásený", class: "underline text-success" %>
-                  <% end %>
+                <% if player.enrolled_to?(managed_season) %>
+                  <%= render "manager/pages/player_toggle_form",
+                             url: manager_toggle_enrollment_path(player_id: player.id),
+                             label: "prihlásený", color_class: "text-success" %>
                 <% else %>
-                  <%= form_with url: manager_toggle_enrollment_path(player_id: player.id) do |f| %>
-                    <%= f.submit "odhlásený", class: "underline text-danger" %>
-                  <% end %>
+                  <%= render "manager/pages/player_toggle_form",
+                             url: manager_toggle_enrollment_path(player_id: player.id),
+                             label: "odhlásený", color_class: "text-danger" %>
                 <% end %>
               <% end %>
             </td>
             <td>
               <%= turbo_frame_tag "player_access_#{player.id}" do %>
                 <% if player.confirmed? %>
-                  <%= form_with url: toggle_confirmed_manager_player_path(player) do |f| %>
-                    <%= f.submit "povolený", class: "underline text-success" %>
-                  <% end %>
+                  <%= render "manager/pages/player_toggle_form",
+                             url: toggle_confirmed_manager_player_path(player),
+                             label: "povolený", color_class: "text-success" %>
                 <% else %>
-                  <%= form_with url: toggle_confirmed_manager_player_path(player) do |f| %>
-                    <%= f.submit "blokovaný", class: "underline text-danger" %>
-                  <% end %>
+                  <%= render "manager/pages/player_toggle_form",
+                             url: toggle_confirmed_manager_player_path(player),
+                             label: "blokovaný", color_class: "text-danger" %>
                 <% end %>
               <% end %>
             </td>
@@ -66,57 +65,9 @@ Reloaded at <%= app_time(Time.current) %>
       </p>
     <% end %>
   </div>
-
-
-  <div>
-    <h2 class="text-center py-4">
-      Manažment sezóny
-      <%= @managed_season.name %>.
-    </h2>
-
-    <ul>
-      <li>
-        Sezóna bola vytvorená
-        <%= app_date @managed_season.created_at %>
-      </li>
-      <li>
-        Prihlásení hráči:
-        <%= @managed_season.players.count %>
-      </li>
-      <li>
-        Odohraté zápasy:
-        <%= @managed_season.matches.published.reviewed.count %>
-      </li>
-      <li>
-        Turnaje:
-        <%= @managed_season.tournaments.published.count %>
-      </li>
-      <% if @managed_season.ended? %>
-        <li>
-          Sezóna skončila
-          <%= app_date @managed_season.ended_at %>
-        </li>
-      <% else %>
-        <li>
-          Táto sezóna trvá už
-          <%= (Date.today - @managed_season.created_at.to_date).to_i + 1 %>
-          dní.
-        </li>
-      <% end %>
-
-      <hr class="my-4">
-
-
-    </ul>
-    <div class="text-center py-2">
-      <%= link_to "Zmeniť údaje",
-                  edit_manager_season_path(@managed_season),
-                  class: "underline" %>
-    </div>
-  </div>
 <% else %>
   <h2 class="text-center">Čaká sa na prvú sezónu.</h2>
-  <p class="text-center">
+  <p class="text-center py-4">
     <%= link_to "Začať sezónu", new_manager_season_path, class: "btn btn-large btn-success" %>
   </p>
 <% end %>

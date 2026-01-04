@@ -7,8 +7,8 @@ class MatchPolicy < ApplicationPolicy
     return false if requesting_player.anonymized? || requested_player.anonymized?
 
     return false if season.ended?
-    return false unless active_enrollment?(requesting_player, season)
-    return false unless active_enrollment?(requested_player, season)
+    return false unless requesting_player.enrolled_to?(season)
+    return false unless requested_player.enrolled_to?(season)
 
     requested_player_pending_matches = requested_player.matches.in_season(season).published.pending
     requesting_player_pending_matches = requesting_player.matches.in_season(season).published.pending
@@ -107,10 +107,6 @@ class MatchPolicy < ApplicationPolicy
 
 
   private
-
-  def active_enrollment?(player, season)
-    season.enrollments.active.exists?(player_id: player.id)
-  end
 
   def assigned?(player, match, side: nil)
     assignments = match.assignments

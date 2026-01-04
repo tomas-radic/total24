@@ -1,20 +1,19 @@
 class Manager::ArticlesController < Manager::BaseController
 
-  before_action :ensure_managed_season
-
   def index
-    @articles = @managed_season.articles.order(created_at: :desc)
+    @articles = managed_season&.articles&.order(created_at: :desc)
   end
 
 
   def new
     @heading = "Nový článok"
-    @article = @managed_season.articles.new
+    @article = managed_season.articles.new
   end
 
 
   def create
-    @article = @managed_season.articles.new({ manager_id: current_manager.id }.merge(whitelisted_params))
+    @article = managed_season.articles.new(
+      { manager_id: current_manager.id }.merge(whitelisted_params))
 
     if @article.save
       redirect_with_message manager_articles_path
@@ -26,13 +25,13 @@ class Manager::ArticlesController < Manager::BaseController
 
 
   def edit
-    @article = @managed_season.articles.find(params[:id])
+    @article = managed_season.articles.find(params[:id])
     @heading = @article.title
   end
 
 
   def update
-    @article = @managed_season.articles.find(params[:id])
+    @article = managed_season.articles.find(params[:id])
 
     if @article.update(whitelisted_params)
       redirect_with_message manager_articles_path
@@ -44,7 +43,7 @@ class Manager::ArticlesController < Manager::BaseController
 
 
   def destroy
-    @article = @managed_season.articles.find(params[:id])
+    @article = managed_season.articles.find(params[:id])
 
     if @article.destroy
       redirect_with_message manager_articles_path

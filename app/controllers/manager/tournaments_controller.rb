@@ -1,20 +1,18 @@
 class Manager::TournamentsController < Manager::BaseController
 
-  before_action :ensure_managed_season
-
   def index
-    @tournaments = @managed_season.tournaments.order(begin_date: :desc)
+    @tournaments = managed_season&.tournaments&.order(begin_date: :desc)
   end
 
 
   def new
     @heading = "Nový turnaj"
-    @tournament = @managed_season.tournaments.new
+    @tournament = managed_season.tournaments.new
   end
 
 
   def create
-    @tournament = @managed_season.tournaments.new(whitelisted_params)
+    @tournament = managed_season.tournaments.new(whitelisted_params)
 
     if @tournament.save
       redirect_with_message manager_tournaments_path
@@ -26,13 +24,13 @@ class Manager::TournamentsController < Manager::BaseController
 
 
   def edit
-    @tournament = @managed_season.tournaments.find(params[:id])
+    @tournament = managed_season.tournaments.find(params[:id])
     @heading = @tournament.name
   end
 
 
   def update
-    @tournament = @managed_season.tournaments.find(params[:id])
+    @tournament = managed_season.tournaments.find(params[:id])
 
     if @tournament.update(whitelisted_params)
       redirect_with_message manager_tournaments_path
@@ -50,5 +48,4 @@ class Manager::TournamentsController < Manager::BaseController
                                        :published_at, :place_id, :comments_disabled_since,
                                        :draw_url, :schedule_url)
   end
-
 end
