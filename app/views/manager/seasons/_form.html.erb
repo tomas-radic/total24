@@ -1,16 +1,66 @@
-<div class="flex justify-center py-8">
-  <%= form_with model: [:manager, season], class: "w-full p-2" do |f| %>
-    <div class="pt-4 grid grid-cols-1 md:grid-cols-2 gap-2">
-      <div class="w-full">
-        <%= f.label :name, "Názov", class: "block tracking-wide mb-2" %>
-        <%= f.text_field :name, class: "appearance-none block w-full border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none" %>
+<div>
+  <%= form_with model: [:manager, season], class: "p-2", data: { controller: "forms" } do |f| %>
+    <div class="row pt-4">
+      <div class="col-md-6 mb-3">
+        <%= f.label :name, "Názov", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control" %>
         <%= error_for(:name, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :ended_at, "Koniec sezóny", class: "form-label" %>
+        <%= content_tag :span, class: "text-decoration-underline px-1 bg-warning", role: "button", data: { "action" => "click->forms#clearField", "target-id" => "season_ended_at" } do %>
+          zrušiť dátum
+        <% end %>
+        <%= f.datetime_field :ended_at, class: "form-control" %>
+        <%= error_for(:ended_at, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :regular_a_play_off_size, "Play-off A veľkosť", class: "form-label" %>
+        <%= f.number_field :regular_a_play_off_size, step: 1, class: "form-control" %>
+        <%= error_for(:regular_a_play_off_size, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :regular_b_play_off_size, "Play-off B veľkosť", class: "form-label" %>
+        <%= f.number_field :regular_b_play_off_size, step: 1, class: "form-control" %>
+        <%= error_for(:regular_b_play_off_size, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :performance_play_off_size, "Performance Play-off veľkosť", class: "form-label" %>
+        <%= f.number_field :performance_play_off_size, step: 1, class: "form-control" %>
+        <%= error_for(:performance_play_off_size, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :play_off_min_matches_count, "Minimálny počet zápasov pre Play-off", class: "form-label" %>
+        <%= f.number_field :play_off_min_matches_count, step: 1, class: "form-control" %>
+        <%= error_for(:play_off_min_matches_count, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :max_pending_matches, "Max. čakajúcich zápasov", class: "form-label" %>
+        <%= f.number_field :max_pending_matches, step: 1, class: "form-control" %>
+        <%= error_for(:max_pending_matches, season) %>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <%= f.label :max_matches_with_opponent, "Max. zápasov s rovnakým súperom", class: "form-label" %>
+        <%= f.number_field :max_matches_with_opponent, step: 1, class: "form-control" %>
+        <%= error_for(:max_matches_with_opponent, season) %>
+      </div>
+
+      <div class="col-12 mb-3">
+        <%= f.label :play_off_conditions, "Podmienky Play-off", class: "form-label" %>
+        <%= f.text_area :play_off_conditions, rows: 10, class: "form-control" %>
+        <%= error_for(:play_off_conditions, season) %>
       </div>
     </div>
 
-    <div class="flex justify-end">
-      <%= link_to "Zrušiť", manager_pages_dashboard_path, class: "button" %>
-      <%= f.submit "Potvrdiť", class: "button button-blue" %>
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <%= f.submit "Potvrdiť", class: "btn btn-primary" %>
     </div>
   <% end %>
 </div>

@@ -90,7 +90,9 @@ Rails.application.routes.draw do
 
     get "pages/dashboard"
 
-    resources :seasons, only: [:new, :create, :edit, :update]
+    resources :seasons, only: [:new, :create, :edit, :update] do
+      post :open_new, on: :collection
+    end
 
     resources :players, only: [:edit, :update] do
       post :toggle_confirmed, on: :member

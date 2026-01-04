@@ -63,6 +63,19 @@
         Žiadni hráči nie sú registrovaní.
       </p>
     <% end %>
+
+    <h2 class="text-center py-4">
+      Nastavenia sezóny
+    </h2>
+    <%= render "manager/seasons/form", season: managed_season %>
+
+    <div class="text-center py-4">
+      <% can_open_new = managed_season.blank? || managed_season.ended? %>
+      <%= button_to "Otvoriť novú sezónu", open_new_manager_seasons_path,
+                    class: "btn btn-success #{'disabled' unless can_open_new}",
+                    disabled: !can_open_new,
+                    data: { turbo: false } %>
+    </div>
   </div>
 <% else %>
   <h2 class="text-center">Čaká sa na prvú sezónu.</h2>
