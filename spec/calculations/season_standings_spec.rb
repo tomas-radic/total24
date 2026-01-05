@@ -10,7 +10,7 @@ RSpec.describe "SeasonStandings", type: :model do
       let!(:other_season) { create(:season, :ended, name: 'other season') }
       let!(:playerA) { create(:player, name: 'A', enrollments: [build(:enrollment, season:, created_at: 1.days.ago), build(:enrollment, season: other_season)]) }
       let!(:playerB) { create(:player, name: 'B', enrollments: [build(:enrollment, season:, created_at: 2.days.ago)]) }
-      let!(:playerC) { create(:player, name: 'C', enrollments: [build(:enrollment, season:, created_at: 3.days.ago, canceled_at: 1.hour.ago)]) }
+      let!(:playerC) { create(:player, name: 'C', enrollments: [build(:enrollment, season:, created_at: 3.days.ago)]) }
       let!(:playerD) { create(:player, name: 'D', enrollments: [build(:enrollment, season:, created_at: 4.days.ago), build(:enrollment, season: other_season)]) }
       let!(:playerE) { create(:player, name: 'E', enrollments: [build(:enrollment, season:, created_at: 5.days.ago)]) }
       let!(:playerF) { create(:player, name: 'F', enrollments: [build(:enrollment, season: other_season)]) }
@@ -55,11 +55,11 @@ RSpec.describe "SeasonStandings", type: :model do
           result = subject
 
           expect(result.size).to eq(5)
-          expect(result[0]).to have_attributes(id: playerE.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[1]).to have_attributes(id: playerD.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[2]).to have_attributes(id: playerC.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[3]).to have_attributes(id: playerB.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[4]).to have_attributes(id: playerA.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[0]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[1]).to have_attributes(name: playerD.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[2]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[3]).to have_attributes(name: playerB.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[4]).to have_attributes(name: playerA.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
         end
       end
 
@@ -70,11 +70,11 @@ RSpec.describe "SeasonStandings", type: :model do
           result = subject
 
           expect(result.size).to eq(5)
-          expect(result[0]).to have_attributes(id: playerA.id, points: 100, percentage: 100, played_matches: 1, won_matches: 1)
-          expect(result[1]).to have_attributes(id: playerB.id, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
-          expect(result[2]).to have_attributes(id: playerE.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[3]).to have_attributes(id: playerD.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[4]).to have_attributes(id: playerC.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[0]).to have_attributes(name: playerA.name, points: 0, percentage: 100, played_matches: 1, won_matches: 1)
+          expect(result[1]).to have_attributes(name: playerB.name, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
+          expect(result[2]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[3]).to have_attributes(name: playerD.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[4]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
         end
       end
 
@@ -88,11 +88,11 @@ RSpec.describe "SeasonStandings", type: :model do
           result = subject
 
           expect(result.size).to eq(5)
-          expect(result[0]).to have_attributes(id: playerA.id, points: 100, percentage: 100, played_matches: 2, won_matches: 2)
-          expect(result[1]).to have_attributes(id: playerC.id, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
-          expect(result[2]).to have_attributes(id: playerB.id, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
-          expect(result[3]).to have_attributes(id: playerE.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[4]).to have_attributes(id: playerD.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[0]).to have_attributes(name: playerA.name, points: 0, percentage: 100, played_matches: 2, won_matches: 2)
+          expect(result[1]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
+          expect(result[2]).to have_attributes(name: playerB.name, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
+          expect(result[3]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[4]).to have_attributes(name: playerD.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
         end
       end
 
@@ -107,11 +107,11 @@ RSpec.describe "SeasonStandings", type: :model do
           result = subject
 
           expect(result.size).to eq(5)
-          expect(result[0]).to have_attributes(id: playerA.id, points: 150, percentage: 100, played_matches: 2, won_matches: 2)
-          expect(result[1]).to have_attributes(id: playerB.id, points: 50, percentage: 50, played_matches: 2, won_matches: 1)
-          expect(result[2]).to have_attributes(id: playerC.id, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
-          expect(result[3]).to have_attributes(id: playerE.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
-          expect(result[4]).to have_attributes(id: playerD.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[0]).to have_attributes(name: playerA.name, points: 50, percentage: 100, played_matches: 2, won_matches: 2)
+          expect(result[1]).to have_attributes(name: playerB.name, points: 0, percentage: 50, played_matches: 2, won_matches: 1)
+          expect(result[2]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
+          expect(result[3]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[4]).to have_attributes(name: playerD.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
         end
       end
 
@@ -127,8 +127,8 @@ RSpec.describe "SeasonStandings", type: :model do
           result = subject
 
           expect(result.size).to eq(5)
-          expect(result[0]).to have_attributes(id: playerA.id, points: 150, percentage: 100, played_matches: 3, won_matches: 3)
-          expect(result[1]).to have_attributes(id: playerB.id, points: 50, percentage: 50, played_matches: 2, won_matches: 1)
+          expect(result[0]).to have_attributes(id: playerA.id, points: 50, percentage: 100, played_matches: 3, won_matches: 3)
+          expect(result[1]).to have_attributes(id: playerB.id, points: 0, percentage: 50, played_matches: 2, won_matches: 1)
           expect(result[2]).to have_attributes(id: playerC.id, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
           expect(result[3]).to have_attributes(id: playerD.id, points: 0, percentage: 0, played_matches: 1, won_matches: 0)
           expect(result[4]).to have_attributes(id: playerE.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
@@ -148,12 +148,29 @@ RSpec.describe "SeasonStandings", type: :model do
           result = subject
 
           expect(result.size).to eq(5)
-          expect(result[0]).to have_attributes(id: playerA.id, points: 183, percentage: 100, played_matches: 3, won_matches: 3)
-          expect(result[1]).to have_attributes(id: playerD.id, points: 83, percentage: 50, played_matches: 2, won_matches: 1)
-          expect(result[2]).to have_attributes(id: playerB.id, points: 33, percentage: 33, played_matches: 3, won_matches: 1)
-          expect(result[3]).to have_attributes(id: playerC.id, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
-          expect(result[4]).to have_attributes(id: playerE.id, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          expect(result[0]).to have_attributes(name: playerA.name, points: 83, percentage: 100, played_matches: 3, won_matches: 3)
+          expect(result[1]).to have_attributes(name: playerD.name, points: 33, percentage: 50, played_matches: 2, won_matches: 1)
+          expect(result[2]).to have_attributes(name: playerB.name, points: 0, percentage: 33, played_matches: 3, won_matches: 1)
+          expect(result[3]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
+          expect(result[4]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
         end
+
+        context "When player A is anonymized and player B is no more confirmed" do
+          before do
+            playerA.update!(anonymized_at: 5.minutes.ago)
+            playerB.update!(confirmed_at: nil)
+          end
+
+          it "Returns correct ranking" do
+            result = subject
+
+            expect(result.size).to eq(3)
+            expect(result[0]).to have_attributes(name: playerD.name, points: 33, percentage: 50, played_matches: 2, won_matches: 1)
+            expect(result[1]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
+            expect(result[2]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          end
+        end
+
       end
     end
 

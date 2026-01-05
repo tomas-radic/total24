@@ -26,8 +26,6 @@ class SeasonStandings
 
       player1.percentage = Percentage.calculate(player1.won_matches, of: player1.played_matches)
       player2.percentage = Percentage.calculate(player2.won_matches, of: player2.played_matches)
-      player1.points = player1.percentage
-      player2.points = player2.percentage
     end
 
     played_matches.each do |match|
@@ -40,10 +38,12 @@ class SeasonStandings
     result = result.reject { |p| p.anonymized? || !p.confirmed? }
 
     @ranking ||= result.sort_by do |player|
+      enrollment = player.enrollments.find { |enr| enr.season_id == @season.id }
       [
         -player.points,
+        -player.won_matches,
         -player.played_matches,
-        player.enrollments.find { |enr| enr.season_id == @season.id }.created_at
+        enrollment.created_at
       ]
     end
   end
