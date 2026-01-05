@@ -20,32 +20,4 @@ module MatchesHelper
     end.join(", ").html_safe
   end
 
-
-  def match_winner_link(match, break_whitespace: false, privacy: false, options: {})
-    return nil unless match.finished?
-
-    match.assignments.select { |a| a.side == match.winner_side }.map do |a|
-      name = if break_whitespace
-               PlayerPresenter.new(a.player, privacy:).name.gsub(/\s+/, "<br>").html_safe
-             else
-               PlayerPresenter.new(a.player, privacy:).name
-             end
-      link_to name, player_path(a.player), options
-    end.join(", ").html_safe
-  end
-
-
-  def match_looser_link(match, break_whitespace: false, privacy: false, options: {})
-    return nil unless match.finished?
-
-    match.assignments.select { |a| a.side != match.winner_side }.map do |a|
-      name = if break_whitespace
-               PlayerPresenter.new(a.player, privacy:).name.gsub(/\s+/, "<br>").html_safe
-             else
-               PlayerPresenter.new(a.player, privacy:).name
-             end
-      link_to name, player_path(a.player), options
-    end.join(", ").html_safe
-  end
-
 end
