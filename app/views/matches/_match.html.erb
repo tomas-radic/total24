@@ -8,7 +8,7 @@
     </div>
     <% if player %>
       <div class="page-controls__buttons">
-        <% if match.requested? && !match.accepted? && !match.rejected? %>
+        <% if match.requested? %>
           <div>
             <% if MatchPolicy.new(player, match).accept? %>
               <%= link_to "Odmietnuť",
@@ -55,19 +55,19 @@
         zápas skrečoval<small>/a</small>.
       </p>
     <% end %>
-  <% elsif match.requested? && !match.accepted? && !match.rejected? %>
+  <% elsif match.requested? %>
     <p class="text-center">
       Na túto výzvu <%= MatchPresenter.new(match, privacy:).side_names(2) %> zatiaľ nereagoval<small>/a</small>.
     </p>
-  <% elsif match.canceled_at %>
+  <% elsif match.canceled? %>
     <p class="text-center text-danger">
       Tento zápas bol zrušený <%= app_date match.canceled_at %>.
     </p>
-  <% elsif match.accepted_at %>
+  <% elsif match.accepted? %>
     <p class="text-center">
       <%= MatchPresenter.new(match, privacy:).side_names(2) %> akceptoval<small>/a</small> výzvu <%= app_date match.accepted_at %>.
     </p>
-  <% elsif match.rejected_at %>
+  <% elsif match.rejected? %>
     <p class="text-center">
       <%= MatchPresenter.new(match, privacy:).side_names(2) %> odmietol<small>/la</small> túto výzvu <%= app_date match.rejected_at %>.
     </p>
