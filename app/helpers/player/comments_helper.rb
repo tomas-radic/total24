@@ -1,25 +1,13 @@
 module Player::CommentsHelper
 
   def edit_comment_path(comment)
-    case comment.commentable.class.to_s
-    when "Match"
-      edit_player_match_comment_path(comment.commentable, comment)
-    when "Article"
-      edit_player_article_comment_path(comment.commentable, comment)
-    when "Tournament"
-      edit_player_tournament_comment_path(comment.commentable, comment)
-    end
+    helper_method = "edit_player_#{comment.commentable.class.to_s.downcase}_comment_path"
+    public_send(helper_method, comment.commentable, comment)
   end
 
 
   def delete_comment_path(comment)
-    case comment.commentable.class.to_s
-    when "Match"
-      delete_player_match_comment_path(comment.commentable, comment)
-    when "Article"
-      delete_player_article_comment_path(comment.commentable, comment)
-    when "Tournament"
-      delete_player_tournament_comment_path(comment.commentable, comment)
-    end
+    helper_method = "delete_player_#{comment.commentable.class.to_s.downcase}_comment_path"
+    public_send(helper_method, comment.commentable, comment)
   end
 end
