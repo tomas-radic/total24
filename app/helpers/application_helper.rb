@@ -45,13 +45,6 @@ module ApplicationHelper
   end
 
 
-  # def app_date_span(datetime)
-  #   content_tag :span, class: "whitespace-nowrap" do
-  #     app_date datetime
-  #   end
-  # end
-
-
   def app_time(datetime)
     "#{app_date(datetime)} - #{datetime.strftime("%k:%M")}".html_safe
   end

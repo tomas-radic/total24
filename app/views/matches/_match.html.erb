@@ -28,7 +28,7 @@
           </div>
         <% else %>
           <div>
-            <%= link_to "Zrušiť", cancel_player_match_path(match),
+            <%= link_to "Zrušenie zápasu", cancel_player_match_path(match),
                         data: { turbo_method: :post, turbo_confirm: "Chceš naozaj zrušiť tento zápas?" },
                         class: "btn btn-outline-danger #{'disabled' unless MatchPolicy.new(player, match).cancel?}" %>
             <%= link_to "Upraviť", edit_player_match_path(match),
