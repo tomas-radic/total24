@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="sk">
   <head>
-    <title>TOtal - Topoľčianska tenisová amatérska liga</title>
+    <title><%= content_for?(:title) ? yield(:title) : "TOtal - Topoľčianska tenisová amatérska liga" %></title>
+    <meta name="description" content="Topoľčianska tenisová amatérska liga (TOtal) - amatérska tenisová súťaž v Topoľčanoch. Výsledky, tabuľky a štatistiky.">
+    <meta name="keywords" content="tenis liga Topoľčany, tenisová liga, tenisová súťaž, amatérsky tenis, TOtal">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
