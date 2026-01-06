@@ -3,7 +3,7 @@ class Player::MatchesController < Player::BaseController
   after_action :verify_authorized, except: [:create, :toggle_reaction]
 
   def create
-    @requested_player = Player.where(anonymized_at: nil).find(params[:player_id])
+    @requested_player = Player.active.find(params[:player_id])
 
     unless MatchPolicy.new(current_player, nil).create?(selected_season, @requested_player)
       raise Pundit::NotAuthorizedError, "nie je možné vyzvať hráča #{@requested_player.name}"

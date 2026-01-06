@@ -63,7 +63,7 @@ class Match < ApplicationRecord
   scope :requested, -> { where(accepted_at: nil, rejected_at: nil, canceled_at: nil, finished_at: nil) }
   scope :accepted, -> { where.not(accepted_at: nil).where(finished_at: nil, canceled_at: nil) }
   scope :rejected, -> { where.not(rejected_at: nil).where(finished_at: nil, canceled_at: nil) }
-  scope :pending, -> { where.not(accepted_at: nil).where(rejected_at: nil, canceled_at: nil, finished_at: nil) }
+  scope :pending, -> { where(rejected_at: nil, canceled_at: nil, finished_at: nil) }
   scope :in_season, ->(season) { where(season_id: season.id) }
   scope :finished, -> { where.not(finished_at: nil) }
   scope :reviewed, -> { where.not(reviewed_at: nil) }

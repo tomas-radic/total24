@@ -75,7 +75,7 @@
     </div>
 
     <!-- Tournaments / News -->
-    <% if selected_season.present? && (upcoming_tournaments.first || actual_articles.first) %>
+    <% if selected_season.present? && (upcoming_tournaments.first || promoted_articles.first) %>
       <h3 class="caption-l3 accent-color text-center text-md-start mt-3">
         <%= link_to "Turnaje", tournaments_path, class: "u-no-decoration accent-color" %>
         /
@@ -92,7 +92,7 @@
                      } %>
         <% end %>
 
-        <% actual_articles.each do |article| %>
+        <% promoted_articles.each do |article| %>
           <%= render partial: "today/tile",
                      locals: {
                        link_path: article_path(article),

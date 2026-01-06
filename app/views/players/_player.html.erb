@@ -39,7 +39,7 @@
   <hr>
 
   <% if selected_season.present? %>
-    <% unless selected_season.enrollments.active.where(player: player).exists? %>
+    <% unless player.enrolled_to?(selected_season) %>
       <p class="text-center">
         Hráč<small>/ka</small> nie je zapísaný<small>/á</small>
         do sezóny <%= selected_season.name %>.

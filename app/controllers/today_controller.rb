@@ -13,10 +13,8 @@ class TodayController < ApplicationController
   private
 
   def load_matches
-    season_matches = selected_season.matches.published
-                                    .order(play_date: :asc, play_time: :asc, updated_at: :desc)
-                                    .includes(:reactions, :comments, :players,
-                                              :predictions, assignments: :player)
+    season_matches = PublishedMatchesQuery.call(selected_season).includes(:reactions, :comments, :players,
+                                                                         :predictions, assignments: :player)
 
     @requested_matches = season_matches.select do |match|
       match.requested?
@@ -40,18 +38,11 @@ class TodayController < ApplicationController
   end
 
   def load_tournaments
-    begins_in_days = Date.today + 12.days
-    ended_before_days = Date.today - 2.days
-    @upcoming_tournaments = selected_season.tournaments.published
-                                           .where("(begin_date < ? or end_date < ?) and (end_date >= ?)",
-                                                  begins_in_days, begins_in_days, ended_before_days)
-                                           .order(begin_date: :asc, updated_at: :desc)
+    @upcoming_tournaments = UpcomingTournamentsQuery.call(selected_season)
   end
 
   def load_articles
-    @actual_articles = selected_season.articles.published
-                                      .where("(promote_until is not null and promote_until >= ?) or (promote_until is null and created_at > ?)",
-                                             Date.today, 4.days.ago)
+    @promoted_articles = PromotedArticlesQuery.call(selected_season)
   end
 
   def load_players

@@ -4,25 +4,18 @@ class MatchesController < ApplicationController
     if selected_season.present?
       page = params[:page] || 1
 
-      @matches = selected_season.matches.published
-                                .where(rejected_at: nil, canceled_at: nil)
-                                .order("finished_at desc nulls first")
-                                .order("play_date asc nulls last, play_time asc nulls last, updated_at desc")
-                                .includes(:place, :reactions, :comments, :reacted_players, :predictions, :players, assignments: :player)
-
+      @matches = PublishedMatchesQuery.call(selected_season, unfinished_first: true)
+                                      .where(rejected_at: nil, canceled_at: nil)
+                                      .includes(:place, :reactions, :comments, :reacted_players, :predictions,
+                                                :players, assignments: :player)
       @reviewed_count = @matches.count { |m| m.reviewed? }
       @planned_count = @matches.count { |m| !m.reviewed? }
       @matches = @matches.page(page).per(100)
 
       if player_signed_in?
-        @pending_matches = @matches.joins(:assignments)
-                      .where(assignments: { player_id: current_player.id }).distinct
-                      .where(matches: {
-                        rejected_at: nil,
-                        finished_at: nil
-                      })
-                      .order("matches.play_date asc nulls last, matches.play_time asc nulls last, matches.updated_at desc")
-                      .includes(:reactions, :comments, :predictions, :players, assignments: :player)
+        @pending_matches = PlayerMatchesQuery.call(current_player, relation: @matches).pending
+                                             .includes(:reactions, :comments, :predictions, :players,
+                                                       assignments: :player)
       end
     end
   end

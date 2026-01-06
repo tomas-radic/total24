@@ -11,7 +11,7 @@
 <div class="page__content">
   <div class="vertical-form">
     <div class="vertical-form__controls">
-      <% if selected_season.present? && !selected_season.enrollments.active.where(player: resource).exists? %>
+      <% if selected_season.present? && !resource.enrolled_to?(selected_season) %>
         <p class="text-center u-red py-2">
           Nie si zapísaný<small>/á</small>
           do sezóny <%= selected_season.name %>.<br>

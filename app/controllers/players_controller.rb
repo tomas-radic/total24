@@ -2,7 +2,7 @@ class PlayersController < ApplicationController
 
   # Temporary action, turn off later.
   def index
-    @players = Player.where(anonymized_at: nil).where.not(confirmed_at: nil).order(created_at: :desc)
+    @players = Player.active.order(created_at: :desc)
   end
 
 

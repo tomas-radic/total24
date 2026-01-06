@@ -94,7 +94,7 @@ class MatchPolicy < ApplicationPolicy
   def switch_prediction?
     return false unless record.published?
     return false if record.season.ended?
-    return false unless record.pending?
+    return false if !record.pending? && !record.accepted?
     return false if record.predictions_disabled_since.present?
 
     true

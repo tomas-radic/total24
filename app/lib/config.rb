@@ -20,4 +20,16 @@ module Config
   def performance_player_tag_label
     ENV["PERFORMANCE_PLAYER_TAG_LABEL"] || "reg"
   end
+
+  def before_tournament_days_notice
+    (ENV["BEFORE_TOURNAMENT_DAYS_NOTICE"] || 12).to_i
+  end
+
+  def after_tournament_days_notice
+    (ENV["AFTER_TOURNAMENT_DAYS_NOTICE"] || 2).to_i
+  end
+
+  def article_default_promotion_days
+    (ENV["ARTICLE_DEFAULT_PROMOTION_DAYS"] || 4).to_i
+  end
 end
