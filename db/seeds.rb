@@ -99,7 +99,7 @@ ActiveRecord::Base.transaction do
     )
 
     player.confirm
-    season.players << player
+    player.enrollments.create!(season: season, rules_accepted_at: Time.current, fee_amount_paid: 30, canceled_at: nil)
   end
 
 

@@ -35,7 +35,10 @@ class SeasonStandings
       winner.points += looser.percentage
     end
 
-    result = result.reject { |p| !p.active? }
+    result = result.reject do |p|
+      season_enrollment = p.enrollments.find { |enr| enr.season_id == @season.id }
+      season_enrollment.nil? || !season_enrollment.active?
+    end
 
     @ranking ||= result.sort_by do |player|
       enrollment = player.enrollments.find { |enr| enr.season_id == @season.id }

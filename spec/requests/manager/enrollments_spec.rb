@@ -8,7 +8,6 @@ RSpec.describe "Manager::Enrollments", type: :request do
 
     it_behaves_like "manager_request"
 
-
     let!(:season) { create(:season) }
     let!(:manager) { create(:manager) }
     let!(:player) { create(:player, email: manager.email) }
@@ -22,11 +21,13 @@ RSpec.describe "Manager::Enrollments", type: :request do
         it "Creates enrollment for the player" do
           expect { subject }.to change { Enrollment.count }.by(1)
 
-          latest_enrollment = Enrollment.order(:created_at).last
+          latest_enrollment = player.enrollments.order(:created_at).last
           expect(latest_enrollment).to have_attributes(
                                          season_id: season.id,
                                          player_id: player.id,
+                                         fee_amount_paid: 0,
                                          canceled_at: nil)
+          expect(latest_enrollment.rules_accepted_at).not_to be_nil
         end
 
       end

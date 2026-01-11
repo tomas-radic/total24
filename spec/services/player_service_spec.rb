@@ -76,9 +76,9 @@ RSpec.describe PlayerService do
   end
 
   describe '#toggle_season_enrollment' do
-    context 'when enrollment does not exist' do
-      subject { service.toggle_season_enrollment(player, season) }
+    subject { service.toggle_season_enrollment(player, season) }
 
+    context 'when enrollment does not exist' do
       it 'creates a new enrollment' do
         expect { subject }.to change { Enrollment.count }.by(1)
       end
@@ -88,18 +88,20 @@ RSpec.describe PlayerService do
         expect(subject.value).to eq(Enrollment.order(:created_at).last)
       end
 
-      it 'sets canceled_at to nil' do
+      it 'sets default values' do
         subject
-        expect(Enrollment.order(:created_at).last.canceled_at).to be_nil
+
+        enrollment = player.enrollments.find_by(season:)
+        expect(enrollment.canceled_at).to be_nil
+        expect(enrollment.rules_accepted_at).not_to be_nil
+        expect(enrollment.fee_amount_paid).to eq(0)
       end
     end
 
     context 'when enrollment exists' do
       let!(:enrollment) { create(:enrollment, player: player, season: season) }
 
-      context 'when it is active' do
-        subject { service.toggle_season_enrollment(player, season) }
-
+      context 'when it is not canceled' do
         before do
           enrollment.update!(canceled_at: nil)
         end

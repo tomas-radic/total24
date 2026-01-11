@@ -8,12 +8,12 @@ RSpec.describe "SeasonStandings", type: :model do
 
       let!(:season) { create(:season, name: "season") }
       let!(:other_season) { create(:season, :ended, name: 'other season') }
-      let!(:playerA) { create(:player, name: 'A', enrollments: [build(:enrollment, season:, created_at: 1.days.ago), build(:enrollment, season: other_season)]) }
-      let!(:playerB) { create(:player, name: 'B', enrollments: [build(:enrollment, season:, created_at: 2.days.ago)]) }
-      let!(:playerC) { create(:player, name: 'C', enrollments: [build(:enrollment, season:, created_at: 3.days.ago)]) }
-      let!(:playerD) { create(:player, name: 'D', enrollments: [build(:enrollment, season:, created_at: 4.days.ago), build(:enrollment, season: other_season)]) }
-      let!(:playerE) { create(:player, name: 'E', enrollments: [build(:enrollment, season:, created_at: 5.days.ago)]) }
-      let!(:playerF) { create(:player, name: 'F', enrollments: [build(:enrollment, season: other_season)]) }
+      let!(:playerA) { create(:player, name: 'A', enrollments: [build(:enrollment, :active, season:, created_at: 1.days.ago), build(:enrollment, :active, season: other_season)]) }
+      let!(:playerB) { create(:player, name: 'B', enrollments: [build(:enrollment, :active, season:, created_at: 2.days.ago)]) }
+      let!(:playerC) { create(:player, name: 'C', enrollments: [build(:enrollment, :active, season:, created_at: 3.days.ago)]) }
+      let!(:playerD) { create(:player, name: 'D', enrollments: [build(:enrollment, :active, season:, created_at: 4.days.ago), build(:enrollment, :active, season: other_season)]) }
+      let!(:playerE) { create(:player, name: 'E', enrollments: [build(:enrollment, :active, season:, created_at: 5.days.ago)]) }
+      let!(:playerF) { create(:player, name: 'F', enrollments: [build(:enrollment, :active, season: other_season)]) }
       let!(:match1) { create(:match, :finished, season: season, winner_side: 1,
                              assignments: [
                                build(:assignment, side: 1, player: playerA),
@@ -171,6 +171,21 @@ RSpec.describe "SeasonStandings", type: :model do
           end
         end
 
+        context "When player A canceled enrollment and player B hasn't pay fee" do
+          before do
+            playerA.enrollments.find_by!(season_id: season.id).update!(canceled_at: 5.minutes.ago)
+            playerB.enrollments.find_by!(season_id: season.id).update!(fee_amount_paid: nil)
+          end
+
+          it "Returns correct ranking" do
+            result = subject
+
+            expect(result.size).to eq(3)
+            expect(result[0]).to have_attributes(name: playerD.name, points: 33, percentage: 50, played_matches: 2, won_matches: 1)
+            expect(result[1]).to have_attributes(name: playerC.name, points: 0, percentage: 0, played_matches: 2, won_matches: 0)
+            expect(result[2]).to have_attributes(name: playerE.name, points: 0, percentage: 0, played_matches: 0, won_matches: 0)
+          end
+        end
       end
     end
 

@@ -7,12 +7,14 @@ RSpec.describe "Player::Matches", type: :request do
   end
 
   let!(:season) { create(:season) }
-  let!(:player) { create(:player, name: "Player", seasons: [season]) }
+  let!(:player) { create(:player, name: "Player") }
+  let!(:enrollment) { create(:enrollment, :active, player: player, season: season)}
 
   describe "POST /player/matches" do
     subject { post player_matches_path, params: { player_id: requested_player.id } }
 
-    let!(:requested_player) { create(:player, seasons: [season]) }
+    let!(:requested_player) { create(:player) }
+    let!(:requested_player_enrollment) { create(:enrollment, :active, player: requested_player, season: season)}
 
     it_behaves_like "player_request"
 

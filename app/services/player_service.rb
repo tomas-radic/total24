@@ -24,7 +24,8 @@ class PlayerService < ApplicationService
       canceled_at = enrollment.canceled_at.present? ? nil : Time.current
       enrollment.update!(canceled_at:)
     else
-      enrollment = season.enrollments.create!(player: player, canceled_at: nil)
+      enrollment = season.enrollments.create!(
+        player: player, rules_accepted_at: Time.current, fee_amount_paid: 0, canceled_at: nil)
     end
 
     success(enrollment)
