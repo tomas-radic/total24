@@ -79,6 +79,10 @@ class Player < ApplicationRecord
     anonymized_at.present?
   end
 
+  def active?
+    confirmed_at.present? && !anonymized?
+  end
+
   def enrolled_to?(season)
     enrollments.active.exists?(season_id: season.id)
   end

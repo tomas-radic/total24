@@ -5,6 +5,7 @@ class PagesController < ApplicationController
   end
 
 
+  # TODO: Not found page (404) to be served as static page later. Currently lazy to resolve it's styling, sorry.
   def not_found; end
 
 

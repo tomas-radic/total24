@@ -4,7 +4,7 @@ class MatchPolicy < ApplicationPolicy
     requesting_player = user
     return false if requested_player.cant_play_since.present?
     return false if requesting_player.id == requested_player.id
-    return false if requesting_player.anonymized? || requested_player.anonymized?
+    return false if !requesting_player.active? || !requested_player.active?
 
     return false if season.ended?
     return false unless requesting_player.enrolled_to?(season)

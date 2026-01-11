@@ -5,7 +5,7 @@
   </div>
 
   <div class="page-header__text default-color">
-    <% if player.confirmed? && player.anonymized_at.blank? && (current_manager || (current_player && selected_season && selected_season.enrollments.active.find { |e| e.player_id == current_player.id })) %>
+    <% if player.active? && selected_season && current_player&.enrolled_to?(selected_season) %>
       <% if player.phone_nr.present? %>
         <div><%= formatted_phone_nr(player.phone_nr, dialable: true, classes: "u-no-decoration") %></div>
       <% end %>

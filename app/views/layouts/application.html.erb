@@ -20,7 +20,7 @@
     <%= render 'shared/navbar' %>
 
     <% if current_player.present? && selected_season.present? && !selected_season.ended? &&
-      !selected_season.players.merge(Enrollment.active).include?(current_player) %>
+          !current_player.enrolled_to?(selected_season) %>
       <div class="top-notice">
         Máš registráciu, ale nie si prihlásený<small>/á</small> do súčasnej sezóny.
         Kontaktuj - <%= link_to 'Ľuboš Hollan', 'tel:0908129978', class: "u-white" %>

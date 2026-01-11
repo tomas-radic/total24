@@ -7,7 +7,7 @@ class Player::BaseController < ApplicationController
   private
 
   def verify_player!
-    if current_player.anonymized?
+    unless current_player.active?
       sign_out current_player
       redirect_to root_path
     end
