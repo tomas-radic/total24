@@ -24,7 +24,6 @@ class PagesController < ApplicationController
       help_url,
       tournaments_url,
       matches_url,
-      players_url,
       articles_url
     ]
     

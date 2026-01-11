@@ -1,11 +1,5 @@
 class PlayersController < ApplicationController
 
-  # Temporary action, turn off later.
-  def index
-    @players = Player.active.order(created_at: :desc)
-  end
-
-
   def show
     @player = Player.find params[:id]
 
