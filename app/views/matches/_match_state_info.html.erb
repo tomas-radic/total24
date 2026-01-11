@@ -1,0 +1,29 @@
+<% if match.reviewed? %>
+  <p class="u-fs-giant py-4 text-center"><%= MatchPresenter.new(match).result_from_side %></p>
+  <p class="text-center">
+    <%= MatchPresenter.new(match, privacy:).side_names(match.winner_side) %>
+    zvíťazil<small>/a</small> v tomto zápase.
+  </p>
+  <% if match.retired? %>
+    <p class="text-center">
+      <%= MatchPresenter.new(match, privacy:).looser_names %>
+      zápas skrečoval<small>/a</small>.
+    </p>
+  <% end %>
+<% elsif match.requested? %>
+  <p class="text-center">
+    Na túto výzvu <%= MatchPresenter.new(match, privacy:).side_names(2) %> zatiaľ nereagoval<small>/a</small>.
+  </p>
+<% elsif match.canceled? %>
+  <p class="text-center text-danger">
+    Tento zápas bol zrušený <%= app_date match.canceled_at %>.
+  </p>
+<% elsif match.accepted? %>
+  <p class="text-center">
+    <%= MatchPresenter.new(match, privacy:).side_names(2) %> akceptoval<small>/a</small> výzvu <%= app_date match.accepted_at %>.
+  </p>
+<% elsif match.rejected? %>
+  <p class="text-center">
+    <%= MatchPresenter.new(match, privacy:).side_names(2) %> odmietol<small>/la</small> túto výzvu <%= app_date match.rejected_at %>.
+  </p>
+<% end %>
