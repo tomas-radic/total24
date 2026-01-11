@@ -83,6 +83,14 @@ class Player < ApplicationRecord
     enrollments.active.exists?(season_id: season.id)
   end
 
+  def assigned_to?(match, side: nil)
+    if side.present?
+      assignments.exists?(match_id: match.id, side: side)
+    else
+      assignments.exists?(match_id: match.id)
+    end
+  end
+
   def send_confirmation_notification?
     false
   end

@@ -38,9 +38,9 @@ class MatchPolicy < ApplicationPolicy
   def update?
     return false unless record.published?
     return false if record.season.ended?
-    return false if record.requested?
+    return false if record.requested? || record.canceled?
 
-    assigned?(user, record)
+    user.assigned_to?(record)
   end
 
 
@@ -49,7 +49,7 @@ class MatchPolicy < ApplicationPolicy
     return false if record.season.ended?
     return false unless record.requested?
 
-    assigned?(user, record, side: 1)
+    user.assigned_to?(record, side: 1)
   end
 
 
@@ -58,7 +58,7 @@ class MatchPolicy < ApplicationPolicy
     return false if record.season.ended?
     return false unless record.requested?
 
-    assigned?(user, record, side: 2)
+    user.assigned_to?(record, side: 2)
   end
 
 
@@ -76,7 +76,7 @@ class MatchPolicy < ApplicationPolicy
     return false unless record.published?
     return false if record.season.ended?
     return false unless record.accepted?
-    return false unless assigned?(user, record)
+    return false unless user.assigned_to?(record)
 
     record.finished_at.blank? || (record.finished_at >= Config.refinish_match_minutes_limit.minutes.ago)
   end
@@ -87,7 +87,7 @@ class MatchPolicy < ApplicationPolicy
     return false if record.season.ended?
     return false unless record.accepted?
 
-    assigned?(user, record)
+    user.assigned_to?(record)
   end
 
 
@@ -103,14 +103,5 @@ class MatchPolicy < ApplicationPolicy
 
   def mark_notifications_read?
     true
-  end
-
-
-  private
-
-  def assigned?(player, match, side: nil)
-    assignments = match.assignments
-    assignments = assignments.where(side:) if side.present?
-    assignments.exists?(player_id: player.id)
   end
 end

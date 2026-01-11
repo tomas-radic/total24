@@ -48,5 +48,40 @@ RSpec.describe Player, type: :model do
         expect(Match.find_by(id: unfinished_match_id)).to be_nil
       end
     end
+
+    describe "assigned_to?" do
+      let(:match) { build(:match, assignments: [], season: season) }
+
+      before do
+        match.save(validate: false)
+      end
+
+      context "when side is not provided" do
+        it "returns true if player is assigned to the match" do
+          create(:assignment, player: player, match: match, side: 1)
+          expect(player.assigned_to?(match)).to be true
+        end
+
+        it "returns false if player is not assigned to the match" do
+          expect(player.assigned_to?(match)).to be false
+        end
+      end
+
+      context "when side is provided" do
+        it "returns true if player is assigned to the match on the specified side" do
+          create(:assignment, player: player, match: match, side: 1)
+          expect(player.assigned_to?(match, side: 1)).to be true
+        end
+
+        it "returns false if player is assigned to the match on a different side" do
+          create(:assignment, player: player, match: match, side: 1)
+          expect(player.assigned_to?(match, side: 2)).to be false
+        end
+
+        it "returns false if player is not assigned to the match" do
+          expect(player.assigned_to?(match, side: 1)).to be false
+        end
+      end
+    end
   end
 end
