@@ -11,26 +11,33 @@
         <% if match.requested? %>
           <div>
             <% if MatchPolicy.new(player, match).accept? %>
-              <%= link_to "Odmietnuť",
-                          reject_player_match_path(match),
-                          class: "btn btn-warning",
-                          data: { turbo_method: :post, turbo_confirm: "Chceš naozaj odmietnuť túto výzvu?" } %>
+              <%= confirmation_for("rejectMatch",
+                                   button_label: "Odmietnuť",
+                                   button_classes: "btn-warning",
+                                   confirmation_text: "Potvrď odmietnutie výzvy.",
+                                   action_path: reject_player_match_path(match),
+                                   action_data: { turbo_method: :post, turbo_frame: :_top }) %>
               <%= link_to "Prijať",
                           accept_player_match_path(match),
                           class: "btn btn-success", data: { turbo_method: :post } %>
             <% end %>
             <% if MatchPolicy.new(player, match).destroy? %>
-              <%= link_to "Zmazať",
-                          player_match_path(match),
-                          class: "btn btn-warning",
-                          data: { turbo_frame: :_top, turbo_method: :delete, turbo_confirm: "Chceš naozaj zmazať túto výzvu?" } %>
+              <%= confirmation_for("destroyMatch",
+                                   button_label: "Zmazať",
+                                   button_classes: "btn-warning",
+                                   confirmation_text: "Potvrď zmazanie výzvy.",
+                                   action_path: player_match_path(match),
+                                   action_data: { turbo_method: :delete, turbo_frame: :_top }) %>
             <% end %>
           </div>
         <% else %>
           <div>
-            <%= link_to "Zrušenie zápasu", cancel_player_match_path(match),
-                        data: { turbo_method: :post, turbo_confirm: "Chceš naozaj zrušiť tento zápas?" },
-                        class: "btn btn-outline-danger #{'disabled' unless MatchPolicy.new(player, match).cancel?}" %>
+            <%= confirmation_for("cancelMatch",
+                                 button_label: "Zrušenie zápasu",
+                                 button_classes: "btn-outline-danger #{'disabled' unless MatchPolicy.new(player, match).cancel?}",
+                                 confirmation_text: "Potvrď zrušenie zápasu.",
+                                 action_path: cancel_player_match_path(match),
+                                 action_data: { turbo_method: :post, turbo_frame: :_top }) %>
             <%= link_to "Upraviť", edit_player_match_path(match),
                         class: "btn btn-warning #{'disabled' unless MatchPolicy.new(player, match).edit?}" %>
             <%= link_to "Výsledok", finish_init_player_match_path(match),
