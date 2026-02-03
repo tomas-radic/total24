@@ -1,3 +1,5 @@
-<div class="page__content">
-  <%= render partial: "manager/articles/form", locals: { article: @article, heading: @heading } %>
-</div>
+<%= turbo_frame_tag "modal" do %>
+  <div class="page__content">
+    <%= render partial: "manager/articles/form", locals: { article: @article, heading: @heading } %>
+  </div>
+<% end %>

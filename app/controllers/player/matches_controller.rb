@@ -1,6 +1,10 @@
 class Player::MatchesController < Player::BaseController
-  before_action :load_and_authorize_record, except: [:create, :toggle_reaction, :switch_prediction]
-  after_action :verify_authorized, except: [:create, :toggle_reaction]
+  before_action :load_and_authorize_record, except: [:new, :create, :toggle_reaction, :switch_prediction]
+  after_action :verify_authorized, except: [:new, :create, :toggle_reaction]
+
+  def new
+    @requested_player = Player.active.find(params[:player_id])
+  end
 
   def create
     @requested_player = Player.active.find(params[:player_id])

@@ -16,10 +16,14 @@ class Manager::ArticlesController < Manager::BaseController
       { manager_id: current_manager.id }.merge(whitelisted_params))
 
     if @article.save
-      redirect_with_message manager_articles_path
+      respond_to do |format|
+        format.html { redirect_with_message manager_articles_path }
+        format.turbo_stream { redirect_with_message manager_articles_path }
+      end
     else
       @heading = @article.title.presence || "Nový článok"
-      render_with_message :new
+      render :new, status: :unprocessable_entity
+      # render_with_message :new
     end
   end
 
@@ -34,10 +38,14 @@ class Manager::ArticlesController < Manager::BaseController
     @article = managed_season.articles.find(params[:id])
 
     if @article.update(whitelisted_params)
-      redirect_with_message manager_articles_path
+      respond_to do |format|
+        format.html { redirect_with_message manager_articles_path }
+        format.turbo_stream { redirect_with_message manager_articles_path }
+      end
     else
       @heading = params[:heading]
-      render_with_message :edit
+      render :edit, status: :unprocessable_entity
+      # render_with_message :edit
     end
   end
 

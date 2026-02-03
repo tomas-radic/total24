@@ -1,7 +1,7 @@
 <div class="page__content">
   <div>
     <% if managed_season.present? %>
-      <%= link_to "Nový článok", new_manager_article_path, class: "btn btn-success" %>
+      <%= link_to "Nový článok", new_manager_article_path, class: "btn btn-success", data: { turbo_frame: "modal" } %>
     <% else %>
       <%= link_to "Otvoriť sezónu", new_manager_season_path, class: "btn btn-success" %>
     <% end %>
@@ -21,7 +21,7 @@
       <tbody>
         <% @articles.each do |article| %>
           <tr class="<%= inactive_css_class(!article.published?) %>">
-            <td><%= link_to article.title, edit_manager_article_path(article) %></td>
+            <td><%= link_to article.title, edit_manager_article_path(article), data: { turbo_frame: "modal" } %></td>
             <td><%= app_date(article.published_at) %></td>
           </tr>
         <% end %>

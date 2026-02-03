@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
 
   namespace :player do
-    resources :matches, only: [:create, :edit, :update, :destroy] do
+    resources :matches, only: [:new, :create, :edit, :update, :destroy] do
       post :accept, on: :member
       post :reject, on: :member
       get :finish_init, on: :member

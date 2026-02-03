@@ -1,0 +1,19 @@
+<%# How this modal works: https://www.hotrails.dev/articles/rails-modals-with-hotwire %>
+
+<div
+  class="modal"
+  tabindex="-1"
+  data-controller="modal"
+  data-action="turbo:frame-load->modal#open turbo:submit-end->modal#close"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-4">
+        <%= turbo_frame_tag "modal" %>
+      </div>
+    </div>
+  </div>
+</div>

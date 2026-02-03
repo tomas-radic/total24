@@ -1,7 +1,7 @@
-<h1 class="text-center my-4"><%= heading %></h1>
+<h1 class="text-center mb-4"><%= heading %></h1>
 
 <%= form_with model: [:manager, article], data: { controller: "forms" } do |f| %>
-  <div class="row mt-5">
+  <div class="row mt-4">
     <div class="col-md-4">
       <%= f.label :title, "Názov", class: "form-label" %>
       <%= f.text_field :title, class: "form-control" %>
@@ -21,7 +21,7 @@
       <%= error_for(:link, article) %>
     </div>
   </div>
-  <div class="row mt-5">
+  <div class="row mt-4">
     <div class="col-md-8">
       <div>
         <%= f.label :content, "Obsah", class: "form-label" %>
@@ -63,7 +63,7 @@
     <% if article.persisted? %>
       <%= link_to "Zmazať", manager_article_path(article), data: { turbo_method: :post, turbo_confirm: "Naozaj zmazať tento článok?" }, class: "btn btn-danger" %>
     <% end %>
-    <%= link_to "Zrušiť", manager_articles_path, class: "btn btn-light" %>
+    <%= link_to "Zrušiť", manager_articles_path, class: "btn btn-light", target: :_top %>
     <%= f.submit "Potvrdiť", class: "btn btn-success" %>
   </p>
 <% end %>

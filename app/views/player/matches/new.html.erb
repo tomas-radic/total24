@@ -1,0 +1,8 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="page__content">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+      <p class="text-center">Potvrď, že naozaj chceš vyzvať <%= @requested_player.name %></p>
+      <%= button_to "OK", player_matches_path(player_id: @requested_player.id), class: "btn btn-success btn-lg" %>
+    </div>
+  </div>
+<% end %>
