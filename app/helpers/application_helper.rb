@@ -90,4 +90,34 @@ module ApplicationHelper
   def inactive_css_class(inactive = true)
     inactive ? "u-grey" : ""
   end
+
+  def confirmation_for(purpose, button_label:, button_classes: "btn-primary", confirmation_text:, action_path:, action_data: {})
+    button_classes = "btn #{button_classes}"
+
+    button = content_tag(:button, class: button_classes, type: "button",
+                         data: { bs_toggle: "modal", bs_target: "##{purpose}Modal" }) do
+      button_label
+    end
+
+    modal = content_tag(:div, class: "modal fade", id: "#{purpose}Modal", tabindex: "-1", aria_labelledby: "#{purpose}ModalLabel", aria_hidden: "true") do
+      content_tag(:div, class: "modal-dialog") do
+        content_tag(:div, class: "modal-content") do
+          content_tag(:div, class: "modal-header") do
+            content_tag(:h1, class: "modal-title fs-5", id: "#{purpose}ModalLabel") do
+              button_label
+            end + content_tag(:button, class: "btn-close", type: "button",
+                              data: { bs_dismiss: "modal", aria_label: "Close" }) {}
+          end + content_tag(:div, class: "modal-body") do
+            content_tag(:p, confirmation_text)
+          end + content_tag(:div, class: "modal-footer") do
+            content_tag(:button, type: "button", class: "btn btn-secondary", data: { bs_dismiss: "modal" }) do
+              "Naspäť"
+            end + link_to("Ok", action_path, class: "btn btn-primary px-4", data: action_data)
+          end
+        end
+      end
+    end
+
+    button + modal
+  end
 end

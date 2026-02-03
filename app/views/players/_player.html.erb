@@ -28,10 +28,12 @@
     </div>
     <% if selected_season.present? && current_player.present? %>
       <div class="page-controls__buttons">
-        <%= link_to "Vyzvať hráča",
-                    player_matches_path(player_id: player.id),
-                    class: "btn btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(selected_season, player)}",
-                    data: { turbo_method: :post, turbo_confirm: "Potvrď, že naozaj chceš vyzvať #{player.name}" } %>
+        <%= confirmation_for("createMatch",
+                             button_label: "Vyzvať hráča",
+                             button_classes: "btn-warning #{'disabled' unless MatchPolicy.new(current_player, nil).create?(selected_season, player)}",
+                             confirmation_text: "Potvrď, že naozaj chceš vyzvať #{player.name}.",
+                             action_path: player_matches_path(player_id: player.id),
+                             action_data: { turbo_method: :post }) %>
       </div>
     <% end %>
   </div>
