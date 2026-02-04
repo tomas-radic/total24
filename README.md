@@ -20,7 +20,7 @@ TOtal is a Ruby on Rails web application designed to manage the amateur tennis l
 
 - **Framework**: Ruby on Rails 8.1.1
 - **Ruby Version**: 3.3.6
-- **Database**: SQLite (development/test), PostgreSQL (production)
+- **Database**: PostgreSQL
 - **Frontend**:
     - Hotwire (Turbo & Stimulus)
     - Bootstrap 5
@@ -33,8 +33,8 @@ TOtal is a Ruby on Rails web application designed to manage the amateur tennis l
 #### Prerequisites
 
 - Ruby 3.3.6
-- SQLite3
-- Node.js & Yarn (if managing assets outside of import maps)
+- PostgreSQL
+- Importmaps
 
 #### Installation
 
@@ -44,17 +44,22 @@ TOtal is a Ruby on Rails web application designed to manage the amateur tennis l
    cd total24
    ```
 
-2. **Install dependencies**:
+2. **Start containerized prerequisites**: 
+   ```bash
+    docker-compose up -d
+    ```
+
+3. **Install dependencies**:
    ```bash
    bundle install
    ```
 
-3. **Database setup**:
+4. **Database setup**:
    ```bash
    bin/rails db:prepare
    ```
 
-4. **Start the application**:
+5. **Start the application**:
    ```bash
    bin/dev
    # OR
@@ -74,7 +79,7 @@ bundle exec rspec
 The project includes a `Dockerfile` and `docker-compose.yml` for containerized environments.
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 ### 🌐 Localization
