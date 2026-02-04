@@ -61,10 +61,9 @@
   </div>
   <p class="text-end mt-4">
     <% if article.persisted? %>
-      <%= confirmation_for("destroyArticle",
-                           button_label: "Zmazať",
+      <%= confirmation_for("Zmazať",
+                           message: "Potvrď zmazanie článku.",
                            button_classes: "btn-danger",
-                           confirmation_text: "Potvrď zmazanie článku.",
                            action_path: manager_article_path(article),
                            action_data: { turbo_method: :delete }) %>
     <% end %>

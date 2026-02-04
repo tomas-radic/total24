@@ -11,10 +11,9 @@
         <% if match.requested? %>
           <div>
             <% if MatchPolicy.new(player, match).accept? %>
-              <%= confirmation_for("rejectMatch",
-                                   button_label: "Odmietnuť",
+              <%= confirmation_for("Odmietnuť",
+                                   message: "Potvrď odmietnutie výzvy.",
                                    button_classes: "btn-warning",
-                                   confirmation_text: "Potvrď odmietnutie výzvy.",
                                    action_path: reject_player_match_path(match),
                                    action_data: { turbo_method: :post, turbo_frame: :_top }) %>
               <%= link_to "Prijať",
@@ -22,20 +21,18 @@
                           class: "btn btn-success", data: { turbo_method: :post } %>
             <% end %>
             <% if MatchPolicy.new(player, match).destroy? %>
-              <%= confirmation_for("destroyMatch",
-                                   button_label: "Zmazať",
+              <%= confirmation_for("Zmazať",
+                                   message: "Potvrď zmazanie výzvy.",
                                    button_classes: "btn-warning",
-                                   confirmation_text: "Potvrď zmazanie výzvy.",
                                    action_path: player_match_path(match),
                                    action_data: { turbo_method: :delete, turbo_frame: :_top }) %>
             <% end %>
           </div>
         <% else %>
           <div>
-            <%= confirmation_for("cancelMatch",
-                                 button_label: "Zrušenie zápasu",
+            <%= confirmation_for("Zrušenie zápasu",
+                                 message: "Potvrď zrušenie zápasu.",
                                  button_classes: "btn-outline-danger #{'disabled' unless MatchPolicy.new(player, match).cancel?}",
-                                 confirmation_text: "Potvrď zrušenie zápasu.",
                                  action_path: cancel_player_match_path(match),
                                  action_data: { turbo_method: :post, turbo_frame: :_top }) %>
             <%= link_to "Upraviť", edit_player_match_path(match),
