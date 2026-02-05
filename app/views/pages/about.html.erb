@@ -15,10 +15,10 @@
     <p class="u-text-justify">
       V roku 2025 bola liga upravená tak, aby v nej mohli hrať hráči rôznych herných úrovní. Systém ligy
       je založený na výzvach, tzn. prihlásený hráč vyzve iného hráča k zápasu. Systém je dobrovoľný,
-      benevolentný, preto vyzvaný hráč môže výzvu prijať, ale aj odmietnuť. Na vyzývanie a zápasy platia
-      nasledovné pravidlá:
+      benevolentný, preto vyzvaný hráč môže výzvu prijať, ale aj odmietnuť.
     </p>
 
+    <h2 class="u-fs-dominant text-center mt-5">Vyzývanie k zápasu</h2>
     <p class="u-text-justify">
       Vyzvať môže ktokoľvek kohokoľvek.<br>
       <% if @last_season&.max_matches_with_opponent.to_i > 0 %>
@@ -29,14 +29,66 @@
       <% end %>
     </p>
 
+    <h2 class="u-fs-dominant text-center mt-5">Formát zápasu</h2>
     <p class="u-text-justify">
-      Každý hráč má priebežne nejakú percentuálnu úspešnosť výhier. Počet bodov hráča v rebríčku sa
-      počíta tak, že sa spočíta aktuálna percentuálna úspešnosť jeho súperov, ale len
-      zo zápasov, ktoré hráč vyhral. K tomu sa ešte pripočíta vlastná aktuálna percentuálna úspešnosť hráča
-      samotného. Výsledné číslo je počet hráčových bodov v rebríčku. Tzn. ak jeho bývalí súperi, s ktorými zápasy
-      vyhral neskôr viac vyhrávajú počet bodov hráčovi priebežne zvyšujú a naopak.
+      Každý zápas sa hrá na 2 víťazné sety (tzn. min. 2 sety, max. 3 sety). Prvé dva sety sa vždy hrajú klasicky do 6,
+      prípadne do 7 (ak skóre dosiahlo stav 5:5). Za stavu 6:6 v sete sa o jeho víťazovi rozhodne v tiebreaku hranom
+      do 7 bodov s min. rozdielom dvoch bodov.
     </p>
+    <p class="u-text-justify">
+      Ak je stav na sety 1:1, hrá sa tretí rozhodujúci set. V prípade kedy hráčom z objektívnych príčin ostáva menej ako
+      35 minút na kurte, tento set sa skráti tak, že sa hrá do 3. Pokiaľ skóre dosiahlo stav 2:2, o víťazovi setu a zápasu
+      rozhodne tiebreak hraný do 7 bodov s min. rozdielom dvoch bodov. Ak majú ale hráči možnosť hrať 35 a viac minút,
+      rozhodujúci set sa hrá rovnako ako prvé dva sety!
+    </p>
+    <p class="u-text-justify">
+      Zápasy v PLAY-OFF a finálové zápasy sa hrajú podľa pokynov organizátorov.
+    </p>
+
+    <h2 class="u-fs-dominant text-center mt-5">Lopty a kurty</h2>
+    <p class="u-text-justify">
+      Pokiaľ sa hráči vopred nedohodnú inak, platia nasledovné pravidlá: Každý zápas sa hrá s novo otvorenými loptami.
+      Lopty zabezpečuje hráč, ktorý inicioval výzvu. Cena zápasu sa skladá z ceny za kurt a z polovice ceny lôpt -
+      túto sumu platia hráči na polovicu. Na zápasy sa používajú lopty Dunlop a Wilson a hráva sa na kurtoch na Mravenisku,
+      na kúpalisku a v mestskom parku.
+    </p>
+
+    <h2 class="u-fs-dominant text-center mt-5">Rozhodovanie zápasu / Etický kódex</h2>
+    <p class="u-text-justify">
+      Štandarný zápas si hráči rozhodujú sami a riadia sa
+      <%= link_to "pravidlami tenisu STZ", "https://www.stz.sk/soubory/stp_pravidlatenisu_sj.pdf", target: :_blank %>.
+      O dopade lopty in/out rozhoduje hráč na vlastnej strane kurtu a to nasledovne: Hráč je povinný vnímať dopad lôpt,
+      ktoré na jeho strane kurtu padajú do blízkosti čiary tak, aby vedel označiť stopu na antuke po dopade takejto
+      lopty pokiaľ ju hlási ako out. V prípade, že hráč nevie označiť stopu v blízkosti čiary bezprostredne po zahlásení
+      out, alebo si nie je istý o ktorú stopu sa jedná, alebo sa zo stopy nedá jednoznačne určiť či sa dotýka, alebo
+      nedotýka čiary je lopta považovaná za in. Ak hráč omylom zahlási out a následne sa zistí, že je lopta in,
+      hráč stráca tento bod.
+    </p>
+
+    <p class="u-text-justify">
+      Je zakázané ovplyvňovať svojho súpera inak ako hrou samotnou - tzn. netolerujú sa žiadne narážky,
+      osobné útoky, komentáre smerom k súperovi - zápas môže byť takému hráčovi skrečovaný.
+    </p>
+
+    <p class="u-text-justify">
+      Ostatné sa riadi
+      <%= link_to "pravidlami tenisu STZ", "https://www.stz.sk/soubory/stp_pravidlatenisu_sj.pdf", target: :_blank %>.
+    </p>
+
+    <h2 class="u-fs-dominant text-center mt-5">Rebríček</h2>
+    <p class="u-text-justify">
+      Každý hráč má priebežne nejakú aktuálnu percentuálnu úspešnosť výhier. Počet bodov hráča v rebríčku sa
+      počíta tak, že sa spočíta aktuálna percentuálna úspešnosť jeho súperov, ale len
+      zo zápasov, ktoré hráč vyhral. Výsledné číslo je počet hráčových bodov v rebríčku. Tzn. ak jeho bývalí súperi,
+      s ktorými zápasy vyhral neskôr viac vyhrávajú počet bodov v rebríčku hráčovi priebežne zvyšujú a naopak.
+    </p>
+    <p class="u-text-justify">
+      V prípade rovnosti bodov dvoch hráčov bude vyššie umiestnený hráč s vyšším počtom vyhratých zápasov, potom
+      z vyšším počtom odohratých zápasov.
+    </p>
+
     <% if @last_season&.play_off_conditions.present? %>
+      <h2 class="u-fs-dominant text-center mt-5">Play Off</h2>
       <p class="u-text-justify">
         <%= @last_season.play_off_conditions %>
       </p>
