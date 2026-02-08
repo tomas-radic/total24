@@ -127,8 +127,8 @@ module ApplicationHelper
           m_footer = content_tag(:div, class: "modal-footer") do
             content_tag(:button, "Naspäť", type: "button",
                         class: "btn btn-secondary", data: { bs_dismiss: "modal" }
-            ) + content_tag(:button, submit_label,
-                            type: "button", class: "btn #{submit_class} px-4")
+            ) + link_to(submit_label, "#",
+                            id: "default-modal-submit", class: "btn #{submit_class} px-4")
           end
 
           m_header + m_content + m_footer

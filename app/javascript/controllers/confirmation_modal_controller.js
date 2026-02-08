@@ -20,7 +20,7 @@ export default class extends Controller {
         // Create element consts
         const titleEl = modal.querySelector("#confirmation-modal-label")
         const messageEl = modal.querySelector("#confirmation-modal-message")
-        const submitEl = modal.querySelector("#confirmation-modal-submit")
+        const submitEl = modal.querySelector("#default-modal-submit")
 
         // Update modal's content
         titleEl.textContent = title
