@@ -71,6 +71,7 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :enrollments, only: [:create]
 
     post "players/toggle_open_to_play"
     post "players/toggle_cant_play"

@@ -9,7 +9,8 @@ RSpec.describe Player, type: :model do
       subject { player.anonymize! }
 
       before do
-        season.players << player << another_player
+        create(:enrollment, player: player, season: season)
+        create(:enrollment, player: another_player, season: season)
         player.update!(email: email, name: name, phone_nr: phone_nr, birth_year: birth_year)
       end
 

@@ -7,8 +7,8 @@ RSpec.describe Matches::AcceptService do
   let(:service) { Matches::AcceptService.new }
 
   before do
-    season.players << current_player
-    season.players << opponent
+    create(:enrollment, player: current_player, season: season)
+    create(:enrollment, player: opponent, season: season)
   end
 
   describe '#call' do

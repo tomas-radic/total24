@@ -64,7 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_11_084537) do
     t.datetime "created_at", null: false
     t.integer "fee_amount_paid"
     t.uuid "player_id", null: false
-    t.datetime "rules_accepted_at"
+    t.datetime "rules_accepted_at", null: false
     t.uuid "season_id", null: false
     t.datetime "updated_at", null: false
     t.index ["player_id"], name: "index_enrollments_on_player_id"

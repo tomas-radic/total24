@@ -106,4 +106,34 @@ module ApplicationHelper
       label
     end
   end
+
+  def modal(id, title:, submit_label: "Ok", submit_class: "btn-primary", size_class: nil, data_attributes: {})
+    content_tag(:div, class: "modal fade", id:, tabindex: "-1",
+                aria: { labelledby: "#{id}-label", hidden: "true" }, data: data_attributes) do
+      content_tag(:div, class: "modal-dialog #{size_class}") do
+        content_tag(:div, class: "modal-content") do
+          m_header = content_tag(:div, class: "modal-header") do
+            m_title = content_tag(:h1, title,
+                                  class: "modal-title fs-5", id: "#{id}-label")
+            m_close = content_tag(:button, "", type: "button",
+                                  class: "btn-close", data: { bs_dismiss: "modal" }, aria: { label: "Close" })
+            m_title + m_close
+          end
+
+          m_content = content_tag(:div, class: "modal-body") do
+            yield
+          end
+
+          m_footer = content_tag(:div, class: "modal-footer") do
+            content_tag(:button, "Naspäť", type: "button",
+                        class: "btn btn-secondary", data: { bs_dismiss: "modal" }
+            ) + content_tag(:button, submit_label,
+                            type: "button", class: "btn #{submit_class} px-4")
+          end
+
+          m_header + m_content + m_footer
+        end
+      end
+    end
+  end
 end

@@ -5,5 +5,15 @@ FactoryBot.define do
     password { SecureRandom.hex }
     name { SecureRandom.hex }
     confirmed_at { 1.week.ago }
+
+    transient do
+      seasons { [] }
+    end
+
+    after(:create) do |player, evaluator|
+      evaluator.seasons.each do |season|
+        create(:enrollment, player: player, season: season)
+      end
+    end
   end
 end

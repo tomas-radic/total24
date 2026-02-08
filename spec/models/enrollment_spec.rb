@@ -15,13 +15,13 @@ RSpec.describe Enrollment, type: :model do
       expect(Enrollment.active).not_to include(enrollment)
     end
 
-    it "excludes enrollments without rules accepted" do
-      enrollment = create(:enrollment, player: player, season: season, rules_accepted_at: nil, fee_amount_paid: 30)
+    it "excludes enrollments without fee paid" do
+      enrollment = create(:enrollment, player: player, season: season, rules_accepted_at: Time.current, fee_amount_paid: nil)
       expect(Enrollment.active).not_to include(enrollment)
     end
 
-    it "excludes enrollments without fee paid" do
-      enrollment = create(:enrollment, player: player, season: season, rules_accepted_at: Time.current, fee_amount_paid: nil)
+    it "excludes enrollments without rules accepted" do
+      enrollment = build(:enrollment, :active, player: player, season: season, rules_accepted_at: nil)
       expect(Enrollment.active).not_to include(enrollment)
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Enrollment, type: :model do
     end
 
     it "returns false for enrollment without rules accepted" do
-      enrollment = create(:enrollment, player: player, season: season, rules_accepted_at: nil, fee_amount_paid: 30)
+      enrollment = build(:enrollment, :active, player: player, season: season, rules_accepted_at: nil)
       expect(enrollment.active?).to be false
     end
 
