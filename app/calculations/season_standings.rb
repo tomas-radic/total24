@@ -69,7 +69,7 @@ class SeasonStandings
     rgl_a_players = rgl_players[0...@season.regular_a_play_off_size]
     rgl_b_players = rgl_players[@season.regular_a_play_off_size...(@season.regular_a_play_off_size + @season.regular_b_play_off_size)]
 
-    @play_offs ||= [perf_players, rgl_a_players, rgl_b_players]
+    @play_offs ||= [perf_players.to_a, rgl_a_players.to_a, rgl_b_players.to_a]
   end
 
   private
