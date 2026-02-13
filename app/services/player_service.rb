@@ -17,17 +17,4 @@ class PlayerService < ApplicationService
     success(player)
   end
 
-  def toggle_season_enrollment(player, season)
-    enrollment = season.enrollments.find_by(player_id: player.id)
-
-    if enrollment.present?
-      canceled_at = enrollment.canceled_at.present? ? nil : Time.current
-      enrollment.update!(canceled_at:)
-    else
-      enrollment = season.enrollments.create!(
-        player: player, rules_accepted_at: Time.current, fee_amount_paid: 0, canceled_at: nil)
-    end
-
-    success(enrollment)
-  end
 end

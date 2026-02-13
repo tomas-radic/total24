@@ -7,7 +7,7 @@ class Manager::BaseController < ApplicationController
   helper_method :managed_season
 
   def managed_season
-    @managed_season = Season.sorted.first
+    @managed_season ||= Season.sorted.first
   end
 
   def pundit_user

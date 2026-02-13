@@ -100,7 +100,7 @@ Rails.application.routes.draw do
       post :toggle_confirmed, on: :member
     end
 
-    post "enrollments/toggle", to: "enrollments#toggle", as: "toggle_enrollment"
+    resources :enrollments, only: [:update, :create]
 
     resources :tournaments, except: [:show, :destroy]
     resources :articles, except: [:show]

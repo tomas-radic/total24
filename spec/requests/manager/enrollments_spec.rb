@@ -3,59 +3,47 @@ require 'shared_examples/manager_examples'
 
 RSpec.describe "Manager::Enrollments", type: :request do
 
-  describe "POST /manager/enrollments/toggle" do
-    subject { post manager_toggle_enrollment_path(player_id: player.id) }
-
-    it_behaves_like "manager_request"
-
-    let!(:season) { create(:season) }
+  describe "POST /manager/enrollments" do
+    let!(:season) { create(:season, ended_at: nil) }
     let!(:manager) { create(:manager) }
-    let!(:player) { create(:player, email: manager.email) }
+    let!(:player) { create(:player) }
 
+    before { sign_in manager }
 
-    context "As a signed in manager" do
-      before { sign_in manager }
+    it "creates an enrollment" do
+      expect {
+        post manager_enrollments_path, params: { enrollment: { player_id: player.id } }
+      }.to change(Enrollment, :count).by(1)
+      expect(Enrollment.last.rules_accepted_at).not_to be_nil
+      expect(response).to redirect_to(manager_pages_dashboard_path)
+    end
+  end
 
-      context "When given player has no enrollment for managed season" do
+  describe "PATCH /manager/enrollments/:id" do
+    let!(:season) { create(:season, ended_at: nil) }
+    let!(:manager) { create(:manager) }
+    let!(:enrollment) { create(:enrollment, season: season) }
 
-        it "Creates enrollment for the player" do
-          expect { subject }.to change { Enrollment.count }.by(1)
+    before { sign_in manager }
 
-          latest_enrollment = player.enrollments.order(:created_at).last
-          expect(latest_enrollment).to have_attributes(
-                                         season_id: season.id,
-                                         player_id: player.id,
-                                         fee_amount_paid: 0,
-                                         canceled_at: nil)
-          expect(latest_enrollment.rules_accepted_at).not_to be_nil
-        end
-
-      end
-
-      context "When given player has existing canceled enrollment for managed season" do
-        let!(:enrollment) { create(:enrollment, player: player, season: season, canceled_at: 1.day.ago) }
-
-        it "Uncancels player's enrollment" do
-          expect { subject }.not_to change { Enrollment.count }
-
-          expect(enrollment.reload.canceled_at).to be_nil
-        end
-
-      end
-
-      context "When given player has uncanceled existing enrollment for managed season" do
-        let!(:enrollment) { create(:enrollment, player: player, season: season, canceled_at: nil) }
-
-        it "Cancels player's enrollment" do
-          expect { subject }.not_to change { Enrollment.count }
-
-          expect(enrollment.reload.canceled_at).not_to be_nil
-        end
-
-      end
-
+    it "updates an enrollment" do
+      patch manager_enrollment_path(enrollment), params: { enrollment: { fee_amount_paid: 100, canceled_at: Time.current } }
+      enrollment.reload
+      expect(enrollment.fee_amount_paid).to eq(100)
+      expect(enrollment.canceled_at).not_to be_nil
+      expect(response).to redirect_to(manager_pages_dashboard_path)
     end
 
+    it "does not update rules_accepted_at" do
+      old_accepted_at = enrollment.rules_accepted_at
+      patch manager_enrollment_path(enrollment), params: { enrollment: { rules_accepted_at: 1.day.from_now } }
+      expect(enrollment.reload.rules_accepted_at).to be_within(1.second).of(old_accepted_at)
+    end
+
+    it "allows setting fee_amount_paid to nil" do
+      patch manager_enrollment_path(enrollment), params: { enrollment: { fee_amount_paid: nil } }
+      expect(enrollment.reload.fee_amount_paid).to be_nil
+    end
   end
 
 end
