@@ -5,8 +5,7 @@ services:
     restart: unless-stopped
     user: postgres
     environment:
-      POSTGRES_USER: dummy_pg_user
-      POSTGRES_PASSWORD: dummy_pg_password
+      POSTGRES_PASSWORD: postgres
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
