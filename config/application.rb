@@ -28,5 +28,7 @@ module Total24
     config.i18n.default_locale = :sk
     config.time_zone = "Bratislava"
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
+    config.action_mailer.default_url_options = { host: ENV['HOST'] }
+    routes.default_url_options = { host: ENV['HOST'] }
   end
 end
