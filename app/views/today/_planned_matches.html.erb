@@ -9,9 +9,7 @@
         <div class="matches-grid__col matches-grid__col3">Vyzvaný</div>
         <div class="matches-grid__col matches-grid__col4"></div>
       </div>
-      <% matches.each do |match| %>
-        <%= render partial: "matches/grid", locals: { match: match, player: current_player } %>
-      <% end %>
+      <%= render(MatchComponent.with_collection(matches, player: current_player)) %>
     <% elsif selected_season && !selected_season.ended? %>
       <p class="py-8 text-center">Nikto neplánuje hrať zápas.</p>
       <p class="py-2 text-center">
