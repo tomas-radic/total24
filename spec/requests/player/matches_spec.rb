@@ -362,7 +362,7 @@ RSpec.describe "Player::Matches", type: :request do
                build(:assignment, player: opponent, side: 2)
              ])
     end
-    let(:params) { { score: "64" } }
+    let(:params) { { score: "6463" } }
 
     it_behaves_like "player_request"
 
