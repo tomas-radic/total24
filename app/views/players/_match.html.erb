@@ -2,11 +2,22 @@
 <% opponent_assignment = match.assignments.find { |a| a.player_id != player.id } %>
 
 <p>
-  <%= app_date(match.finished_at) %>
-  <%= player_assignment.side == match.winner_side ? 'výhra s' : 'prehra s' %>
-  <%= match_player_link(match, side: opponent_assignment.side, privacy: current_player.blank?) %>
-  <br>
-  <%= content_tag(:span, class: player_assignment.side == match.winner_side ? 'u-nav-green' : 'u-red') do %>
-    <%= MatchPresenter.new(match).result_from_side(player_assignment.side) %>
+  <% if match.reviewed? %>
+    <% if player_assignment.side == match.winner_side %>
+      <%= link_to "#{app_date(match.finished_at)} výhra s", match_path(match) %>
+    <% else %>
+      <%= link_to "#{app_date(match.finished_at)} prehra s", match_path(match) %>
+    <% end %>
+    <%= match_player_link(match, side: opponent_assignment.side, privacy: current_player.blank?) %>
+    <br>
+    <%= content_tag(:span, class: player_assignment.side == match.winner_side ? 'u-nav-green' : 'u-red') do %>
+      <%= MatchPresenter.new(match).result_from_side(player_assignment.side) %>
+    <% end %>
+  <% else %>
+    <%= link_to 'výzva na zápas', match_path(match) %> s
+    <%= match_player_link(match, side: opponent_assignment.side, privacy: current_player.blank?) %>
+    <% if match.date.present? %>
+      <br><%= app_date(match.date) %>
+    <% end %>
   <% end %>
 </p>

@@ -84,6 +84,12 @@
       </p>
 
       <div>
+        <% @pending_matches.each do |match| %>
+          <%= render 'players/match', match:, player: %>
+        <% end %>
+      </div>
+
+      <div>
         <% @completed_matches.each do |match| %>
           <%= render 'players/match', match:, player: %>
         <% end %>
