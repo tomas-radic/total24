@@ -22,7 +22,7 @@ module Config
   end
 
   def before_tournament_days_notice
-    (ENV["BEFORE_TOURNAMENT_DAYS_NOTICE"] || 12).to_i
+    (ENV["BEFORE_TOURNAMENT_DAYS_NOTICE"] || 18).to_i
   end
 
   def after_tournament_days_notice
