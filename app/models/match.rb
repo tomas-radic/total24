@@ -147,6 +147,23 @@ class Match < ApplicationRecord
   end
 
 
+  def flip_result!
+    raise StandardError, "Match is not finished" unless finished?
+
+    side1_score = set1_side1_score
+    self.set1_side1_score = set1_side2_score
+    self.set1_side2_score = side1_score
+    side1_score = set2_side1_score
+    self.set2_side1_score = set2_side2_score
+    self.set2_side2_score = side1_score
+    side1_score = set3_side1_score
+    self.set3_side1_score = set3_side2_score
+    self.set3_side2_score = side1_score
+    self.winner_side = (winner_side == 1) ? 2 : 1
+    save!
+  end
+
+
   private
 
   def set_defaults

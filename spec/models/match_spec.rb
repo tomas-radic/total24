@@ -72,5 +72,33 @@ RSpec.describe Match, type: :model do
         end
       end
     end
+
+    describe "#flip_result!" do
+      subject { match.flip_result! }
+
+      context "With finished match" do
+        let!(:match) { create(:match, :finished, season:, winner_side: 1,
+                              set1_side1_score: 6, set1_side2_score: 4, set2_side1_score: 6, set2_side2_score: 1) }
+
+        it "Flips the match result" do
+          subject
+
+          match.reload
+          expect(match.winner_side).to eq(2)
+          expect(match.set1_side1_score).to eq(4)
+          expect(match.set1_side2_score).to eq(6)
+          expect(match.set2_side1_score).to eq(1)
+          expect(match.set2_side2_score).to eq(6)
+        end
+      end
+
+      context "With unfinished match" do
+        let!(:match) { create(:match, :accepted, season:) }
+
+        it "Raises error" do
+          expect { subject }.to raise_error(StandardError, "Match is not finished")
+        end
+      end
+    end
   end
 end
